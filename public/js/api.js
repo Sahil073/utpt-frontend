@@ -1,4 +1,4 @@
-const BASE = 'https://utpt-backend.onrender.com';
+const BASE = 'https://utpt-backend.onrender.com/api/v1';
 
 let _accessToken = null;
 let _refreshPromise = null;
