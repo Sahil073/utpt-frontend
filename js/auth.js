@@ -34,7 +34,13 @@ export function redirectIfLoggedIn() {
   if (isLoggedIn()) {
     setToken(localStorage.getItem(KEY_TOKEN));
     const user = getUser();
-    window.location.href = (user?.role === 'admin' || user?.role === 'trainer') ? '/admin.html' : '/dashboard.html';
+    if (user?.role === 'admin') {
+      window.location.href = '/admin.html';
+    } else if (user?.role === 'trainer') {
+      window.location.href = '/trainer.html';
+    } else {
+      window.location.href = '/dashboard.html';
+    }
     return true;
   }
   return false;

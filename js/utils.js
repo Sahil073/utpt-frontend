@@ -92,6 +92,55 @@ export function initMobileSidebar() {
   });
 }
 
+/* ── Theme toggle ────────────────────────────────────────────── */
+const THEME_KEY = 'utpt-theme';
+
+function _applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+}
+
+function _themeIcon(theme) {
+  return theme === 'dark'
+    ? '<span class="theme-icon">☀</span><span class="theme-label">Light mode</span>'
+    : '<span class="theme-icon">🌙</span><span class="theme-label">Dark mode</span>';
+}
+
+function _buildToggleBtn(theme, cls, onClick) {
+  const btn = document.createElement('button');
+  btn.className = cls;
+  btn.setAttribute('aria-label', 'Toggle color theme');
+  btn.innerHTML = _themeIcon(theme);
+  btn.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme') || 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
+    _applyTheme(next);
+    localStorage.setItem(THEME_KEY, next);
+    btn.innerHTML = _themeIcon(next);
+    onClick && onClick(next);
+  });
+  return btn;
+}
+
+export function initTheme() {
+  const stored = localStorage.getItem(THEME_KEY) || 'light';
+  _applyTheme(stored);
+
+  const footer = document.querySelector('.sidebar-footer');
+  if (footer) {
+    if (!footer.querySelector('.theme-toggle-btn')) {
+      const btn = _buildToggleBtn(stored, 'theme-toggle-btn');
+      footer.insertBefore(btn, footer.firstChild);
+    }
+  } else {
+    if (!document.querySelector('.theme-toggle-float')) {
+      const btn = _buildToggleBtn(stored, 'theme-toggle-float', (next) => {
+        btn.innerHTML = _themeIcon(next);
+      });
+      document.body.appendChild(btn);
+    }
+  }
+}
+
 export function renderBarChart(container, data, labelKey = 'date', valueKey = 'count', color = '#0071e3') {
   if (!container || !data?.length) return;
   const W = container.clientWidth || 400, H = 120;

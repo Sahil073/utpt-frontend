@@ -1,8 +1,8 @@
 import { admin as adminApi } from '../api.js';
 import { requireAuth, logout, getUser } from '../auth.js';
-import { toast, fmtScore, fmtDate, avatarHTML, rankDisplay, openModal, closeModal, initModals, setLoading, renderBarChart, getInitials, avatarColor, initMobileSidebar, debounce } from '../utils.js';
+import { toast, fmtScore, fmtDate, avatarHTML, rankDisplay, openModal, closeModal, initModals, setLoading, renderBarChart, getInitials, avatarColor, initMobileSidebar, debounce, initTheme } from '../utils.js';
 
-if (!requireAuth(['admin','trainer'])) throw new Error('unauthorized');
+if (!requireAuth(['admin'])) throw new Error('unauthorized');
 const user = getUser();
 
 (function() {
@@ -14,7 +14,7 @@ const user = getUser();
 })();
 
 document.getElementById('logout-btn').addEventListener('click',()=>logout());
-initMobileSidebar(); initModals();
+initTheme(); initMobileSidebar(); initModals();
 
 const panelLoaded={};
 const panels=document.querySelectorAll('[data-panel]');
@@ -63,7 +63,7 @@ function renderAdminStats(d) {
     <div class="stat-card"><div class="stat-label">Total Students</div><div class="stat-value">${d?.total_students??'—'}</div><div class="stat-change">Registered in system</div></div>
     <div class="stat-card green"><div class="stat-label">Active Today</div><div class="stat-value">${d?.active_today??'—'}</div><div class="stat-change">Solved at least 1 problem</div></div>
     <div class="stat-card orange"><div class="stat-label">Avg Score</div><div class="stat-value">${fmtScore(d?.avg_score)}</div><div class="stat-change">Across all students</div></div>
-    <div class="stat-card purple"><div class="stat-label">Top Scorer</div><div class="stat-value t-sm" style="font-size:1rem">${d?.top_scorer?.name||'—'}</div><div class="stat-change">${fmtScore(d?.top_scorer?.score)} pts</div></div>`;
+    <div class="stat-card purple"><div class="stat-label">Top Scorer</div><div class="stat-value t-sm" style="font-size:1rem">${d?.top_scorer?.name||'—'}</div><div class="stat-change">${fmtScore(d?.top_scorer?.total_score)} pts</div></div>`;
 }
 
 let stPage=1;
@@ -203,21 +203,97 @@ function initNotifyForm() {
 }
 
 function initImportPanel() {
-  document.getElementById('import-btn')?.addEventListener('click',async()=>{
-    const btn=document.getElementById('import-btn');
-    const status=document.getElementById('import-status');
-    const raw=document.getElementById('import-json').value.trim();
-    if (!raw) { toast('Please paste JSON data','error'); return; }
+  const tabBtns = document.querySelectorAll('[data-import-tab]');
+  const fileTab = document.getElementById('import-tab-file');
+  const jsonTab = document.getElementById('import-tab-json');
+
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const tab = btn.dataset.importTab;
+      fileTab.style.display = tab === 'file' ? '' : 'none';
+      jsonTab.style.display = tab === 'json' ? '' : 'none';
+    });
+  });
+
+  const dropZone  = document.getElementById('drop-zone');
+  const fileInput = document.getElementById('file-input');
+  const fileSelected = document.getElementById('file-selected');
+  const fileName  = document.getElementById('file-name');
+  const fileClear = document.getElementById('file-clear');
+
+  dropZone?.addEventListener('click', () => fileInput?.click());
+
+  dropZone?.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+  dropZone?.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+  dropZone?.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file) setSelectedFile(file);
+  });
+
+  fileInput?.addEventListener('change', () => {
+    const file = fileInput.files[0];
+    if (file) setSelectedFile(file);
+  });
+
+  fileClear?.addEventListener('click', () => {
+    fileInput.value = '';
+    fileSelected.style.display = 'none';
+    dropZone.style.display = '';
+  });
+
+  function setSelectedFile(file) {
+    fileName.textContent = file.name;
+    fileSelected.style.display = 'flex';
+    dropZone.style.display = 'none';
+  }
+
+  document.getElementById('import-file-btn')?.addEventListener('click', async () => {
+    const btn    = document.getElementById('import-file-btn');
+    const status = document.getElementById('import-file-status');
+    const file   = fileInput?.files[0];
+    if (!file) { toast('Please select a file first', 'error'); return; }
+    const ext = file.name.split('.').pop().toLowerCase();
+    if (!['csv','xlsx','xls'].includes(ext)) { toast('Only CSV and Excel files are supported', 'error'); return; }
+    setLoading(btn, true); status.textContent = 'Uploading…';
+    try {
+      const form = new FormData();
+      form.append('file', file);
+      const result = await adminApi.importStudentsFile(form);
+      status.textContent = `✓ Imported ${result?.imported ?? '?'} students`;
+      toast('Import successful!', 'success');
+      fileInput.value = '';
+      fileSelected.style.display = 'none';
+      dropZone.style.display = '';
+    } catch(ex) {
+      toast(ex.message || 'Import failed', 'error');
+      status.textContent = 'Import failed';
+    } finally { setLoading(btn, false, 'Import File'); }
+  });
+
+  document.getElementById('import-btn')?.addEventListener('click', async () => {
+    const btn    = document.getElementById('import-btn');
+    const status = document.getElementById('import-status');
+    const raw    = document.getElementById('import-json').value.trim();
+    if (!raw) { toast('Please paste JSON data', 'error'); return; }
     let students;
-    try { students=JSON.parse(raw); } catch { toast('Invalid JSON','error'); return; }
-    if (!Array.isArray(students)||!students.length) { toast('Must be a non-empty array','error'); return; }
-    // Client-side domain check
-    const invalid=students.filter(s=>s.email&&!s.email.endsWith('@gla.ac.in'));
-    if (invalid.length) { toast(`${invalid.length} student(s) have non-@gla.ac.in emails`,'error'); return; }
-    setLoading(btn,true); status.textContent='Importing…';
-    try{const r=await adminApi.importStudents(students);status.textContent=`✓ Imported ${r?.imported??students.length} students`;toast('Import successful!','success');document.getElementById('import-json').value='';}
-    catch(ex){toast(ex.message||'Import failed','error');status.textContent='Import failed';}
-    finally{setLoading(btn,false,'Import Students');}
+    try { students = JSON.parse(raw); } catch { toast('Invalid JSON', 'error'); return; }
+    if (!Array.isArray(students) || !students.length) { toast('Must be a non-empty array', 'error'); return; }
+    const invalid = students.filter(s => s.email && !s.email.endsWith('@gla.ac.in'));
+    if (invalid.length) { toast(`${invalid.length} student(s) have non-@gla.ac.in emails`, 'error'); return; }
+    setLoading(btn, true); status.textContent = 'Importing…';
+    try {
+      const r = await adminApi.importStudents(students);
+      status.textContent = `✓ Imported ${r?.imported ?? students.length} students`;
+      toast('Import successful!', 'success');
+      document.getElementById('import-json').value = '';
+    } catch(ex) {
+      toast(ex.message || 'Import failed', 'error');
+      status.textContent = 'Import failed';
+    } finally { setLoading(btn, false, 'Import Students'); }
   });
 }
 

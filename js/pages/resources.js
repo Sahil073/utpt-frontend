@@ -1,6 +1,6 @@
 import { resources as resourcesApi } from '../api.js';
 import { requireAuth, logout, getUser } from '../auth.js';
-import { toast, fmtDate, openModal, closeModal, initModals, setLoading, getInitials, avatarColor, initMobileSidebar } from '../utils.js';
+import { toast, fmtDate, openModal, closeModal, initModals, setLoading, getInitials, avatarColor, initMobileSidebar, initTheme } from '../utils.js';
 
 if (!requireAuth()) throw new Error('unauthenticated');
 const user = getUser();
@@ -15,7 +15,7 @@ let page = 1;
 })();
 
 document.getElementById('logout-btn').addEventListener('click',()=>logout());
-initMobileSidebar(); initModals();
+initTheme(); initMobileSidebar(); initModals();
 
 const canManage=['admin','trainer'].includes(user?.role);
 if (canManage) document.getElementById('upload-btn').style.display='inline-flex';

@@ -1,0 +1,43 @@
+# ─── UTPT Frontend — Netlify configuration ────────────────────────────────────
+# Deploy the `public/` folder to Netlify.
+# All /api/* calls are proxied to your backend (Railway / Render / VPS).
+# ──────────────────────────────────────────────────────────────────────────────
+
+[build]
+  publish = "."          # this file lives inside the frontend zip root (public/)
+
+# ─── API proxy ────────────────────────────────────────────────────────────────
+# REQUIRED: Replace the `to` URL with your deployed backend URL before pushing.
+# Example:  https://utpt-backend.up.railway.app
+[[redirects]]
+  from   = "/api/*"
+  to     = "https://YOUR_BACKEND_URL/api/:splat"
+  status = 200
+  force  = true
+
+# ─── SPA fallback (serves login.html for any unmatched path) ──────────────────
+[[redirects]]
+  from   = "/*"
+  to     = "/login.html"
+  status = 200
+
+# ─── Security headers ─────────────────────────────────────────────────────────
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options       = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection      = "1; mode=block"
+    Referrer-Policy       = "strict-origin-when-cross-origin"
+    Permissions-Policy    = "camera=(), microphone=(), geolocation=()"
+
+# Cache static assets aggressively
+[[headers]]
+  for = "/css/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

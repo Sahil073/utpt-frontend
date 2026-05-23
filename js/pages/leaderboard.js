@@ -1,6 +1,6 @@
 import { leaderboard as lbApi } from '../api.js';
 import { requireAuth, logout, getUser } from '../auth.js';
-import { toast, fmtScore, avatarHTML, rankDisplay, getInitials, avatarColor, initMobileSidebar } from '../utils.js';
+import { toast, fmtScore, avatarHTML, rankDisplay, getInitials, avatarColor, initMobileSidebar, initTheme } from '../utils.js';
 
 if (!requireAuth()) throw new Error('unauthenticated');
 const user = getUser();
@@ -14,7 +14,7 @@ const user = getUser();
 })();
 
 document.getElementById('logout-btn').addEventListener('click', () => logout());
-initMobileSidebar();
+initTheme(); initMobileSidebar();
 
 let scope = 'global', page = 1, batchFilter = '', specFilter = '';
 

@@ -1,6 +1,6 @@
 import { students, leaderboard, notifications } from '../api.js';
 import { requireAuth, logout, getUser } from '../auth.js';
-import { toast, fmtScore, fmtNum, avatarHTML, getInitials, avatarColor, renderBarChart, renderHeatmap, rankDisplay, fmtRelative, initMobileSidebar, setLoading } from '../utils.js';
+import { toast, fmtScore, fmtNum, avatarHTML, getInitials, avatarColor, renderBarChart, renderHeatmap, rankDisplay, fmtRelative, initMobileSidebar, setLoading, initTheme } from '../utils.js';
 
 if (!requireAuth()) throw new Error('unauthenticated');
 const user = getUser();
@@ -125,7 +125,7 @@ async function loadNotifications() {
   const list = document.getElementById('notif-list');
   try {
     const data  = await notifications.list({ page: 1 });
-    const items = Array.isArray(data) ? data : data?.items || [];
+    const items = Array.isArray(data) ? data : (data?.notifications || data?.items || []);
     if (!items.length) { list.innerHTML = `<div class="empty-state"><div class="empty-icon">🔔</div><div class="empty-title">All caught up!</div></div>`; return; }
     list.innerHTML = items.map(n => `
       <div class="notif-item ${n.is_read?'':'unread'}" data-id="${n._id||n.id}">
@@ -172,7 +172,7 @@ document.getElementById('sync-github-btn')?.addEventListener('click', async e =>
 });
 
 document.getElementById('logout-btn').addEventListener('click', () => logout());
-initMobileSidebar();
+initTheme(); initMobileSidebar();
 
 async function init() {
   setGreeting(user?.name);
@@ -193,7 +193,7 @@ async function init() {
     if (history.status === 'fulfilled') {
       const logs = Array.isArray(history.value) ? history.value : (history.value?.logs||[]);
       renderHeatmap(document.getElementById('heatmap'), logs);
-      setTimeout(() => renderBarChart(document.getElementById('daily-chart'), logs.slice(-30), 'date', 'count'), 100);
+      setTimeout(() => renderBarChart(document.getElementById('daily-chart'), logs.slice(-30), 'date', 'total_solved'), 100);
     }
   } catch (ex) { toast(ex.message || 'Failed to load dashboard', 'error'); }
 }

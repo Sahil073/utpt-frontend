@@ -1,6 +1,6 @@
 import { students as studentsApi } from '../api.js';
 import { requireAuth, logout, getUser } from '../auth.js';
-import { toast, avatarColor, getInitials, fmtDate, setLoading, initMobileSidebar } from '../utils.js';
+import { toast, avatarColor, getInitials, fmtDate, setLoading, initMobileSidebar, initTheme } from '../utils.js';
 
 if (!requireAuth()) throw new Error('unauthenticated');
 const user = getUser();
@@ -121,7 +121,7 @@ document.getElementById('avatar-input').addEventListener('change', async functio
 });
 
 document.getElementById('logout-btn').addEventListener('click', () => logout());
-initMobileSidebar();
+initTheme(); initMobileSidebar();
 
 async function init() {
   fillSidebar(user);

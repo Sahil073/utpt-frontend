@@ -1,4 +1,4 @@
-const BASE = 'https://utpt-backend.onrender.com/api/v1';
+const BASE = '/api/v1';
 
 let _accessToken = null;
 let _refreshPromise = null;
@@ -15,13 +15,6 @@ export function clearToken() {
   _accessToken = null;
 }
 
-// ─────────────────────────────────────────────────────────────
-// Refresh token handler
-// Supports:
-// { data: { accessToken } }
-// OR
-// { accessToken }
-// ─────────────────────────────────────────────────────────────
 async function _refreshToken() {
   const res = await fetch(`${BASE}/auth/refresh`, {
     method: 'POST',
@@ -46,13 +39,6 @@ async function _refreshToken() {
   return _accessToken;
 }
 
-// ─────────────────────────────────────────────────────────────
-// Generic API request helper
-// Supports backend responses:
-// { data: ... }
-// OR
-// direct object responses
-// ─────────────────────────────────────────────────────────────
 async function request(method, path, body, opts = {}) {
   const headers = {};
 
@@ -80,7 +66,6 @@ async function request(method, path, body, opts = {}) {
 
   let res = await fetch(`${BASE}${path}`, config);
 
-  // Handle expired access token
   if (res.status === 401 && !opts.noRefresh) {
     if (!_refreshPromise) {
       _refreshPromise = _refreshToken().finally(() => {
@@ -116,15 +101,9 @@ async function request(method, path, body, opts = {}) {
     );
   }
 
-  // Support BOTH:
-  // { data: {...} }
-  // and direct response objects
   return raw?.data ?? raw;
 }
 
-// ─────────────────────────────────────────────────────────────
-// Auth APIs
-// ─────────────────────────────────────────────────────────────
 export const auth = {
   requestOtp: (collegeId) =>
     request('POST', '/auth/request-otp', { collegeId }),
@@ -168,9 +147,6 @@ export const auth = {
     request('POST', '/auth/logout')
 };
 
-// ─────────────────────────────────────────────────────────────
-// Student APIs
-// ─────────────────────────────────────────────────────────────
 export const students = {
   me: () =>
     request('GET', '/students/me'),
@@ -208,9 +184,6 @@ export const students = {
     request('GET', `/students/${id}`)
 };
 
-// ─────────────────────────────────────────────────────────────
-// Leaderboard APIs
-// ─────────────────────────────────────────────────────────────
 export const leaderboard = {
   global: (page = 1) =>
     request(
@@ -234,9 +207,6 @@ export const leaderboard = {
     request('GET', '/leaderboard/my-rank')
 };
 
-// ─────────────────────────────────────────────────────────────
-// Admin APIs
-// ─────────────────────────────────────────────────────────────
 export const admin = {
   dashboard: () =>
     request('GET', '/admin/dashboard'),
@@ -273,6 +243,13 @@ export const admin = {
       { students: s }
     ),
 
+  importStudentsFile: (formData) =>
+    request(
+      'POST',
+      '/admin/import-students/file',
+      formData
+    ),
+
   toggleActive: (id) =>
     request(
       'PUT',
@@ -292,9 +269,6 @@ export const admin = {
     )
 };
 
-// ─────────────────────────────────────────────────────────────
-// Resource APIs
-// ─────────────────────────────────────────────────────────────
 export const resources = {
   list: (p) =>
     request(
@@ -312,9 +286,6 @@ export const resources = {
     )
 };
 
-// ─────────────────────────────────────────────────────────────
-// Question APIs
-// ─────────────────────────────────────────────────────────────
 export const questions = {
   list: (p) =>
     request(
@@ -343,9 +314,6 @@ export const questions = {
     )
 };
 
-// ─────────────────────────────────────────────────────────────
-// Notification APIs
-// ─────────────────────────────────────────────────────────────
 export const notifications = {
   list: (p) =>
     request(

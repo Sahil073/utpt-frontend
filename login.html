@@ -55,7 +55,6 @@
     </div>
 
     <div id="login-steps">
-      <!-- Step 0: Choose method -->
       <div class="login-step active" id="step-0">
         <div style="font-size:1.35rem;font-weight:700;letter-spacing:-.02em;margin-bottom:4px">Welcome back</div>
         <div style="font-size:.85rem;color:var(--text-muted);margin-bottom:24px">Sign in to your UTPT account</div>
@@ -65,7 +64,6 @@
           <button class="tab-btn" data-mode="otp">OTP Login</button>
         </div>
 
-        <!-- Password login -->
         <form id="password-form" autocomplete="on">
           <div class="form-group">
             <label class="form-label">College ID <span style="font-weight:400;color:var(--text-dim)">or Email</span></label>
@@ -82,7 +80,6 @@
           <button type="submit" class="btn btn-primary btn-full btn-xl" id="pw-btn" style="margin-top:4px">Sign in</button>
         </form>
 
-        <!-- OTP login trigger -->
         <form id="otp-start-form" style="display:none" autocomplete="off">
           <div class="domain-hint">
             <span class="domain-hint-icon">🏫</span>
@@ -90,7 +87,7 @@
           </div>
           <div class="form-group">
             <label class="form-label">College ID <span style="font-weight:400;color:var(--text-dim)">or Email</span></label>
-            <input type="text" id="otp-college-id" class="form-input" placeholder="e.g.you@gla.ac.in" required>
+            <input type="text" id="otp-college-id" class="form-input" placeholder="e.g. you@gla.ac.in" required>
           </div>
           <div id="otp-start-error" class="form-error" style="display:none;margin-bottom:12px;padding:8px 12px;background:var(--red-dim);border-radius:var(--radius-sm)"></div>
           <button type="submit" class="btn btn-primary btn-full btn-xl" id="otp-start-btn">Send OTP →</button>
@@ -106,7 +103,6 @@
         </p>
       </div>
 
-      <!-- Step 1: Enter OTP -->
       <div class="login-step" id="step-1">
         <button class="back-btn" id="back-to-0">← Back</button>
         <div style="font-size:1.35rem;font-weight:700;letter-spacing:-.02em;margin-bottom:6px">Check your inbox</div>
@@ -125,7 +121,6 @@
         </form>
       </div>
 
-      <!-- Step 2: Set credentials (first-time) -->
       <div class="login-step" id="step-2">
         <div style="font-size:1.35rem;font-weight:700;letter-spacing:-.02em;margin-bottom:6px">Set up your account</div>
         <div style="font-size:.85rem;color:var(--text-muted);margin-bottom:24px">Create a username and password for future logins</div>

@@ -1,6 +1,6 @@
 import { questions as questionsApi } from '../api.js';
 import { requireAuth, logout, getUser } from '../auth.js';
-import { toast, diffBadge, openModal, closeModal, initModals, debounce, setLoading, getInitials, avatarColor, initMobileSidebar } from '../utils.js';
+import { toast, diffBadge, openModal, closeModal, initModals, debounce, setLoading, getInitials, avatarColor, initMobileSidebar, initTheme } from '../utils.js';
 
 if (!requireAuth()) throw new Error('unauthenticated');
 const user = getUser();
@@ -15,7 +15,7 @@ let page=1, filters={}, editingId=null;
 })();
 
 document.getElementById('logout-btn').addEventListener('click', ()=>logout());
-initMobileSidebar(); initModals();
+initTheme(); initMobileSidebar(); initModals();
 
 const canManage = ['admin','trainer'].includes(user?.role);
 if (canManage) { document.getElementById('add-q-btn').style.display='inline-flex'; document.getElementById('q-action-th').style.display=''; }
