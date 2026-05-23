@@ -777,3 +777,26 @@ svg.bar-chart .bar:hover { opacity: 1; }
 }
 .sidebar-powered a { color: var(--text-dim); text-decoration: none; transition: color .15s; }
 .sidebar-powered a:hover { color: var(--blue); }
+
+.powered-footer {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 200;
+  text-align: center;
+  padding: 6px 16px;
+  font-size: .68rem;
+  color: var(--text-dim);
+  background: rgba(255,255,255,.82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-top: 1px solid var(--border-soft);
+  letter-spacing: .02em;
+  pointer-events: auto;
+}
+.powered-footer a {
+  color: var(--blue);
+  text-decoration: none;
+  font-weight: 500;
+  transition: opacity .15s;
+}
+.powered-footer a:hover { opacity: .75; }
