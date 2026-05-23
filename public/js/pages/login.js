@@ -63,6 +63,7 @@ pwForm.addEventListener('submit', async e => {
   }
 });
 
+
 // ─── OTP Step 1: Request OTP ──────────────────────────────────
 otpStartForm.addEventListener('submit', async e => {
   e.preventDefault();

@@ -46,7 +46,7 @@ async function request(method, path, body, opts = {}) {
 
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw Object.assign(new Error(data.message || 'Request failed'), { status: res.status, data });
-  return data.data;
+  return data.data || data;
 }
 
 export const auth = {
