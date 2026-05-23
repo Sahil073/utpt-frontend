@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile — UTPT</title>
+  <link rel="stylesheet" href="/css/main.css">
+  <style>
+    .avatar-upload-wrap { position: relative; display: inline-block; cursor: pointer; }
+    .avatar-upload-wrap:hover .avatar-overlay { opacity: 1; }
+    .avatar-overlay {
+      position: absolute; inset: 0;
+      border-radius: 50%;
+      background: rgba(0,0,0,.6);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0;
+      transition: opacity var(--transition);
+      font-size: .7rem; color: #fff; font-weight: 600;
+    }
+    .platform-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+    .platform-icon { width: 32px; height: 32px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-logo">U</div>
+      <div><div class="brand-name">UTPT</div><div class="brand-sub">Placement Tracker</div></div>
+    </div>
+    <div class="sidebar-nav">
+      <a href="/dashboard.html" class="nav-item" data-page="dashboard">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        <span>Dashboard</span>
+      </a>
+      <a href="/leaderboard.html" class="nav-item" data-page="leaderboard">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        <span>Leaderboard</span>
+      </a>
+      <a href="/questions.html" class="nav-item" data-page="questions">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <span>Questions</span>
+      </a>
+      <a href="/resources.html" class="nav-item" data-page="resources">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <span>Resources</span>
+      </a>
+      <a href="/profile.html" class="nav-item active" data-page="profile">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>Profile</span>
+      </a>
+    </div>
+    <div class="sidebar-footer">
+      <a href="/profile.html" class="user-card" id="sidebar-user">
+        <div class="user-avatar" id="sidebar-avatar">?</div>
+        <div class="user-info">
+          <div class="user-name" id="sidebar-name">Loading…</div>
+          <div class="user-role" id="sidebar-role">student</div>
+        </div>
+      </a>
+      <div class="sidebar-powered">Powered by <a href="https://arivana.site" target="_blank">arivana.site</a></div>
+    </div>
+  </nav>
+
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-left">
+        <button class="btn btn-ghost btn-icon" id="sidebar-toggle">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <span style="font-weight:600;font-size:.9rem">Profile</span>
+      </div>
+      <div class="topbar-right">
+        <button class="btn btn-ghost btn-sm" id="logout-btn">Sign out</button>
+      </div>
+    </div>
+
+    <div class="page-body" style="padding-top:24px">
+      <!-- Profile Hero -->
+      <div class="profile-hero" id="profile-hero">
+        <div class="page-loader"><div class="spinner"></div></div>
+      </div>
+
+      <div class="grid-2">
+        <!-- Edit Profile -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Edit Profile</span>
+            <button class="btn btn-primary btn-sm" id="save-profile-btn">Save changes</button>
+          </div>
+          <form id="profile-form">
+            <div class="form-group">
+              <label class="form-label">GitHub Username</label>
+              <input type="text" id="f-github" class="form-input" placeholder="your-github-username">
+            </div>
+            <div class="form-group">
+              <label class="form-label">LeetCode Username</label>
+              <input type="text" id="f-leetcode" class="form-input" placeholder="your-leetcode-username">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Codeforces Handle</label>
+              <input type="text" id="f-codeforces" class="form-input" placeholder="your-cf-handle">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Batch</label>
+                <input type="text" id="f-batch" class="form-input" placeholder="e.g. 2024">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Specialization</label>
+                <input type="text" id="f-spec" class="form-input" placeholder="e.g. CSE">
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Sync Panel -->
+        <div class="card">
+          <div class="card-header"><span class="card-title">Sync Data</span></div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--bg-3);border-radius:var(--radius-sm)">
+              <div>
+                <div style="font-weight:600;font-size:.85rem">🐙 GitHub</div>
+                <div style="font-size:.75rem;color:var(--text-muted)" id="sync-github-last">Last synced: —</div>
+              </div>
+              <button class="btn btn-outline btn-sm" id="sync-github-btn">Sync</button>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--bg-3);border-radius:var(--radius-sm)">
+              <div>
+                <div style="font-weight:600;font-size:.85rem">💻 Coding Platforms</div>
+                <div style="font-size:.75rem;color:var(--text-muted)" id="sync-coding-last">LeetCode + Codeforces</div>
+              </div>
+              <button class="btn btn-outline btn-sm" id="sync-coding-btn">Sync</button>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+          <div class="card-header" style="margin-bottom:12px"><span class="card-title">Linked Platforms</span></div>
+          <div id="platform-links"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="avatar-input" accept="image/*" style="display:none">
+<div id="toast-container"></div>
+<script type="module" src="/js/pages/profile.js"></script>
+</body>
+</html>

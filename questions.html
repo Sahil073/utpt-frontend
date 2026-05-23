@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Questions — UTPT</title>
+  <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+<div class="app-shell">
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-logo">U</div>
+      <div><div class="brand-name">UTPT</div><div class="brand-sub">Placement Tracker</div></div>
+    </div>
+    <div class="sidebar-nav">
+      <a href="/dashboard.html" class="nav-item" data-page="dashboard">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        <span>Dashboard</span>
+      </a>
+      <a href="/leaderboard.html" class="nav-item" data-page="leaderboard">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        <span>Leaderboard</span>
+      </a>
+      <a href="/questions.html" class="nav-item active" data-page="questions">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <span>Questions</span>
+      </a>
+      <a href="/resources.html" class="nav-item" data-page="resources">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <span>Resources</span>
+      </a>
+      <a href="/profile.html" class="nav-item" data-page="profile">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>Profile</span>
+      </a>
+    </div>
+    <div class="sidebar-footer">
+      <a href="/profile.html" class="user-card" id="sidebar-user">
+        <div class="user-avatar" id="sidebar-avatar">?</div>
+        <div class="user-info">
+          <div class="user-name" id="sidebar-name">Loading…</div>
+          <div class="user-role" id="sidebar-role">student</div>
+        </div>
+      </a>
+      <div class="sidebar-powered">Powered by <a href="https://arivana.site" target="_blank">arivana.site</a></div>
+    </div>
+  </nav>
+
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-left">
+        <button class="btn btn-ghost btn-icon" id="sidebar-toggle">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <span style="font-weight:600;font-size:.9rem">Questions</span>
+      </div>
+      <div class="topbar-right">
+        <button class="btn btn-primary btn-sm" id="add-q-btn" style="display:none">+ Add Question</button>
+        <button class="btn btn-ghost btn-sm" id="logout-btn">Sign out</button>
+      </div>
+    </div>
+
+    <div class="page-header">
+      <div class="t-h1">Question Bank</div>
+      <div class="page-subtitle">Curated practice problems for placement preparation</div>
+    </div>
+
+    <div class="page-body">
+      <!-- Filters -->
+      <div class="flex gap-3 items-center" style="margin-bottom:20px;flex-wrap:wrap">
+        <div class="search-wrap" style="flex:1;min-width:200px;max-width:340px">
+          <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" class="search-input" id="q-search" placeholder="Search questions…">
+        </div>
+        <select class="form-input" id="q-diff" style="width:140px">
+          <option value="">All Difficulties</option>
+          <option value="easy">Easy</option>
+          <option value="medium">Medium</option>
+          <option value="hard">Hard</option>
+        </select>
+        <input type="text" class="form-input" id="q-tag" placeholder="Filter by tag…" style="width:160px">
+      </div>
+
+      <!-- Stats row -->
+      <div class="flex gap-4 items-center" style="margin-bottom:20px;flex-wrap:wrap" id="q-stats">
+        <span class="badge badge-default" id="q-total-badge">— questions</span>
+        <span class="badge badge-green" id="q-easy-badge">Easy: —</span>
+        <span class="badge badge-orange" id="q-medium-badge">Medium: —</span>
+        <span class="badge badge-red" id="q-hard-badge">Hard: —</span>
+      </div>
+
+      <!-- Table -->
+      <div class="card" style="padding:0;overflow:hidden">
+        <div class="table-wrap" style="border:none">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Title</th>
+                <th>Difficulty</th>
+                <th>Tags</th>
+                <th>Platform</th>
+                <th id="q-action-th" style="display:none">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="q-tbody">
+              <tr><td colspan="6"><div class="page-loader"><div class="spinner"></div></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div id="q-pagination"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Question Modal -->
+<div class="modal-overlay" id="q-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="q-modal-title">Add Question</div>
+      <button class="modal-close" data-modal-close>✕</button>
+    </div>
+    <form id="q-form">
+      <div class="form-group">
+        <label class="form-label">Title *</label>
+        <input type="text" id="q-title" class="form-input" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Difficulty *</label>
+        <select id="q-difficulty" class="form-input" required>
+          <option value="">Select…</option>
+          <option value="easy">Easy</option>
+          <option value="medium">Medium</option>
+          <option value="hard">Hard</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tags (comma-separated)</label>
+        <input type="text" id="q-tags" class="form-input" placeholder="array, dp, greedy">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Platform Link</label>
+        <input type="url" id="q-link" class="form-input" placeholder="https://leetcode.com/problems/…">
+      </div>
+      <div class="flex gap-3 justify-between mt-4">
+        <button type="button" class="btn btn-outline" data-modal-close>Cancel</button>
+        <button type="submit" class="btn btn-primary" id="q-submit-btn">Add Question</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+<script type="module" src="/js/pages/questions.js"></script>
+</body>
+</html>
