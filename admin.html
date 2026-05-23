@@ -7,16 +7,14 @@
   <link rel="stylesheet" href="/css/main.css">
   <style>
     .admin-nav-item { color: var(--text-muted); }
-    .admin-nav-item.active { color: var(--orange); background: rgba(210,153,34,.1); }
-    .perf-badge { display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:4px;font-size:.72rem;font-weight:600; }
-    .perf-poor { background:var(--red-dim); color:var(--red); }
+    .admin-nav-item.active { color: var(--blue); background: var(--blue-dim); }
   </style>
 </head>
 <body>
 <div class="app-shell">
   <nav class="sidebar" id="sidebar">
     <div class="sidebar-brand">
-      <div class="brand-logo" style="background:linear-gradient(135deg,#d29922,#a371f7)">A</div>
+      <div class="brand-logo" style="background:linear-gradient(135deg,#ff9500,#af52de)">A</div>
       <div><div class="brand-name">UTPT Admin</div><div class="brand-sub">Management Panel</div></div>
     </div>
     <div class="sidebar-nav">
@@ -47,20 +45,17 @@
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
         <span>Import Students</span>
       </a>
-      <a href="/dashboard.html" class="nav-item admin-nav-item" style="margin-top:auto">
+      <a href="/dashboard.html" class="nav-item admin-nav-item" style="margin-top:8px">
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
         <span>Student View</span>
       </a>
     </div>
     <div class="sidebar-footer">
       <div class="user-card" id="sidebar-user">
-        <div class="user-avatar" id="sidebar-avatar" style="background:var(--orange-dim);color:var(--orange)">A</div>
-        <div class="user-info">
-          <div class="user-name" id="sidebar-name">Admin</div>
-          <div class="user-role" id="sidebar-role">admin</div>
-        </div>
+        <div class="user-avatar" id="sidebar-avatar">A</div>
+        <div class="user-info"><div class="user-name" id="sidebar-name">Admin</div><div class="user-role" id="sidebar-role">admin</div></div>
       </div>
-      <button class="btn btn-ghost btn-sm btn-full" id="logout-btn" style="margin-top:6px;justify-content:flex-start;padding-left:10px">Sign out</button>
+      <button class="btn btn-ghost btn-sm" id="logout-btn" style="margin-top:6px;width:100%;justify-content:flex-start;padding-left:10px">Sign out</button>
       <div class="sidebar-powered">Powered by <a href="https://arivana.site" target="_blank">arivana.site</a></div>
     </div>
   </nav>
@@ -68,17 +63,12 @@
   <div class="main-content">
     <div class="topbar">
       <div class="topbar-left">
-        <button class="btn btn-ghost btn-icon" id="sidebar-toggle">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-        </button>
+        <button class="btn btn-ghost btn-icon" id="sidebar-toggle"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
         <span style="font-weight:600;font-size:.9rem" id="panel-title">Dashboard</span>
       </div>
-      <div class="topbar-right">
-        <span class="badge badge-orange">Admin Panel</span>
-      </div>
+      <div class="topbar-right"><span class="badge badge-orange">Admin Panel</span></div>
     </div>
 
-    <!-- Panels -->
     <div id="panels">
       <!-- Dashboard Panel -->
       <div id="panel-dashboard" class="page-body" style="padding-top:24px">
@@ -89,14 +79,8 @@
           <div class="stat-card skeleton" style="height:100px"></div>
         </div>
         <div class="grid-2">
-          <div class="card">
-            <div class="card-header"><span class="card-title">Daily Active Users (30 days)</span></div>
-            <div id="activity-chart"></div>
-          </div>
-          <div class="card">
-            <div class="card-header"><span class="card-title">Weekly Solve Growth (12 weeks)</span></div>
-            <div id="growth-chart"></div>
-          </div>
+          <div class="card"><div class="card-header"><span class="card-title">Daily Active Users (30 days)</span></div><div id="activity-chart"></div></div>
+          <div class="card"><div class="card-header"><span class="card-title">Weekly Solve Growth (12 weeks)</span></div><div id="growth-chart"></div></div>
         </div>
       </div>
 
@@ -114,13 +98,8 @@
         <div class="card" style="padding:0;overflow:hidden">
           <div class="table-wrap" style="border:none">
             <table>
-              <thead><tr>
-                <th>Student</th><th>College ID</th><th>Batch</th><th>Spec</th>
-                <th style="text-align:right">Score</th><th>Status</th><th>Actions</th>
-              </tr></thead>
-              <tbody id="st-tbody">
-                <tr><td colspan="7"><div class="page-loader"><div class="spinner"></div></div></td></tr>
-              </tbody>
+              <thead><tr><th>Student</th><th>College ID</th><th>Batch</th><th>Spec</th><th style="text-align:right">Score</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="st-tbody"><tr><td colspan="7"><div class="page-loader"><div class="spinner"></div></div></td></tr></tbody>
             </table>
           </div>
         </div>
@@ -136,10 +115,8 @@
         <div class="card" style="padding:0;overflow:hidden">
           <div class="table-wrap" style="border:none">
             <table>
-              <thead><tr><th>Student</th><th>Batch</th><th>Spec</th><th>Last Active</th><th>Actions</th></tr></thead>
-              <tbody id="pp-tbody">
-                <tr><td colspan="5"><div class="page-loader"><div class="spinner"></div></div></td></tr>
-              </tbody>
+              <thead><tr><th>Student</th><th>Batch</th><th>Spec</th><th>Last Active</th><th>Status</th></tr></thead>
+              <tbody id="pp-tbody"><tr><td colspan="5"><div class="page-loader"><div class="spinner"></div></div></td></tr></tbody>
             </table>
           </div>
         </div>
@@ -156,14 +133,8 @@
           <div class="card">
             <div class="card-header"><span class="card-title">Send Notification</span></div>
             <form id="notif-form">
-              <div class="form-group">
-                <label class="form-label">Title *</label>
-                <input type="text" id="n-title" class="form-input" required>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Message *</label>
-                <textarea id="n-body" class="form-input" rows="3" required style="resize:vertical"></textarea>
-              </div>
+              <div class="form-group"><label class="form-label">Title *</label><input type="text" id="n-title" class="form-input" required></div>
+              <div class="form-group"><label class="form-label">Message *</label><textarea id="n-body" class="form-input" rows="3" required style="resize:vertical"></textarea></div>
               <div class="form-group">
                 <label class="form-label">Target</label>
                 <select id="n-target" class="form-input">
@@ -172,14 +143,8 @@
                   <option value="user">Specific Student</option>
                 </select>
               </div>
-              <div class="form-group" id="n-batch-group" style="display:none">
-                <label class="form-label">Batch</label>
-                <input type="text" id="n-batch" class="form-input" placeholder="e.g. 2024">
-              </div>
-              <div class="form-group" id="n-user-group" style="display:none">
-                <label class="form-label">Student ID (UUID)</label>
-                <input type="text" id="n-user-id" class="form-input" placeholder="Student UUID">
-              </div>
+              <div class="form-group" id="n-batch-group" style="display:none"><label class="form-label">Batch</label><input type="text" id="n-batch" class="form-input" placeholder="e.g. 2024"></div>
+              <div class="form-group" id="n-user-group" style="display:none"><label class="form-label">Student ID (UUID)</label><input type="text" id="n-user-id" class="form-input" placeholder="Student UUID"></div>
               <button type="submit" class="btn btn-primary" id="n-send-btn">Send Notification</button>
             </form>
           </div>
@@ -191,12 +156,11 @@
         <div style="max-width:600px">
           <div class="card">
             <div class="card-header"><span class="card-title">Import Students</span></div>
-            <p class="t-muted" style="margin-bottom:16px;font-size:.83rem">
-              Paste a JSON array of student objects. Required fields: <code class="t-mono" style="color:var(--blue)">college_id, name, email, batch, specialization</code>
-            </p>
+            <p class="t-muted" style="margin-bottom:8px;font-size:.83rem">Paste a JSON array of student objects. Required fields: <code style="font-family:monospace;color:var(--blue);background:var(--blue-dim);padding:1px 5px;border-radius:4px">college_id, name, email, batch, specialization</code></p>
+            <p class="t-muted" style="margin-bottom:16px;font-size:.78rem">⚠️ Email must end with <strong>@gla.ac.in</strong></p>
             <div class="form-group">
               <label class="form-label">JSON Data</label>
-              <textarea id="import-json" class="form-input t-mono" rows="12" placeholder='[{"college_id":"2024CS001","name":"John Doe","email":"john@example.com","batch":"2024","specialization":"CSE"}]' style="resize:vertical;font-size:.78rem"></textarea>
+              <textarea id="import-json" class="form-input t-mono" rows="12" placeholder='[{"college_id":"2024CS001","name":"John Doe","email":"john@gla.ac.in","batch":"2024","specialization":"CSE"}]' style="resize:vertical;font-size:.78rem"></textarea>
             </div>
             <div class="flex gap-3 items-center">
               <button class="btn btn-primary" id="import-btn">Import Students</button>
@@ -209,7 +173,6 @@
   </div>
 </div>
 
-<!-- Student Detail Modal -->
 <div class="modal-overlay" id="student-detail-modal">
   <div class="modal" style="max-width:600px">
     <div class="modal-header">

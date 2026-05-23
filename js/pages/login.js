@@ -2,58 +2,45 @@ import { auth as authApi } from '../api.js';
 import { saveSession, redirectIfLoggedIn } from '../auth.js';
 import { toast, setLoading } from '../utils.js';
 
-// Redirect if already logged in
 redirectIfLoggedIn();
 
 let currentStep = 0;
-let collegeId = '';
-let setupToken = '';
+let collegeId   = '';
+let setupToken  = '';
 
-const steps = [
-  document.getElementById('step-0'),
-  document.getElementById('step-1'),
-  document.getElementById('step-2'),
-];
-const dots = [
-  document.getElementById('dot-0'),
-  document.getElementById('dot-1'),
-  document.getElementById('dot-2'),
-];
+const steps = [0,1,2].map(i => document.getElementById(`step-${i}`));
+const dots  = [0,1,2].map(i => document.getElementById(`dot-${i}`));
 
 function goStep(n) {
-  steps.forEach((s, i) => s.classList.toggle('active', i === n));
-  dots.forEach((d, i) => {
-    d.classList.toggle('active', i === n);
-    d.classList.toggle('done', i < n);
-  });
+  steps.forEach((s,i) => s.classList.toggle('active', i===n));
+  dots.forEach((d,i)  => { d.classList.toggle('active', i===n); d.classList.toggle('done', i<n); });
   currentStep = n;
 }
 
-// ─── Tab switching (password / OTP) ─────────────────────────
-const tabBtns = document.querySelectorAll('.tab-btn[data-mode]');
-const pwForm  = document.getElementById('password-form');
+// ─── Tab switching ────────────────────────────────────────────
+const pwForm       = document.getElementById('password-form');
 const otpStartForm = document.getElementById('otp-start-form');
 
-tabBtns.forEach(btn => {
+document.querySelectorAll('.tab-btn[data-mode]').forEach(btn => {
   btn.addEventListener('click', () => {
-    tabBtns.forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-btn[data-mode]').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     const mode = btn.dataset.mode;
-    pwForm.style.display      = mode === 'password' ? 'block' : 'none';
-    otpStartForm.style.display = mode === 'otp'     ? 'block' : 'none';
+    pwForm.style.display       = mode === 'password' ? '' : 'none';
+    otpStartForm.style.display = mode === 'otp'      ? '' : 'none';
   });
 });
 
-// ─── Password toggle ─────────────────────────────────────────
+// ─── Password toggle ──────────────────────────────────────────
 document.getElementById('pw-toggle').addEventListener('click', function() {
   const inp = document.getElementById('pw-password');
-  const showing = inp.type === 'text';
-  inp.type = showing ? 'password' : 'text';
-  this.textContent = showing ? 'Show' : 'Hide';
+  const vis = inp.type === 'text';
+  inp.type = vis ? 'password' : 'text';
+  this.textContent = vis ? 'Show' : 'Hide';
 });
 
-// ─── Password Login ──────────────────────────────────────────
-document.getElementById('password-form').addEventListener('submit', async e => {
+// ─── Password Login ───────────────────────────────────────────
+pwForm.addEventListener('submit', async e => {
   e.preventDefault();
   const btn = document.getElementById('pw-btn');
   const err = document.getElementById('pw-error');
@@ -67,21 +54,17 @@ document.getElementById('password-form').addEventListener('submit', async e => {
     saveSession(data.user, data.accessToken);
     toast('Welcome back!', 'success', 2000);
     setTimeout(() => {
-      if (data.user?.role === 'admin' || data.user?.role === 'trainer') {
-        window.location.href = '/admin.html';
-      } else {
-        window.location.href = '/dashboard.html';
-      }
+      window.location.href = (data.user?.role === 'admin' || data.user?.role === 'trainer') ? '/admin.html' : '/dashboard.html';
     }, 400);
   } catch (ex) {
-    err.textContent = ex.message || 'Invalid credentials';
-    err.style.display = 'block';
+    err.textContent   = ex.message || 'Invalid credentials';
+    err.style.display = '';
     setLoading(btn, false, 'Sign in');
   }
 });
 
 // ─── OTP Step 1: Request OTP ──────────────────────────────────
-document.getElementById('otp-start-form').addEventListener('submit', async e => {
+otpStartForm.addEventListener('submit', async e => {
   e.preventDefault();
   const btn = document.getElementById('otp-start-btn');
   const err = document.getElementById('otp-start-error');
@@ -92,13 +75,13 @@ document.getElementById('otp-start-form').addEventListener('submit', async e => 
   try {
     const data = await authApi.requestOtp(collegeId);
     document.getElementById('otp-sent-to').innerHTML =
-      `OTP sent to <strong>${data?.email || 'your registered email'}</strong>`;
+      `📧 OTP sent to <strong>${data?.email || 'your registered @gla.ac.in email'}</strong>`;
     goStep(1);
     startResendTimer();
   } catch (ex) {
-    err.textContent = ex.message || 'Could not send OTP';
-    err.style.display = 'block';
-    setLoading(btn, false, 'Send OTP');
+    err.textContent   = ex.message || 'Could not send OTP';
+    err.style.display = '';
+    setLoading(btn, false, 'Send OTP →');
   }
 });
 
@@ -114,41 +97,31 @@ document.getElementById('otp-verify-form').addEventListener('submit', async e =>
   try {
     const data = await authApi.verifyOtp(collegeId, otp);
     if (data?.setupToken) {
-      // First time — needs credential setup
       setupToken = data.setupToken;
       goStep(2);
     } else if (data?.accessToken) {
-      // Direct login after OTP
       saveSession(data.user, data.accessToken);
-      toast('Signed in!', 'success');
+      toast('Signed in successfully!', 'success');
       setTimeout(() => window.location.href = '/dashboard.html', 400);
     }
   } catch (ex) {
-    err.textContent = ex.message || 'Invalid OTP';
-    err.style.display = 'block';
-    setLoading(btn, false, 'Verify OTP');
+    err.textContent   = ex.message || 'Invalid OTP';
+    err.style.display = '';
+    setLoading(btn, false, 'Verify Code');
   }
 });
 
 // ─── Step 3: Set Credentials ──────────────────────────────────
 document.getElementById('setup-form').addEventListener('submit', async e => {
   e.preventDefault();
-  const btn = document.getElementById('setup-btn');
-  const err = document.getElementById('setup-error');
+  const btn      = document.getElementById('setup-btn');
+  const err      = document.getElementById('setup-error');
   err.style.display = 'none';
   const username = document.getElementById('setup-username').value.trim();
   const password = document.getElementById('setup-password').value;
   const confirm  = document.getElementById('setup-confirm').value;
-  if (password !== confirm) {
-    err.textContent = 'Passwords do not match';
-    err.style.display = 'block';
-    return;
-  }
-  if (password.length < 8) {
-    err.textContent = 'Password must be at least 8 characters';
-    err.style.display = 'block';
-    return;
-  }
+  if (password !== confirm) { err.textContent = 'Passwords do not match'; err.style.display = ''; return; }
+  if (password.length < 8)  { err.textContent = 'Password must be at least 8 characters'; err.style.display = ''; return; }
   setLoading(btn, true);
   try {
     const data = await authApi.setCredentials(username, password, setupToken);
@@ -156,8 +129,8 @@ document.getElementById('setup-form').addEventListener('submit', async e => {
     toast('Account created! Welcome!', 'success');
     setTimeout(() => window.location.href = '/dashboard.html', 600);
   } catch (ex) {
-    err.textContent = ex.message || 'Setup failed';
-    err.style.display = 'block';
+    err.textContent   = ex.message || 'Setup failed';
+    err.style.display = '';
     setLoading(btn, false, 'Create Account & Sign in');
   }
 });
@@ -168,7 +141,7 @@ document.getElementById('back-to-0').addEventListener('click', () => goStep(0));
 // ─── Resend timer ─────────────────────────────────────────────
 function startResendTimer() {
   const btn = document.getElementById('resend-btn');
-  let sec = 60;
+  let sec   = 60;
   btn.disabled = true;
   btn.textContent = `Resend (${sec}s)`;
   const t = setInterval(() => {

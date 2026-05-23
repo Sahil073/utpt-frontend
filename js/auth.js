@@ -1,12 +1,11 @@
-/* ─── Auth State Manager ──────────────────────────────────────── */
 import { auth as authApi, setToken, clearToken } from './api.js';
 
 const KEY_USER  = 'utpt_user';
 const KEY_TOKEN = 'utpt_token';
 
-export function getUser()  { try { return JSON.parse(localStorage.getItem(KEY_USER) || 'null'); } catch { return null; } }
+export function getUser()   { try { return JSON.parse(localStorage.getItem(KEY_USER) || 'null'); } catch { return null; } }
 export function isLoggedIn(){ return !!getUser() && !!localStorage.getItem(KEY_TOKEN); }
-export function getRole()  { return getUser()?.role || null; }
+export function getRole()   { return getUser()?.role || null; }
 
 export function saveSession(user, token) {
   localStorage.setItem(KEY_USER,  JSON.stringify(user));
@@ -23,17 +22,11 @@ export async function logout() {
 }
 
 export function requireAuth(allowedRoles) {
-  const user = getUser();
+  const user  = getUser();
   const token = localStorage.getItem(KEY_TOKEN);
-  if (!user || !token) {
-    window.location.href = '/login.html';
-    return false;
-  }
+  if (!user || !token) { window.location.href = '/login.html'; return false; }
   setToken(token);
-  if (allowedRoles && !allowedRoles.includes(user.role)) {
-    window.location.href = '/dashboard.html';
-    return false;
-  }
+  if (allowedRoles && !allowedRoles.includes(user.role)) { window.location.href = '/dashboard.html'; return false; }
   return true;
 }
 
@@ -41,11 +34,7 @@ export function redirectIfLoggedIn() {
   if (isLoggedIn()) {
     setToken(localStorage.getItem(KEY_TOKEN));
     const user = getUser();
-    if (user?.role === 'admin' || user?.role === 'trainer') {
-      window.location.href = '/admin.html';
-    } else {
-      window.location.href = '/dashboard.html';
-    }
+    window.location.href = (user?.role === 'admin' || user?.role === 'trainer') ? '/admin.html' : '/dashboard.html';
     return true;
   }
   return false;

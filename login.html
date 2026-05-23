@@ -3,25 +3,42 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>UTPT — Login</title>
+  <title>UTPT — Sign In</title>
   <link rel="stylesheet" href="/css/main.css">
   <style>
-    .login-steps { position: relative; }
     .login-step  { display: none; }
     .login-step.active { display: block; }
-    .back-btn { background: none; border: none; color: var(--text-muted); font-size: .82rem; cursor: pointer; display: flex; align-items: center; gap: 4px; margin-bottom: 20px; transition: color var(--transition); }
+    .back-btn {
+      background: none; border: none; color: var(--text-muted);
+      font-size: .82rem; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 4px;
+      margin-bottom: 20px; transition: color var(--transition); padding: 0;
+    }
     .back-btn:hover { color: var(--text); }
-    .otp-sent-info { background: var(--bg-3); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 14px; font-size: .82rem; color: var(--text-muted); margin-bottom: 16px; }
-    .otp-sent-info strong { color: var(--blue); }
-    .resend-row { text-align: center; margin-top: 12px; font-size: .78rem; color: var(--text-muted); }
-    .resend-btn { background: none; border: none; color: var(--blue); cursor: pointer; font-size: .78rem; }
+    .otp-sent-info {
+      background: var(--blue-dim);
+      border: 1px solid rgba(0,113,227,.2);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      font-size: .82rem; color: var(--blue);
+      margin-bottom: 20px;
+    }
+    .resend-row { text-align: center; margin-top: 16px; font-size: .78rem; color: var(--text-muted); }
+    .resend-btn { background: none; border: none; color: var(--blue); cursor: pointer; font-size: .78rem; font-weight: 500; }
     .resend-btn:disabled { opacity: .5; cursor: not-allowed; }
+    .domain-hint {
+      display: flex; align-items: center; gap: 6px;
+      font-size: .73rem; color: var(--text-muted);
+      background: var(--bg-2); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 8px 12px;
+      margin-bottom: 16px;
+    }
+    .domain-hint-icon { color: var(--blue); font-size: .9rem; }
   </style>
 </head>
 <body>
 <div class="login-root">
   <div class="login-bg"></div>
-
   <div class="login-card">
     <div class="login-logo">
       <div class="login-logo-icon">U</div>
@@ -37,11 +54,11 @@
       <div class="step-dot" id="dot-2"></div>
     </div>
 
-    <div class="login-steps">
+    <div id="login-steps">
       <!-- Step 0: Choose method -->
       <div class="login-step active" id="step-0">
-        <div class="t-h2" style="margin-bottom:6px">Welcome back</div>
-        <div class="t-muted" style="margin-bottom:24px;font-size:.85rem">Sign in to your UTPT account</div>
+        <div style="font-size:1.35rem;font-weight:700;letter-spacing:-.02em;margin-bottom:4px">Welcome back</div>
+        <div style="font-size:.85rem;color:var(--text-muted);margin-bottom:24px">Sign in to your UTPT account</div>
 
         <div class="tabs" style="margin-bottom:20px">
           <button class="tab-btn active" data-mode="password">Password</button>
@@ -51,52 +68,57 @@
         <!-- Password login -->
         <form id="password-form" autocomplete="on">
           <div class="form-group">
-            <label class="form-label">College ID</label>
-            <input type="text" id="pw-college-id" class="form-input" placeholder="e.g. 2021BTECH001" autocomplete="username" required>
+            <label class="form-label">College ID <span style="font-weight:400;color:var(--text-dim)">or Email</span></label>
+            <input type="text" id="pw-college-id" class="form-input" placeholder="e.g. 2200290100042 or you@gla.ac.in" autocomplete="username" required>
           </div>
           <div class="form-group">
             <label class="form-label">Password</label>
             <div style="position:relative">
-              <input type="password" id="pw-password" class="form-input" placeholder="Your password" autocomplete="current-password" required>
-              <button type="button" id="pw-toggle" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-muted);font-size:.8rem">Show</button>
+              <input type="password" id="pw-password" class="form-input" placeholder="Your password" autocomplete="current-password" required style="padding-right:60px">
+              <button type="button" id="pw-toggle" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-muted);font-size:.78rem;font-weight:500">Show</button>
             </div>
           </div>
-          <div id="pw-error" class="form-error" style="display:none;margin-bottom:12px"></div>
-          <button type="submit" class="btn btn-primary btn-full btn-xl" id="pw-btn">Sign in</button>
+          <div id="pw-error" class="form-error" style="display:none;margin-bottom:12px;padding:8px 12px;background:var(--red-dim);border-radius:var(--radius-sm)"></div>
+          <button type="submit" class="btn btn-primary btn-full btn-xl" id="pw-btn" style="margin-top:4px">Sign in</button>
         </form>
 
         <!-- OTP login trigger -->
         <form id="otp-start-form" style="display:none" autocomplete="off">
-          <div class="form-group">
-            <label class="form-label">College ID</label>
-            <input type="text" id="otp-college-id" class="form-input" placeholder="e.g. 2021BTECH001" required>
+          <div class="domain-hint">
+            <span class="domain-hint-icon">🏫</span>
+            OTP will be sent to your registered <strong>@gla.ac.in</strong> email
           </div>
-          <div id="otp-start-error" class="form-error" style="display:none;margin-bottom:12px"></div>
-          <button type="submit" class="btn btn-primary btn-full btn-xl" id="otp-start-btn">Send OTP</button>
+          <div class="form-group">
+            <label class="form-label">College ID <span style="font-weight:400;color:var(--text-dim)">or Email</span></label>
+            <input type="text" id="otp-college-id" class="form-input" placeholder="e.g. 2200290100042 or you@gla.ac.in" required>
+          </div>
+          <div id="otp-start-error" class="form-error" style="display:none;margin-bottom:12px;padding:8px 12px;background:var(--red-dim);border-radius:var(--radius-sm)"></div>
+          <button type="submit" class="btn btn-primary btn-full btn-xl" id="otp-start-btn">Send OTP →</button>
         </form>
 
-        <div class="divider-text mt-4" style="font-size:.75rem;color:var(--text-dim)">
+        <div style="display:flex;align-items:center;gap:12px;margin:20px 0">
           <div style="flex:1;height:1px;background:var(--border)"></div>
-          <span style="padding:0 10px">First time?</span>
+          <span style="font-size:.72rem;color:var(--text-dim)">First time?</span>
           <div style="flex:1;height:1px;background:var(--border)"></div>
         </div>
-        <p style="text-align:center;font-size:.78rem;color:var(--text-muted);margin-top:10px">
-          Use <strong>OTP Login</strong> to set up your credentials on first access.
+        <p style="text-align:center;font-size:.78rem;color:var(--text-muted)">
+          Use <strong>OTP Login</strong> to activate your account on first access.
         </p>
       </div>
 
       <!-- Step 1: Enter OTP -->
       <div class="login-step" id="step-1">
         <button class="back-btn" id="back-to-0">← Back</button>
-        <div class="t-h2" style="margin-bottom:6px">Check your email</div>
-        <div class="otp-sent-info" id="otp-sent-to">OTP sent to your registered email</div>
+        <div style="font-size:1.35rem;font-weight:700;letter-spacing:-.02em;margin-bottom:6px">Check your inbox</div>
+        <div class="otp-sent-info" id="otp-sent-to">📧 OTP sent to your registered email</div>
         <form id="otp-verify-form">
           <div class="form-group">
-            <label class="form-label">One-Time Password</label>
-            <input type="text" id="otp-code" class="form-input" placeholder="Enter 6-digit OTP" maxlength="6" inputmode="numeric" style="font-size:1.5rem;letter-spacing:.3em;text-align:center;font-weight:700" required>
+            <label class="form-label">Verification Code</label>
+            <input type="text" id="otp-code" class="form-input" placeholder="– – – – – –" maxlength="6" inputmode="numeric"
+              style="font-size:2rem;letter-spacing:.5em;text-align:center;font-weight:700;padding:14px 12px" required>
           </div>
-          <div id="otp-error" class="form-error" style="display:none;margin-bottom:12px"></div>
-          <button type="submit" class="btn btn-primary btn-full btn-xl" id="otp-verify-btn">Verify OTP</button>
+          <div id="otp-error" class="form-error" style="display:none;margin-bottom:12px;padding:8px 12px;background:var(--red-dim);border-radius:var(--radius-sm)"></div>
+          <button type="submit" class="btn btn-primary btn-full btn-xl" id="otp-verify-btn">Verify Code</button>
           <div class="resend-row">
             Didn't receive it? <button type="button" class="resend-btn" id="resend-btn">Resend OTP</button>
           </div>
@@ -105,8 +127,8 @@
 
       <!-- Step 2: Set credentials (first-time) -->
       <div class="login-step" id="step-2">
-        <div class="t-h2" style="margin-bottom:6px">Set up your account</div>
-        <div class="t-muted" style="margin-bottom:20px;font-size:.85rem">Create a username and password for future logins</div>
+        <div style="font-size:1.35rem;font-weight:700;letter-spacing:-.02em;margin-bottom:6px">Set up your account</div>
+        <div style="font-size:.85rem;color:var(--text-muted);margin-bottom:24px">Create a username and password for future logins</div>
         <form id="setup-form">
           <div class="form-group">
             <label class="form-label">Username</label>
@@ -120,7 +142,7 @@
             <label class="form-label">Confirm Password</label>
             <input type="password" id="setup-confirm" class="form-input" placeholder="Repeat password" autocomplete="new-password" required>
           </div>
-          <div id="setup-error" class="form-error" style="display:none;margin-bottom:12px"></div>
+          <div id="setup-error" class="form-error" style="display:none;margin-bottom:12px;padding:8px 12px;background:var(--red-dim);border-radius:var(--radius-sm)"></div>
           <button type="submit" class="btn btn-success btn-full btn-xl" id="setup-btn">Create Account & Sign in</button>
         </form>
       </div>
