@@ -46,12 +46,30 @@ function renderProfileHero(p) {
     </div>`;
 }
 
+function applyLock(fieldId, value) {
+  const input = document.getElementById(fieldId);
+  const lock  = document.getElementById(`lock-${fieldId.replace('f-','')}`);
+  const hint  = document.getElementById(`locked-hint-${fieldId.replace('f-','')}`);
+  if (value) {
+    input.value = value;
+    input.readOnly = true;
+    input.dataset.locked = 'true';
+    if (lock) lock.style.display = '';
+    if (hint) hint.style.display = '';
+  } else {
+    input.readOnly = false;
+    input.removeAttribute('data-locked');
+    if (lock) lock.style.display = 'none';
+    if (hint) hint.style.display = 'none';
+  }
+}
+
 function fillForm(p) {
-  document.getElementById('f-github').value     = p?.github_username    || '';
-  document.getElementById('f-leetcode').value   = p?.leetcode_username  || '';
-  document.getElementById('f-codeforces').value = p?.codeforces_username|| '';
-  document.getElementById('f-batch').value      = p?.batch              || '';
-  document.getElementById('f-spec').value       = p?.specialization     || '';
+  applyLock('f-github',     p?.github_username);
+  applyLock('f-leetcode',   p?.leetcode_username);
+  applyLock('f-codeforces', p?.codeforces_username);
+  document.getElementById('f-batch').value = p?.batch         || '';
+  document.getElementById('f-spec').value  = p?.specialization|| '';
 }
 
 function renderPlatformLinks(p) {
@@ -75,17 +93,25 @@ document.getElementById('save-profile-btn').addEventListener('click', async () =
   const btn = document.getElementById('save-profile-btn');
   setLoading(btn, true);
   try {
-    const body = {
-      github_username:     document.getElementById('f-github').value.trim()     || undefined,
-      leetcode_username:   document.getElementById('f-leetcode').value.trim()   || undefined,
-      codeforces_username: document.getElementById('f-codeforces').value.trim() || undefined,
-      batch:               document.getElementById('f-batch').value.trim()       || undefined,
-      specialization:      document.getElementById('f-spec').value.trim()        || undefined,
-    };
-    Object.keys(body).forEach(k => body[k]===undefined && delete body[k]);
+    const body = {};
+    const githubEl     = document.getElementById('f-github');
+    const leetcodeEl   = document.getElementById('f-leetcode');
+    const codeforceEl  = document.getElementById('f-codeforces');
+
+    if (!githubEl.dataset.locked    && githubEl.value.trim())    body.github_username     = githubEl.value.trim();
+    if (!leetcodeEl.dataset.locked  && leetcodeEl.value.trim())  body.leetcode_username   = leetcodeEl.value.trim();
+    if (!codeforceEl.dataset.locked && codeforceEl.value.trim()) body.codeforces_username = codeforceEl.value.trim();
+
+    const batch = document.getElementById('f-batch').value.trim();
+    const spec  = document.getElementById('f-spec').value.trim();
+    if (batch) body.batch = batch;
+    if (spec)  body.specialization = spec;
+
+    if (!Object.keys(body).length) { toast('Nothing to update', 'info'); return; }
+
     const updated = await studentsApi.updateMe(body);
     profile = { ...profile, ...updated };
-    renderProfileHero(profile); renderPlatformLinks(profile);
+    renderProfileHero(profile); fillForm(profile); renderPlatformLinks(profile);
     toast('Profile updated!', 'success');
   } catch (ex) { toast(ex.message||'Failed to save','error'); }
   finally { setLoading(btn, false, 'Save changes'); }
@@ -118,6 +144,40 @@ document.getElementById('avatar-input').addEventListener('change', async functio
     renderProfileHero(profile); fillSidebar(profile);
     toast('Avatar updated!','success');
   } catch (ex) { toast(ex.message||'Upload failed','error'); }
+});
+
+document.getElementById('change-password-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const btn       = document.getElementById('cp-btn');
+  const errorEl   = document.getElementById('cp-error');
+  const current   = document.getElementById('cp-current').value;
+  const newPw     = document.getElementById('cp-new').value;
+  const confirm   = document.getElementById('cp-confirm').value;
+
+  errorEl.style.display = 'none';
+  if (newPw !== confirm) {
+    errorEl.textContent = 'New passwords do not match';
+    errorEl.style.display = '';
+    return;
+  }
+  if (newPw.length < 8) {
+    errorEl.textContent = 'New password must be at least 8 characters';
+    errorEl.style.display = '';
+    return;
+  }
+
+  setLoading(btn, true);
+  try {
+    await studentsApi.changePassword({ currentPassword: current, newPassword: newPw });
+    toast('Password updated successfully!', 'success');
+    document.getElementById('change-password-form').reset();
+  } catch (ex) {
+    errorEl.textContent = ex.message || 'Failed to change password';
+    errorEl.style.display = '';
+    toast(ex.message||'Failed','error');
+  } finally {
+    setLoading(btn, false, 'Update Password');
+  }
 });
 
 document.getElementById('logout-btn').addEventListener('click', () => logout());

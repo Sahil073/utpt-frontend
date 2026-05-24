@@ -1,37 +1,29 @@
-# ─── UTPT Frontend — Netlify configuration ────────────────────────────────────
-# Deploy the `public/` folder to Netlify.
-# All /api/* calls are proxied to your backend (Railway / Render / VPS).
-# ──────────────────────────────────────────────────────────────────────────────
-
 [build]
-  publish = "."          # this file lives inside the frontend zip root (public/)
+  publish = "."
 
-# ─── API proxy ────────────────────────────────────────────────────────────────
-# REQUIRED: Replace the `to` URL with your deployed backend URL before pushing.
-# Example:  https://utpt-backend.up.railway.app
+# Proxy all /api/* calls to your deployed backend.
+# Replace YOUR_BACKEND_URL with your actual backend URL (e.g. https://utpt-api.onrender.com)
 [[redirects]]
-  from   = "/api/*"
-  to     = "https://utpt-backend.onrender.com/api/:splat"
-  status = 200
-  force  = true
+  from = "/api/*"
+  to   = "https://YOUR_BACKEND_URL/api/:splat"
+  status  = 200
+  force   = true
 
-# ─── SPA fallback (serves login.html for any unmatched path) ──────────────────
+# SPA-style fallback — serve index.html for any unmatched route
 [[redirects]]
   from   = "/*"
-  to     = "/login.html"
+  to     = "/index.html"
   status = 200
 
-# ─── Security headers ─────────────────────────────────────────────────────────
+# Security & caching headers
 [[headers]]
   for = "/*"
   [headers.values]
-    X-Frame-Options       = "SAMEORIGIN"
+    X-Frame-Options        = "SAMEORIGIN"
     X-Content-Type-Options = "nosniff"
-    X-XSS-Protection      = "1; mode=block"
-    Referrer-Policy       = "strict-origin-when-cross-origin"
-    Permissions-Policy    = "camera=(), microphone=(), geolocation=()"
+    X-XSS-Protection       = "1; mode=block"
+    Referrer-Policy        = "strict-origin-when-cross-origin"
 
-# Cache static assets aggressively
 [[headers]]
   for = "/css/*"
   [headers.values]

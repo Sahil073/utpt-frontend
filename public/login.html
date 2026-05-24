@@ -15,6 +15,15 @@
       margin-bottom: 20px; transition: color var(--transition); padding: 0;
     }
     .back-btn:hover { color: var(--text); }
+    .back-to-home {
+      position: absolute; top: 20px; left: 24px;
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: .78rem; font-weight: 500; color: var(--text-muted);
+      text-decoration: none; transition: color var(--transition);
+      padding: 6px 10px; border-radius: var(--radius-sm);
+      background: var(--bg-2); border: 1px solid var(--border);
+    }
+    .back-to-home:hover { color: var(--blue); border-color: var(--blue); background: var(--blue-dim); }
     .otp-sent-info {
       background: var(--blue-dim);
       border: 1px solid rgba(0,113,227,.2);
@@ -39,8 +48,13 @@
 <body>
 <div class="login-root">
   <div class="login-bg"></div>
-  <div class="login-card">
-    <div class="login-logo">
+  <div class="login-card" style="position:relative">
+    <a href="/" class="back-to-home" title="Back to Home">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      Home
+    </a>
+
+    <div class="login-logo" style="margin-top:16px">
       <div class="login-logo-icon">U</div>
       <div>
         <div style="font-size:1.1rem;font-weight:800;letter-spacing:-.02em">UTPT</div>

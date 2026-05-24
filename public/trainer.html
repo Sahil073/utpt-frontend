@@ -28,6 +28,10 @@
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         <span>All Students</span>
       </a>
+      <a href="#" class="nav-item trainer-nav-item" data-panel="search">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <span>Search Students</span>
+      </a>
       <a href="#" class="nav-item trainer-nav-item" data-panel="poor-performers">
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
         <span>Poor Performers</span>
@@ -79,8 +83,8 @@
           <div class="stat-card skeleton" style="height:100px"></div>
         </div>
         <div class="grid-2">
-          <div class="card"><div class="card-header"><span class="card-title">Daily Active Users (30 days)</span></div><div id="activity-chart"></div></div>
-          <div class="card"><div class="card-header"><span class="card-title">Weekly Solve Growth (12 weeks)</span></div><div id="growth-chart"></div></div>
+          <div class="card"><div class="card-header"><span class="card-title">Daily Active Users (30 days)</span></div><div id="activity-chart" style="min-height:160px"></div></div>
+          <div class="card"><div class="card-header"><span class="card-title">Weekly Solve Growth (12 weeks)</span></div><div id="growth-chart" style="min-height:160px"></div></div>
         </div>
       </div>
 
@@ -89,11 +93,12 @@
         <div class="flex gap-3 items-center" style="margin-bottom:16px;flex-wrap:wrap">
           <div class="search-wrap" style="flex:1;min-width:200px;max-width:320px">
             <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input type="text" class="search-input" id="st-search" placeholder="Search students…">
+            <input type="text" class="search-input" id="st-search" placeholder="Search by name…">
           </div>
           <input type="text" class="form-input" id="st-batch" placeholder="Batch" style="width:120px">
           <input type="text" class="form-input" id="st-spec" placeholder="Spec" style="width:120px">
           <button class="btn btn-outline btn-sm" id="st-filter-btn">Filter</button>
+          <button class="btn btn-outline btn-sm" id="st-pdf-btn" title="Export as PDF">⬇ PDF</button>
         </div>
         <div class="card" style="padding:0;overflow:hidden">
           <div class="table-wrap" style="border:none">
@@ -104,6 +109,31 @@
           </div>
         </div>
         <div id="st-pagination"></div>
+      </div>
+
+      <!-- Search Students Panel -->
+      <div id="panel-search" class="page-body" style="padding-top:24px;display:none">
+        <div style="max-width:640px;margin-bottom:24px">
+          <div class="card">
+            <div class="card-header"><span class="card-title">Search Students</span></div>
+            <div class="flex gap-3" style="flex-wrap:wrap;margin-bottom:12px">
+              <div class="form-group" style="flex:1;min-width:200px;margin-bottom:0">
+                <label class="form-label">Email</label>
+                <input type="text" id="search-email" class="form-input" placeholder="e.g. student@gla.ac.in">
+              </div>
+              <div class="form-group" style="flex:1;min-width:200px;margin-bottom:0">
+                <label class="form-label">Name</label>
+                <input type="text" id="search-name" class="form-input" placeholder="e.g. Rahul">
+              </div>
+            </div>
+            <div class="flex gap-2 items-center" style="margin-top:12px">
+              <button class="btn btn-primary btn-sm" id="search-btn">Search</button>
+              <button class="btn btn-outline btn-sm" id="search-pdf-btn">⬇ Export PDF</button>
+              <span class="t-muted t-sm" id="search-count"></span>
+            </div>
+          </div>
+        </div>
+        <div id="search-results"></div>
       </div>
 
       <!-- Poor Performers Panel -->
