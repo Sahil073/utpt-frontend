@@ -121,13 +121,17 @@
           <div class="card">
             <div class="card-header"><span class="card-title">Search Students</span></div>
             <div class="flex gap-3" style="flex-wrap:wrap;margin-bottom:12px">
-              <div class="form-group" style="flex:1;min-width:200px;margin-bottom:0">
+              <div class="form-group" style="flex:1;min-width:170px;margin-bottom:0">
                 <label class="form-label">Email</label>
                 <input type="text" id="search-email" class="form-input" placeholder="e.g. student@gla.ac.in">
               </div>
-              <div class="form-group" style="flex:1;min-width:200px;margin-bottom:0">
+              <div class="form-group" style="flex:1;min-width:170px;margin-bottom:0">
                 <label class="form-label">Name</label>
                 <input type="text" id="search-name" class="form-input" placeholder="e.g. Rahul">
+              </div>
+              <div class="form-group" style="flex:1;min-width:170px;margin-bottom:0">
+                <label class="form-label">College ID</label>
+                <input type="text" id="search-college-id" class="form-input" placeholder="e.g. 2200290100042">
               </div>
             </div>
             <div class="flex gap-2 items-center" style="margin-top:12px">
@@ -231,7 +235,7 @@
 
             <!-- File Upload Tab -->
             <div id="import-tab-file">
-              <p class="t-muted" style="margin-bottom:16px;font-size:.83rem">Upload a <strong>CSV</strong> or <strong>Excel (.xlsx)</strong> file. Required columns: <code style="font-family:monospace;color:var(--blue);background:var(--blue-dim);padding:1px 5px;border-radius:4px">college_id, name, email, batch, specialization</code></p>
+              <p class="t-muted" style="margin-bottom:16px;font-size:.83rem">Upload a <strong>CSV</strong> or <strong>Excel (.xlsx)</strong> file. Required columns: <code style="font-family:monospace;color:var(--blue);background:var(--blue-dim);padding:1px 5px;border-radius:4px">college_id, name, email, batch, specialization</code> &nbsp;&middot;&nbsp; Optional: <code style="font-family:monospace;color:var(--purple);background:var(--purple-dim);padding:1px 5px;border-radius:4px">leetcode_username, github_username, codeforces_username</code></p>
               <div class="drop-zone" id="drop-zone">
                 <div class="drop-zone-icon">📂</div>
                 <div class="drop-zone-text">Drag &amp; drop your file here, or <strong>click to browse</strong></div>
@@ -250,7 +254,7 @@
 
             <!-- JSON Paste Tab -->
             <div id="import-tab-json" style="display:none">
-              <p class="t-muted" style="margin-bottom:8px;font-size:.83rem">Paste a JSON array of student objects. Required fields: <code style="font-family:monospace;color:var(--blue);background:var(--blue-dim);padding:1px 5px;border-radius:4px">college_id, name, email, batch, specialization</code></p>
+              <p class="t-muted" style="margin-bottom:8px;font-size:.83rem">Paste a JSON array of student objects. Required fields: <code style="font-family:monospace;color:var(--blue);background:var(--blue-dim);padding:1px 5px;border-radius:4px">college_id, name, email, batch, specialization</code> &nbsp;&middot;&nbsp; Optional: <code style="font-family:monospace;color:var(--purple);background:var(--purple-dim);padding:1px 5px;border-radius:4px">leetcode_username, github_username, codeforces_username</code></p>
               <p class="t-muted" style="margin-bottom:16px;font-size:.78rem">⚠️ Email must end with <strong>@gla.ac.in</strong></p>
               <div class="form-group">
                 <label class="form-label">JSON Data</label>

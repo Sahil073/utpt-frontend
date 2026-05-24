@@ -198,18 +198,21 @@ function initSearchPanel() {
   });
   document.getElementById('search-email')?.addEventListener('keydown',e=>{ if(e.key==='Enter') runSearch(); });
   document.getElementById('search-name')?.addEventListener('keydown',e=>{ if(e.key==='Enter') runSearch(); });
+  document.getElementById('search-college-id')?.addEventListener('keydown',e=>{ if(e.key==='Enter') runSearch(); });
 }
 
 async function runSearch() {
-  const email = document.getElementById('search-email')?.value.trim();
-  const name  = document.getElementById('search-name')?.value.trim();
-  if (!email && !name) { toast('Enter email or name to search','error'); return; }
+  const email     = document.getElementById('search-email')?.value.trim();
+  const name      = document.getElementById('search-name')?.value.trim();
+  const collegeId = document.getElementById('search-college-id')?.value.trim();
+  if (!email && !name && !collegeId) { toast('Enter email, name or college ID to search','error'); return; }
   const btn = document.getElementById('search-btn');
   setLoading(btn, true);
   try {
     const params={};
-    if (email) params.email=email;
-    if (name)  params.name=name;
+    if (email)     params.email=email;
+    if (name)      params.name=name;
+    if (collegeId) params.college_id=collegeId;
     const rows = await adminApi.searchStudents(params);
     lastSearchRows = Array.isArray(rows)?rows:(rows?.students||[]);
     const countEl = document.getElementById('search-count');
