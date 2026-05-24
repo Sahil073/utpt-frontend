@@ -169,7 +169,25 @@ export function renderHeatmap(container, logs) {
     const key = d.toISOString().slice(0,10);
     const v   = map[key] || 0;
     const lvl = v === 0 ? '' : v<=1 ? 'l1' : v<=3 ? 'l2' : v<=6 ? 'l3' : 'l4';
-    cells.push(`<div class="heatmap-cell ${lvl}" title="${key}: ${v} solve${v!==1?'s':''}"></div>`);
+    const delay = ((29 - i) * 18) + 'ms';
+    cells.push(`<div class="heatmap-cell ${lvl}" title="${key}: ${v} solve${v!==1?'s':''}" style="animation-delay:${delay}"></div>`);
   }
   container.innerHTML = cells.join('');
+}
+
+export function countUp(el, end, duration = 900, decimals = 0) {
+  if (!el || end == null || isNaN(Number(end))) return;
+  const endNum = Number(end);
+  const start  = 0;
+  const startTime = performance.now();
+  const easeOut = t => 1 - Math.pow(1 - t, 3);
+  function tick(now) {
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const value = start + (endNum - start) * easeOut(progress);
+    el.textContent = decimals > 0 ? value.toFixed(decimals) : Math.round(value).toLocaleString();
+    if (progress < 1) requestAnimationFrame(tick);
+    else el.textContent = decimals > 0 ? endNum.toFixed(decimals) : endNum.toLocaleString();
+  }
+  requestAnimationFrame(tick);
 }

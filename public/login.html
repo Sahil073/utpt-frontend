@@ -224,6 +224,95 @@
       display: block;
     }
 
+    /* ── Animations ── */
+    @keyframes lp-cardIn {
+      from { opacity: 0; transform: scale(.96) translateY(12px); }
+      to   { opacity: 1; transform: scale(1)   translateY(0); }
+    }
+    @keyframes lp-slideLeft {
+      from { opacity: 0; transform: translateX(-22px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes lp-slideRight {
+      from { opacity: 0; transform: translateX(22px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes lp-fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes lp-shimmer {
+      0%   { background-position: -200% center; }
+      100% { background-position:  200% center; }
+    }
+    @keyframes lp-stepIn {
+      from { opacity: 0; transform: translateX(28px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes lp-stepOut {
+      from { opacity: 1; transform: translateX(0); }
+      to   { opacity: 0; transform: translateX(-28px); }
+    }
+
+    /* Card entrance */
+    .split-root { animation: lp-cardIn .52s cubic-bezier(.22,1,.36,1) both; }
+    .lp { animation: lp-slideLeft .52s .04s cubic-bezier(.22,1,.36,1) both; }
+    .rp { animation: lp-slideRight .52s .08s cubic-bezier(.22,1,.36,1) both; }
+
+    /* Stagger the form elements */
+    .lp-top      { animation: lp-fadeUp .35s .18s cubic-bezier(.22,1,.36,1) both; }
+    .lp-logo     { animation: lp-fadeUp .38s .22s cubic-bezier(.22,1,.36,1) both; }
+    .lp-heading  { animation: lp-fadeUp .38s .28s cubic-bezier(.22,1,.36,1) both; }
+    .lp-sub      { animation: lp-fadeUp .35s .32s cubic-bezier(.22,1,.36,1) both; }
+    .lp-divider  { animation: lp-fadeUp .30s .36s cubic-bezier(.22,1,.36,1) both; }
+    .step-indicator { animation: lp-fadeUp .30s .40s cubic-bezier(.22,1,.36,1) both; }
+    .login-step.active { animation: lp-stepIn .32s cubic-bezier(.22,1,.36,1) both; }
+
+    /* Input glow bloom */
+    .form-input {
+      transition: border-color .18s, box-shadow .22s cubic-bezier(.22,1,.36,1), transform .15s;
+    }
+    .form-input:focus {
+      box-shadow: 0 0 0 3px rgba(26,77,46,.13), 0 1px 3px rgba(0,0,0,.06);
+    }
+
+    /* Button — spring press + shimmer overlay */
+    .btn { position: relative; overflow: hidden; }
+    .btn::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at 60% 40%, rgba(255,255,255,.22) 0%, transparent 65%);
+      opacity: 0; transition: opacity .18s; pointer-events: none;
+    }
+    .btn:hover::after { opacity: 1; }
+    .btn:active { transform: scale(.96) !important; transition-duration: .08s !important; }
+
+    /* Step dot transition */
+    .step-dot { transition: background .25s, width .25s cubic-bezier(.22,1,.36,1); }
+
+    /* Back button hover slide */
+    .back-btn { transition: color .15s, transform .2s cubic-bezier(.22,1,.36,1); }
+    .back-btn:hover { transform: translateX(-3px); }
+
+    /* Tab underline transition */
+    .tab-btn { transition: color .15s, border-bottom-color .15s; }
+
+    /* OTP box focus bounce */
+    #otp-code:focus {
+      transform: scale(1.02);
+      box-shadow: 0 0 0 3px rgba(26,77,46,.16), 0 2px 8px rgba(0,0,0,.08);
+    }
+
+    /* Powered footer fade */
+    .lp-powered { animation: lp-fadeUp .3s .55s cubic-bezier(.22,1,.36,1) both; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+      }
+    }
+
     /* Theme toggle */
     .theme-toggle-float {
       position: fixed; top: 14px; right: 14px;

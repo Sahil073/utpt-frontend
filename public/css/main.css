@@ -1163,6 +1163,291 @@ svg.bar-chart .bar:hover { opacity: 1; }
   .grid-4         { grid-template-columns: repeat(2,1fr); }
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   UTPT — Premium Animation System
+   All animations are opt-out via prefers-reduced-motion.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── Keyframes ───────────────────────────────────────────────── */
+@keyframes utpt-fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes utpt-fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes utpt-scaleIn {
+  from { opacity: 0; transform: scale(.93) translateY(6px); }
+  to   { opacity: 1; transform: scale(1)   translateY(0); }
+}
+@keyframes utpt-slideLeft {
+  from { opacity: 0; transform: translateX(-18px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes utpt-slideRight {
+  from { opacity: 0; transform: translateX(18px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes utpt-shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+@keyframes utpt-popIn {
+  0%   { opacity: 0; transform: scale(.55); }
+  65%  { transform: scale(1.12); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes utpt-progressFill {
+  from { width: 0 !important; }
+}
+@keyframes utpt-notifDot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%       { transform: scale(1.5); opacity: .7; }
+}
+@keyframes utpt-numberFlip {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes utpt-glowPulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(var(--blue-rgb),.4); }
+  50%     { box-shadow: 0 0 0 7px rgba(var(--blue-rgb),0); }
+}
+@keyframes utpt-logoWobble {
+  0%   { transform: scale(1) rotate(0deg); }
+  30%  { transform: scale(1.08) rotate(-4deg); }
+  60%  { transform: scale(1.05) rotate(3deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+/* ─── Page & sidebar entrance ─────────────────────────────────── */
+.sidebar {
+  animation: utpt-slideLeft .38s cubic-bezier(.22,1,.36,1) both;
+}
+.sidebar-brand {
+  animation: utpt-fadeIn .45s .05s both;
+}
+.topbar {
+  animation: utpt-fadeIn .35s both;
+}
+.main-content .page-header {
+  animation: utpt-fadeUp .42s .06s cubic-bezier(.22,1,.36,1) both;
+}
+
+/* Nav items — staggered slide-in */
+.sidebar-nav .nav-item:nth-child(1)  { animation: utpt-slideLeft .32s .08s cubic-bezier(.22,1,.36,1) both; }
+.sidebar-nav .nav-item:nth-child(2)  { animation: utpt-slideLeft .32s .13s cubic-bezier(.22,1,.36,1) both; }
+.sidebar-nav .nav-item:nth-child(3)  { animation: utpt-slideLeft .32s .18s cubic-bezier(.22,1,.36,1) both; }
+.sidebar-nav .nav-item:nth-child(4)  { animation: utpt-slideLeft .32s .23s cubic-bezier(.22,1,.36,1) both; }
+.sidebar-nav .nav-item:nth-child(5)  { animation: utpt-slideLeft .32s .28s cubic-bezier(.22,1,.36,1) both; }
+.sidebar-nav .nav-item:nth-child(6)  { animation: utpt-slideLeft .32s .33s cubic-bezier(.22,1,.36,1) both; }
+.sidebar-nav .nav-item:nth-child(7)  { animation: utpt-slideLeft .32s .38s cubic-bezier(.22,1,.36,1) both; }
+.sidebar-nav .nav-item:nth-child(8)  { animation: utpt-slideLeft .32s .43s cubic-bezier(.22,1,.36,1) both; }
+
+/* Stat cards — staggered fade-up */
+.stats-grid .stat-card:nth-child(1) { animation: utpt-fadeUp .44s .10s cubic-bezier(.22,1,.36,1) both; }
+.stats-grid .stat-card:nth-child(2) { animation: utpt-fadeUp .44s .17s cubic-bezier(.22,1,.36,1) both; }
+.stats-grid .stat-card:nth-child(3) { animation: utpt-fadeUp .44s .24s cubic-bezier(.22,1,.36,1) both; }
+.stats-grid .stat-card:nth-child(4) { animation: utpt-fadeUp .44s .31s cubic-bezier(.22,1,.36,1) both; }
+
+/* Stat values flip up */
+.stat-value { animation: utpt-numberFlip .38s .35s cubic-bezier(.22,1,.36,1) both; }
+
+/* Page body cards — stagger */
+.page-body > .card:nth-child(1)   { animation: utpt-fadeUp .46s .12s cubic-bezier(.22,1,.36,1) both; }
+.page-body > .card:nth-child(2)   { animation: utpt-fadeUp .46s .20s cubic-bezier(.22,1,.36,1) both; }
+.page-body > .card:nth-child(3)   { animation: utpt-fadeUp .46s .28s cubic-bezier(.22,1,.36,1) both; }
+.page-body > .card:nth-child(4)   { animation: utpt-fadeUp .46s .36s cubic-bezier(.22,1,.36,1) both; }
+.page-body > .card:nth-child(5)   { animation: utpt-fadeUp .46s .44s cubic-bezier(.22,1,.36,1) both; }
+.page-body > .grid-2:nth-child(1) { animation: utpt-fadeUp .46s .14s cubic-bezier(.22,1,.36,1) both; }
+.page-body > .grid-2:nth-child(2) { animation: utpt-fadeUp .46s .24s cubic-bezier(.22,1,.36,1) both; }
+.page-body > .grid-2:nth-child(3) { animation: utpt-fadeUp .46s .34s cubic-bezier(.22,1,.36,1) both; }
+.page-body > .grid-3:nth-child(1) { animation: utpt-fadeUp .46s .14s cubic-bezier(.22,1,.36,1) both; }
+.page-body > .grid-3:nth-child(2) { animation: utpt-fadeUp .46s .24s cubic-bezier(.22,1,.36,1) both; }
+
+/* ─── Enhanced nav hover ──────────────────────────────────────── */
+.nav-item {
+  transition: background .16s, color .16s, transform .2s cubic-bezier(.22,1,.36,1), box-shadow .16s;
+}
+.nav-item:hover {
+  transform: translateX(3px);
+}
+.nav-item.active {
+  transform: none;
+}
+
+/* ─── Card hover — deeper lift with glow ─────────────────────── */
+.card {
+  transition: border-color var(--transition), box-shadow var(--transition),
+              transform .28s cubic-bezier(.22,1,.36,1), background var(--transition-lg);
+}
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* ─── Stat card hover — lift + accent ring ────────────────────── */
+.stat-card {
+  transition: border-color .2s, box-shadow .2s, transform .28s cubic-bezier(.22,1,.36,1), background var(--transition-lg);
+}
+.stat-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(var(--blue-rgb), .3);
+  box-shadow: var(--shadow-md), 0 0 0 3px rgba(var(--blue-rgb), .07);
+}
+
+/* ─── Buttons — shimmer overlay + spring press ────────────────── */
+.btn {
+  position: relative; overflow: hidden;
+  transition: background var(--transition), color var(--transition), border-color var(--transition),
+              box-shadow var(--transition), transform .18s cubic-bezier(.34,1.56,.64,1), opacity var(--transition);
+}
+.btn::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 60% 40%, rgba(255,255,255,.24) 0%, transparent 65%);
+  opacity: 0;
+  transition: opacity .2s;
+  pointer-events: none;
+}
+.btn:hover::after { opacity: 1; }
+.btn:active { transform: scale(.95) !important; transition-duration: .08s !important; }
+
+/* ─── Inputs — focus glow bloom ──────────────────────────────── */
+.form-input,
+input[type="text"], input[type="email"], input[type="password"],
+input[type="number"], input[type="tel"], textarea, select.form-input {
+  transition: border-color .18s, box-shadow .22s cubic-bezier(.22,1,.36,1), background .18s;
+}
+
+/* ─── Progress bar — animated fill ───────────────────────────── */
+.progress-fill {
+  animation: utpt-progressFill .9s .1s cubic-bezier(.22,1,.36,1) both;
+  transform-origin: left;
+}
+
+/* ─── Heatmap cells — pop in with stagger ────────────────────── */
+.heatmap-cell {
+  animation: utpt-popIn .3s both;
+  transition: transform .12s cubic-bezier(.34,1.56,.64,1), opacity .12s;
+  cursor: pointer;
+}
+.heatmap-cell:hover {
+  transform: scale(1.5);
+  z-index: 2;
+  position: relative;
+}
+
+/* ─── Brand logo hover wiggle ─────────────────────────────────── */
+.brand-logo {
+  transition: transform .3s cubic-bezier(.22,1,.36,1);
+  cursor: default;
+}
+.brand-logo:hover img {
+  animation: utpt-logoWobble .5s cubic-bezier(.22,1,.36,1) both;
+}
+
+/* ─── Notification dot — pulse ────────────────────────────────── */
+.notif-dot::after {
+  animation: utpt-notifDot 1.8s ease-in-out infinite;
+}
+
+/* ─── Notification panel — slide in from right ────────────────── */
+.notif-panel {
+  transition: right .3s cubic-bezier(.22,1,.36,1), opacity .25s, box-shadow .3s;
+  opacity: 0;
+}
+.notif-panel.open {
+  opacity: 1;
+}
+
+/* ─── Modals — scale + fade ───────────────────────────────────── */
+.modal-overlay {
+  transition: opacity .22s;
+}
+.modal-overlay.open .modal {
+  animation: utpt-scaleIn .3s cubic-bezier(.22,1,.36,1) both;
+}
+
+/* ─── Toast — spring slide ────────────────────────────────────── */
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(14px) scale(.92); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes toastOut {
+  from { opacity: 1; transform: none; }
+  to   { opacity: 0; transform: translateX(10px) scale(.96); }
+}
+.toast {
+  animation: toastIn .28s cubic-bezier(.34,1.56,.64,1) both;
+}
+
+/* ─── Table rows ──────────────────────────────────────────────── */
+.table-row, tbody tr {
+  transition: background .14s;
+}
+
+/* ─── Leaderboard rows stagger ────────────────────────────────── */
+.lb-row:nth-child(1)  { animation: utpt-fadeUp .35s .05s cubic-bezier(.22,1,.36,1) both; }
+.lb-row:nth-child(2)  { animation: utpt-fadeUp .35s .09s cubic-bezier(.22,1,.36,1) both; }
+.lb-row:nth-child(3)  { animation: utpt-fadeUp .35s .13s cubic-bezier(.22,1,.36,1) both; }
+.lb-row:nth-child(4)  { animation: utpt-fadeUp .35s .17s cubic-bezier(.22,1,.36,1) both; }
+.lb-row:nth-child(5)  { animation: utpt-fadeUp .35s .21s cubic-bezier(.22,1,.36,1) both; }
+.lb-row:nth-child(6)  { animation: utpt-fadeUp .35s .25s cubic-bezier(.22,1,.36,1) both; }
+.lb-row:nth-child(7)  { animation: utpt-fadeUp .35s .29s cubic-bezier(.22,1,.36,1) both; }
+.lb-row:nth-child(8)  { animation: utpt-fadeUp .35s .33s cubic-bezier(.22,1,.36,1) both; }
+.lb-row:nth-child(9)  { animation: utpt-fadeUp .35s .37s cubic-bezier(.22,1,.36,1) both; }
+.lb-row:nth-child(10) { animation: utpt-fadeUp .35s .41s cubic-bezier(.22,1,.36,1) both; }
+
+/* ─── Skeleton shimmer ────────────────────────────────────────── */
+.skeleton {
+  background: linear-gradient(90deg, var(--bg-2) 25%, var(--bg-3) 50%, var(--bg-2) 75%);
+  background-size: 200% 100%;
+  animation: utpt-shimmer 1.6s infinite;
+  border-radius: var(--radius-sm);
+  color: transparent !important;
+  pointer-events: none;
+}
+
+/* ─── Avatar hover ────────────────────────────────────────────── */
+.avatar {
+  transition: transform .22s cubic-bezier(.34,1.56,.64,1), box-shadow .22s;
+}
+.avatar:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 0 3px rgba(var(--blue-rgb),.2);
+}
+
+/* ─── Platform link hover ─────────────────────────────────────── */
+.platform-link {
+  transition: background .15s, color .15s, transform .2s cubic-bezier(.22,1,.36,1), box-shadow .15s;
+}
+.platform-link:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ─── Badge pop ───────────────────────────────────────────────── */
+.badge {
+  transition: transform .15s cubic-bezier(.34,1.56,.64,1), opacity .15s;
+}
+.badge:hover { transform: scale(1.08); }
+
+/* ─── Active glow pulse on nav item ──────────────────────────── */
+.nav-item.active {
+  animation: none;
+}
+
+/* ─── Reduced motion — honour the user preference ─────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 @media (max-width: 768px) {
   .sidebar      { transform: translateX(-100%); width: var(--nav-width); }
   .sidebar.mobile-open { transform: none; box-shadow: var(--shadow-xl); }

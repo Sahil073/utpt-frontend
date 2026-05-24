@@ -1,6 +1,6 @@
 import { students, leaderboard, notifications } from '../api.js';
 import { requireAuth, logout, getUser } from '../auth.js';
-import { toast, fmtScore, fmtNum, avatarHTML, getInitials, avatarColor, renderBarChart, renderHeatmap, rankDisplay, fmtRelative, initMobileSidebar, setLoading, initTheme } from '../utils.js';
+import { toast, fmtScore, fmtNum, avatarHTML, getInitials, avatarColor, renderBarChart, renderHeatmap, rankDisplay, fmtRelative, initMobileSidebar, setLoading, initTheme, countUp } from '../utils.js';
 
 if (!requireAuth()) throw new Error('unauthenticated');
 const user = getUser();
@@ -34,27 +34,35 @@ function renderStats(stats) {
     <div class="stat-card" style="--stat-icon-bg:#fffbeb">
       <div class="stat-icon">${iconStar}</div>
       <div class="stat-label">Total Score</div>
-      <div class="stat-value t-blue">${fmtScore(score.total_score)}</div>
+      <div class="stat-value t-blue" id="sv-score">0.00</div>
       <div class="stat-change">Placement ranking score</div>
     </div>
     <div class="stat-card green" style="--stat-icon-bg:#dcfce7">
       <div class="stat-icon">${iconCode}</div>
       <div class="stat-label">LeetCode Solved</div>
-      <div class="stat-value">${fmtNum(coding.leetcode_solved) ?? '—'}</div>
+      <div class="stat-value" id="sv-lc">0</div>
       <div class="stat-change">Rating: ${coding.leetcode_rating || '—'}</div>
     </div>
     <div class="stat-card orange" style="--stat-icon-bg:#eff6ff">
       <div class="stat-icon">${iconChart}</div>
       <div class="stat-label">Codeforces Rating</div>
-      <div class="stat-value">${fmtNum(coding.codeforces_rating) ?? '—'}</div>
+      <div class="stat-value" id="sv-cf">0</div>
       <div class="stat-change">Max: ${coding.codeforces_max_rating || '—'}</div>
     </div>
     <div class="stat-card purple" style="--stat-icon-bg:#f4f4f5">
       <div class="stat-icon">${iconGH}</div>
       <div class="stat-label">GitHub Commits</div>
-      <div class="stat-value">${fmtNum(github.total_commits) ?? '—'}</div>
+      <div class="stat-value" id="sv-gh">0</div>
       <div class="stat-change">${github.public_repos||0} public repos</div>
     </div>`;
+
+  // Animate numbers counting up
+  setTimeout(() => {
+    countUp(document.getElementById('sv-score'), score.total_score ?? 0, 900, 2);
+    countUp(document.getElementById('sv-lc'),    coding.leetcode_solved ?? 0, 800);
+    countUp(document.getElementById('sv-cf'),    coding.codeforces_rating ?? 0, 850);
+    countUp(document.getElementById('sv-gh'),    github.total_commits ?? 0, 800);
+  }, 350);
 }
 
 const PODIUM_SVG = `
