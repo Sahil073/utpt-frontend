@@ -5,147 +5,727 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>UTPT — Sign In</title>
   <link rel="stylesheet" href="/css/main.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,400;1,600;1,700&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
+    /* ── Reset for this page ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #e8e8ea;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    /* ── Outer wrapper — the rounded card ── */
+    .split-root {
+      display: flex;
+      width: 100%;
+      max-width: 1020px;
+      min-height: 620px;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 32px 80px rgba(0,0,0,.22), 0 8px 24px rgba(0,0,0,.12);
+    }
+
+    /* ══════════════════════════════════════
+       LEFT  — form panel
+    ══════════════════════════════════════ */
+    .lp {
+      flex: 0 0 44%;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      padding: 36px 44px 32px;
+      position: relative;
+    }
+
+    .lp-top {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: auto;
+    }
+    .lp-brand-text {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-style: italic;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #111;
+      letter-spacing: -.01em;
+    }
+
+    .lp-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 32px 0 24px;
+    }
+
+    .lp-logo {
+      width: 64px; height: 64px;
+      margin-bottom: 22px;
+    }
+    .lp-logo img { width: 100%; height: 100%; object-fit: contain; }
+
+    .lp-heading {
+      font-size: 1.55rem;
+      font-weight: 700;
+      letter-spacing: -.03em;
+      color: #09090b;
+      margin-bottom: 4px;
+    }
+    .lp-sub {
+      font-size: .84rem;
+      color: #71717a;
+      margin-bottom: 28px;
+      font-weight: 400;
+    }
+    .lp-divider {
+      height: 1px;
+      background: #e4e4e7;
+      margin-bottom: 24px;
+    }
+
+    /* Step indicator */
+    .step-indicator { display: flex; gap: 6px; margin-bottom: 24px; }
+    .step-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #d4d4d8;
+      transition: background .15s, width .15s;
+    }
+    .step-dot.active { background: #1a4d2e; width: 22px; border-radius: 3px; }
+    .step-dot.done   { background: #4ade80; }
+
+    /* Form steps */
     .login-step  { display: none; }
     .login-step.active { display: block; }
-    .back-btn {
-      background: none; border: none; color: var(--text-muted);
-      font-size: .82rem; cursor: pointer;
-      display: inline-flex; align-items: center; gap: 4px;
-      margin-bottom: 20px; transition: color var(--transition); padding: 0;
-    }
-    .back-btn:hover { color: var(--text); }
-    .otp-sent-info {
-      background: var(--blue-dim);
-      border: 1px solid rgba(0,113,227,.2);
-      border-radius: var(--radius-sm);
-      padding: 12px 14px;
-      font-size: .82rem; color: var(--blue);
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid #e4e4e7;
       margin-bottom: 20px;
     }
-    .resend-row { text-align: center; margin-top: 16px; font-size: .78rem; color: var(--text-muted); }
-    .resend-btn { background: none; border: none; color: var(--blue); cursor: pointer; font-size: .78rem; font-weight: 500; }
+    .tab-btn {
+      padding: 7px 14px;
+      font-size: .82rem; font-weight: 500;
+      color: #71717a;
+      background: none; border: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: all .15s;
+      cursor: pointer;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+    .tab-btn:hover { color: #09090b; }
+    .tab-btn.active { color: #1a4d2e; border-bottom-color: #1a4d2e; font-weight: 600; }
+
+    /* Form inputs */
+    .form-group { margin-bottom: 14px; }
+    .form-label {
+      display: block;
+      font-size: .775rem; font-weight: 600;
+      color: #3f3f46; margin-bottom: 5px;
+      letter-spacing: .01em;
+    }
+    .form-input {
+      width: 100%;
+      background: #fff;
+      border: 1px solid #d4d4d8;
+      border-radius: 8px;
+      padding: 9px 13px;
+      color: #09090b;
+      font-size: .875rem;
+      font-family: 'Inter', system-ui, sans-serif;
+      transition: border-color .15s, box-shadow .15s;
+      outline: none;
+    }
+    .form-input:focus {
+      border-color: #1a4d2e;
+      box-shadow: 0 0 0 3px rgba(26,77,46,.12);
+    }
+    .form-input::placeholder { color: #a1a1aa; }
+    .form-input:disabled { opacity: .5; cursor: not-allowed; background: #f4f4f5; }
+
+    .form-error { font-size: .72rem; color: #dc2626; margin-top: 5px; }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: .84rem; font-weight: 600;
+      border: 1px solid transparent;
+      transition: all .15s;
+      white-space: nowrap;
+      cursor: pointer;
+      font-family: 'Inter', system-ui, sans-serif;
+      line-height: 1.5;
+    }
+    .btn:active { transform: scale(.98); }
+    .btn:disabled { opacity: .5; cursor: not-allowed; }
+
+    .btn-primary {
+      background: #1a4d2e;
+      color: #fff;
+      border-color: #1a4d2e;
+    }
+    .btn-primary:hover { background: #153d25; }
+
+    .btn-success {
+      background: #16a34a;
+      color: #fff;
+      border-color: #16a34a;
+    }
+    .btn-success:hover { background: #15803d; }
+
+    .btn-ghost {
+      background: transparent;
+      color: #71717a;
+      border-color: transparent;
+    }
+    .btn-ghost:hover { background: #f4f4f5; color: #09090b; }
+
+    .btn-full { width: 100%; }
+    .btn-xl   { padding: 11px 22px; font-size: .9rem; border-radius: 8px; }
+
+    /* Back button */
+    .back-btn {
+      background: none; border: none; color: #71717a;
+      font-size: .82rem; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 4px;
+      margin-bottom: 20px; transition: color .15s; padding: 0;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+    .back-btn:hover { color: #09090b; }
+
+    /* OTP info */
+    .otp-sent-info {
+      background: #f0fdf4;
+      border: 1px solid rgba(26,77,46,.2);
+      border-radius: 8px;
+      padding: 11px 14px;
+      font-size: .82rem; color: #1a4d2e;
+      margin-bottom: 18px;
+    }
+    .resend-row { text-align: center; margin-top: 14px; font-size: .78rem; color: #71717a; }
+    .resend-btn { background: none; border: none; color: #1a4d2e; cursor: pointer; font-size: .78rem; font-weight: 500; font-family: inherit; }
     .resend-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+    /* Domain hint */
     .domain-hint {
       display: flex; align-items: center; gap: 6px;
-      font-size: .73rem; color: var(--text-muted);
-      background: var(--bg-2); border: 1px solid var(--border);
-      border-radius: var(--radius-sm); padding: 8px 12px;
-      margin-bottom: 16px;
+      font-size: .73rem; color: #71717a;
+      background: #f4f4f5; border: 1px solid #e4e4e7;
+      border-radius: 8px; padding: 8px 12px;
+      margin-bottom: 14px;
     }
-    .domain-hint-icon { color: var(--blue); font-size: .9rem; }
+    .domain-hint-icon { color: #1a4d2e; font-size: .9rem; }
+
+    /* First time hint */
+    .first-time-row {
+      text-align: center;
+      font-size: .78rem;
+      color: #71717a;
+      margin-top: 4px;
+    }
+    .first-time-row strong { color: #1a4d2e; }
+
+    /* Powered footer */
+    .lp-powered {
+      text-align: center;
+      font-size: .66rem;
+      color: #a1a1aa;
+      margin-top: 16px;
+    }
+    .lp-powered a { color: #a1a1aa; text-decoration: none; transition: color .15s; }
+    .lp-powered a:hover { color: #1a4d2e; }
+
+    /* ══════════════════════════════════════
+       RIGHT — green panel
+    ══════════════════════════════════════ */
+    .rp {
+      flex: 1;
+      background:
+        radial-gradient(ellipse 80% 60% at 60% 0%, #2d7a47 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 10% 80%, #1a5c35 0%, transparent 55%),
+        #0d3320;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 40px 44px 36px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Noise texture overlay */
+    .rp::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; opacity: .35;
+    }
+
+    .rp-top {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      position: relative; z-index: 1;
+    }
+
+    .rp-logo-badge {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .rp-logo-img {
+      width: 44px; height: 44px;
+      object-fit: contain;
+      filter: brightness(0) invert(1);
+      opacity: .85;
+    }
+    .rp-logo-text {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: .78rem; font-weight: 700;
+      color: rgba(255,255,255,.7);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .rp-headline {
+      position: relative; z-index: 1;
+      margin-top: auto;
+    }
+    .rp-headline-italic {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-style: italic;
+      font-size: 3.2rem;
+      font-weight: 600;
+      color: rgba(255,255,255,.88);
+      line-height: 1.1;
+      letter-spacing: -.02em;
+      display: block;
+      margin-bottom: 2px;
+    }
+    .rp-headline-bold {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.15;
+      letter-spacing: -.03em;
+      display: block;
+      margin-bottom: 14px;
+    }
+    .rp-tagline {
+      font-size: .84rem;
+      color: rgba(255,255,255,.55);
+      font-weight: 400;
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+    .rp-tagline strong { color: rgba(255,255,255,.85); font-weight: 600; }
+
+    /* ── Floating mock dashboard card ── */
+    .rp-card {
+      background: rgba(255,255,255,.97);
+      border-radius: 16px;
+      padding: 18px 20px 16px;
+      box-shadow: 0 24px 60px rgba(0,0,0,.4), 0 8px 20px rgba(0,0,0,.25);
+      position: relative; z-index: 2;
+      max-width: 360px;
+      margin-left: auto;
+    }
+    .rp-card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 14px; padding-bottom: 12px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .rp-card-logo {
+      display: flex; align-items: center; gap: 8px;
+    }
+    .rp-card-logo img {
+      width: 28px; height: 28px; object-fit: contain;
+    }
+    .rp-card-logo-name {
+      font-size: .82rem; font-weight: 700; color: #09090b; letter-spacing: -.01em;
+    }
+    .rp-card-logo-sub {
+      font-size: .6rem; color: #71717a; letter-spacing: .01em;
+    }
+    .rp-card-user {
+      display: flex; align-items: center; gap: 6px;
+      font-size: .75rem; color: #3f3f46; font-weight: 500;
+    }
+    .rp-card-avatar {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: linear-gradient(135deg, #1a4d2e, #2d7a47);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .6rem; font-weight: 700; color: #fff;
+    }
+
+    .rp-card-section-label {
+      font-size: .65rem; font-weight: 700; color: #a1a1aa;
+      text-transform: uppercase; letter-spacing: .08em;
+      margin-bottom: 10px;
+    }
+    .rp-stats-grid {
+      display: grid; grid-template-columns: repeat(4,1fr);
+      gap: 8px; margin-bottom: 12px;
+    }
+    .rp-stat {
+      background: #f9f9f9;
+      border: 1px solid #efefef;
+      border-radius: 10px;
+      padding: 10px 8px;
+      text-align: center;
+    }
+    .rp-stat-icon { font-size: .9rem; margin-bottom: 4px; }
+    .rp-stat-val {
+      font-size: .92rem; font-weight: 800; color: #09090b;
+      letter-spacing: -.02em; line-height: 1;
+    }
+    .rp-stat-delta {
+      font-size: .58rem; color: #16a34a; font-weight: 600; margin-left: 1px;
+    }
+    .rp-stat-lbl { font-size: .6rem; color: #a1a1aa; margin-top: 3px; font-weight: 500; }
+
+    .rp-bottom-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+    }
+    .rp-mini-card {
+      background: #f9f9f9; border: 1px solid #efefef;
+      border-radius: 10px; padding: 10px 12px;
+    }
+    .rp-mini-title {
+      font-size: .65rem; font-weight: 700; color: #09090b;
+      margin-bottom: 4px; display: flex; align-items: center; gap: 5px;
+    }
+    .rp-mini-body { font-size: .72rem; color: #52525b; }
+    .rp-mini-tag {
+      display: inline-block;
+      background: #1a4d2e; color: #fff;
+      font-size: .58rem; font-weight: 600;
+      padding: 1px 7px; border-radius: 100px;
+      margin-top: 5px;
+    }
+    .rp-rank-num {
+      font-size: 1.4rem; font-weight: 800; color: #1a4d2e;
+      letter-spacing: -.04em; line-height: 1;
+    }
+    .rp-rank-sub { font-size: .65rem; color: #a1a1aa; margin-top: 2px; }
+    .rp-rank-btn {
+      display: inline-flex; align-items: center;
+      background: #1a4d2e; color: #fff;
+      font-size: .6rem; font-weight: 600;
+      padding: 3px 8px; border-radius: 6px; margin-top: 6px;
+      border: none; cursor: pointer;
+    }
+
+    /* ── Theme toggle float ── */
+    .theme-toggle-float {
+      position: fixed; top: 16px; right: 16px;
+      display: flex; align-items: center; gap: 6px;
+      padding: 6px 14px;
+      background: rgba(255,255,255,.95);
+      border: 1px solid #e4e4e7;
+      border-radius: 100px;
+      color: #52525b;
+      font-size: .78rem; font-weight: 500;
+      font-family: 'Inter', system-ui, sans-serif; cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+      transition: all .15s;
+      z-index: 50;
+    }
+    .theme-toggle-float:hover { background: #f4f4f5; }
+
+    /* Toast */
+    #toast-container {
+      position: fixed; bottom: 24px; right: 24px;
+      z-index: 9999;
+      display: flex; flex-direction: column; gap: 8px;
+      pointer-events: none;
+    }
+    .toast {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 16px;
+      background: #fff;
+      border: 1px solid #e4e4e7;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.12);
+      font-size: .82rem; font-weight: 500;
+      max-width: 340px; pointer-events: all;
+      animation: toastIn .22s cubic-bezier(.34,1.56,.64,1) forwards;
+      color: #09090b; font-family: 'Inter', system-ui, sans-serif;
+    }
+    .toast.leaving { animation: toastOut .18s ease forwards; }
+    .toast.success { border-left: 3px solid #16a34a; }
+    .toast.error   { border-left: 3px solid #dc2626; }
+    .toast.info    { border-left: 3px solid #6366f1; }
+    .toast.warning { border-left: 3px solid #ea580c; }
+    @keyframes toastIn  { from { opacity:0; transform:translateX(12px) scale(.95); } to { opacity:1; transform:none; } }
+    @keyframes toastOut { from { opacity:1; } to { opacity:0; transform:translateX(8px) scale(.97); } }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      body { padding: 0; align-items: stretch; }
+      .split-root { flex-direction: column; border-radius: 0; max-width: 100%; min-height: 100vh; box-shadow: none; }
+      .rp { display: none; }
+      .lp { flex: 1; padding: 36px 28px 32px; }
+    }
+
+    /* Override any inherited dark mode from main.css for this page */
+    [data-theme="dark"] .split-root { background: transparent; }
+    [data-theme="dark"] .lp { background: #18181b; }
+    [data-theme="dark"] .lp-brand-text, [data-theme="dark"] .lp-heading { color: #fafafa; }
+    [data-theme="dark"] .lp-sub { color: #a1a1aa; }
+    [data-theme="dark"] .lp-divider { background: #27272a; }
+    [data-theme="dark"] .form-input { background: #09090b; border-color: #27272a; color: #fafafa; }
+    [data-theme="dark"] .form-input:focus { border-color: #2d7a47; box-shadow: 0 0 0 3px rgba(45,122,71,.18); }
+    [data-theme="dark"] .tabs { border-bottom-color: #27272a; }
+    [data-theme="dark"] .tab-btn { color: #71717a; }
+    [data-theme="dark"] .tab-btn.active { color: #4ade80; border-bottom-color: #4ade80; }
+    [data-theme="dark"] body { background: #0a0a0c; }
+    [data-theme="dark"] .form-label { color: #a1a1aa; }
+    [data-theme="dark"] .btn-ghost:hover { background: #27272a; }
+    [data-theme="dark"] .otp-sent-info { background: #052e16; border-color: rgba(74,222,128,.2); color: #4ade80; }
+    [data-theme="dark"] .domain-hint { background: #18181b; border-color: #27272a; }
+    [data-theme="dark"] .lp-powered a { color: #52525b; }
+    [data-theme="dark"] .first-time-row { color: #71717a; }
+    [data-theme="dark"] .first-time-row strong { color: #4ade80; }
+    [data-theme="dark"] .theme-toggle-float { background: rgba(24,24,27,.95); border-color: #27272a; color: #a1a1aa; }
   </style>
 </head>
 <body>
-<div class="login-root">
-  <div class="login-bg"></div>
-  <div class="login-card">
-    <div class="login-logo">
-      <div class="login-logo-icon">U</div>
-      <div>
-        <div style="font-size:1.1rem;font-weight:800;letter-spacing:-.02em">UTPT</div>
-        <div style="font-size:.7rem;color:var(--text-muted);letter-spacing:.04em;text-transform:uppercase">Placement Tracker</div>
+
+<div class="split-root">
+
+  <!-- ══ LEFT PANEL — form ══ -->
+  <div class="lp">
+    <div class="lp-top">
+      <span class="lp-brand-text">UTPT</span>
+    </div>
+
+    <div class="lp-body">
+      <div class="lp-logo">
+        <img src="/images/utpt-logo.png" alt="UTPT Logo">
+      </div>
+
+      <div class="lp-heading" id="greeting-heading">Welcome back</div>
+      <div class="lp-sub" id="greeting-sub">Sign in to your UTPT account</div>
+      <div class="lp-divider"></div>
+
+      <div class="step-indicator" id="step-indicator">
+        <div class="step-dot active" id="dot-0"></div>
+        <div class="step-dot" id="dot-1"></div>
+        <div class="step-dot" id="dot-2"></div>
+      </div>
+
+      <div id="login-steps">
+
+        <!-- Step 0: main login -->
+        <div class="login-step active" id="step-0">
+          <div class="tabs" style="margin-bottom:20px">
+            <button class="tab-btn active" data-mode="password">Password</button>
+            <button class="tab-btn" data-mode="otp">OTP Login</button>
+          </div>
+
+          <form id="password-form" autocomplete="on">
+            <div class="form-group">
+              <label class="form-label">College ID <span style="font-weight:400;color:#a1a1aa">or Email</span></label>
+              <input type="text" id="pw-college-id" class="form-input" placeholder="e.g. 2200290100042 or you@gla.ac.in" autocomplete="username" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Password</label>
+              <div style="position:relative">
+                <input type="password" id="pw-password" class="form-input" placeholder="Your password" autocomplete="current-password" required style="padding-right:60px">
+                <button type="button" id="pw-toggle" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:#71717a;font-size:.78rem;font-weight:500;cursor:pointer;font-family:inherit">Show</button>
+              </div>
+            </div>
+            <div id="pw-error" class="form-error" style="display:none;margin-bottom:12px;padding:8px 12px;background:#fef2f2;border-radius:8px"></div>
+            <button type="submit" class="btn btn-primary btn-full btn-xl" id="pw-btn" style="margin-top:4px">Sign in</button>
+          </form>
+
+          <form id="otp-start-form" style="display:none" autocomplete="off">
+            <div class="domain-hint">
+              <span class="domain-hint-icon">🏫</span>
+              OTP will be sent to your registered <strong>@gla.ac.in</strong> email
+            </div>
+            <div class="form-group">
+              <label class="form-label">College ID <span style="font-weight:400;color:#a1a1aa">or Email</span></label>
+              <input type="text" id="otp-college-id" class="form-input" placeholder="e.g. you@gla.ac.in" required>
+            </div>
+            <div id="otp-start-error" class="form-error" style="display:none;margin-bottom:12px;padding:8px 12px;background:#fef2f2;border-radius:8px"></div>
+            <button type="submit" class="btn btn-primary btn-full btn-xl" id="otp-start-btn">Send OTP →</button>
+          </form>
+
+          <div style="display:flex;align-items:center;gap:12px;margin:20px 0">
+            <div style="flex:1;height:1px;background:#e4e4e7"></div>
+            <span style="font-size:.72rem;color:#a1a1aa">First time?</span>
+            <div style="flex:1;height:1px;background:#e4e4e7"></div>
+          </div>
+          <p class="first-time-row">
+            Use <strong>OTP Login</strong> to activate your account on first access.
+          </p>
+        </div>
+
+        <!-- Step 1: OTP verify -->
+        <div class="login-step" id="step-1">
+          <button class="back-btn" id="back-to-0">← Back</button>
+          <div style="font-size:1.35rem;font-weight:700;letter-spacing:-.02em;margin-bottom:6px;color:#09090b">Check your inbox</div>
+          <div class="otp-sent-info" id="otp-sent-to">📧 OTP sent to your registered email</div>
+          <form id="otp-verify-form">
+            <div class="form-group">
+              <label class="form-label">Verification Code</label>
+              <input type="text" id="otp-code" class="form-input" placeholder="– – – – – –" maxlength="6" inputmode="numeric"
+                style="font-size:2rem;letter-spacing:.5em;text-align:center;font-weight:700;padding:14px 12px" required>
+            </div>
+            <div id="otp-error" class="form-error" style="display:none;margin-bottom:12px;padding:8px 12px;background:#fef2f2;border-radius:8px"></div>
+            <button type="submit" class="btn btn-primary btn-full btn-xl" id="otp-verify-btn">Verify Code</button>
+            <div class="resend-row">
+              Didn't receive it? <button type="button" class="resend-btn" id="resend-btn">Resend OTP</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Step 2: Account setup -->
+        <div class="login-step" id="step-2">
+          <div style="font-size:1.35rem;font-weight:700;letter-spacing:-.02em;margin-bottom:6px;color:#09090b">Set up your account</div>
+          <div style="font-size:.85rem;color:#71717a;margin-bottom:24px">Create a username and password for future logins</div>
+          <form id="setup-form">
+            <div class="form-group">
+              <label class="form-label">Username</label>
+              <input type="text" id="setup-username" class="form-input" placeholder="Choose a username" autocomplete="username" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Password</label>
+              <input type="password" id="setup-password" class="form-input" placeholder="Min 8 characters" autocomplete="new-password" required minlength="8">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Confirm Password</label>
+              <input type="password" id="setup-confirm" class="form-input" placeholder="Repeat password" autocomplete="new-password" required>
+            </div>
+            <div id="setup-error" class="form-error" style="display:none;margin-bottom:12px;padding:8px 12px;background:#fef2f2;border-radius:8px"></div>
+            <button type="submit" class="btn btn-success btn-full btn-xl" id="setup-btn">Create Account & Sign in</button>
+          </form>
+        </div>
+
       </div>
     </div>
 
-    <div class="step-indicator" id="step-indicator">
-      <div class="step-dot active" id="dot-0"></div>
-      <div class="step-dot" id="dot-1"></div>
-      <div class="step-dot" id="dot-2"></div>
+    <div class="lp-powered">Powered by <a href="https://arivana.site" target="_blank">arivana.site</a></div>
+  </div>
+
+  <!-- ══ RIGHT PANEL — green ══ -->
+  <div class="rp">
+    <div class="rp-top">
+      <div class="rp-logo-badge">
+        <img src="/images/utpt-logo.png" class="rp-logo-img" alt="UTPT">
+        <div>
+          <div class="rp-logo-text">UTPT</div>
+        </div>
+      </div>
     </div>
 
-    <div id="login-steps">
-      <div class="login-step active" id="step-0">
-        <div style="font-size:1.35rem;font-weight:700;letter-spacing:-.02em;margin-bottom:4px">Welcome back</div>
-        <div style="font-size:.85rem;color:var(--text-muted);margin-bottom:24px">Sign in to your UTPT account</div>
+    <div class="rp-headline">
+      <span class="rp-headline-italic">Enter<br>the Future</span>
+      <span class="rp-headline-bold">of Performance,<br>today</span>
+      <p class="rp-tagline">Track. Improve. Achieve.<br>All in one place with <strong>UTPT</strong>.</p>
 
-        <div class="tabs" style="margin-bottom:20px">
-          <button class="tab-btn active" data-mode="password">Password</button>
-          <button class="tab-btn" data-mode="otp">OTP Login</button>
-        </div>
-
-        <form id="password-form" autocomplete="on">
-          <div class="form-group">
-            <label class="form-label">College ID <span style="font-weight:400;color:var(--text-dim)">or Email</span></label>
-            <input type="text" id="pw-college-id" class="form-input" placeholder="e.g. 2200290100042 or you@gla.ac.in" autocomplete="username" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Password</label>
-            <div style="position:relative">
-              <input type="password" id="pw-password" class="form-input" placeholder="Your password" autocomplete="current-password" required style="padding-right:60px">
-              <button type="button" id="pw-toggle" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-muted);font-size:.78rem;font-weight:500">Show</button>
+      <!-- Mock dashboard card -->
+      <div class="rp-card">
+        <div class="rp-card-header">
+          <div class="rp-card-logo">
+            <img src="/images/utpt-logo.png" alt="UTPT">
+            <div>
+              <div class="rp-card-logo-name">UTPT</div>
+              <div class="rp-card-logo-sub">Unified Training Performance Tracker</div>
             </div>
           </div>
-          <div id="pw-error" class="form-error" style="display:none;margin-bottom:12px;padding:8px 12px;background:var(--red-dim);border-radius:var(--radius-sm)"></div>
-          <button type="submit" class="btn btn-primary btn-full btn-xl" id="pw-btn" style="margin-top:4px">Sign in</button>
-        </form>
-
-        <form id="otp-start-form" style="display:none" autocomplete="off">
-          <div class="domain-hint">
-            <span class="domain-hint-icon">🏫</span>
-            OTP will be sent to your registered <strong>@gla.ac.in</strong> email
+          <div class="rp-card-user">
+            Hello, Student
+            <div class="rp-card-avatar">A</div>
           </div>
-          <div class="form-group">
-            <label class="form-label">College ID <span style="font-weight:400;color:var(--text-dim)">or Email</span></label>
-            <input type="text" id="otp-college-id" class="form-input" placeholder="e.g. you@gla.ac.in" required>
-          </div>
-          <div id="otp-start-error" class="form-error" style="display:none;margin-bottom:12px;padding:8px 12px;background:var(--red-dim);border-radius:var(--radius-sm)"></div>
-          <button type="submit" class="btn btn-primary btn-full btn-xl" id="otp-start-btn">Send OTP →</button>
-        </form>
-
-        <div style="display:flex;align-items:center;gap:12px;margin:20px 0">
-          <div style="flex:1;height:1px;background:var(--border)"></div>
-          <span style="font-size:.72rem;color:var(--text-dim)">First time?</span>
-          <div style="flex:1;height:1px;background:var(--border)"></div>
         </div>
-        <p style="text-align:center;font-size:.78rem;color:var(--text-muted)">
-          Use <strong>OTP Login</strong> to activate your account on first access.
-        </p>
-      </div>
 
-      <div class="login-step" id="step-1">
-        <button class="back-btn" id="back-to-0">← Back</button>
-        <div style="font-size:1.35rem;font-weight:700;letter-spacing:-.02em;margin-bottom:6px">Check your inbox</div>
-        <div class="otp-sent-info" id="otp-sent-to">📧 OTP sent to your registered email</div>
-        <form id="otp-verify-form">
-          <div class="form-group">
-            <label class="form-label">Verification Code</label>
-            <input type="text" id="otp-code" class="form-input" placeholder="– – – – – –" maxlength="6" inputmode="numeric"
-              style="font-size:2rem;letter-spacing:.5em;text-align:center;font-weight:700;padding:14px 12px" required>
+        <div class="rp-card-section-label">Overview — This Week</div>
+        <div class="rp-stats-grid">
+          <div class="rp-stat">
+            <div class="rp-stat-icon">💻</div>
+            <div><span class="rp-stat-val">1,842</span><span class="rp-stat-delta">+120</span></div>
+            <div class="rp-stat-lbl">Coding Score</div>
           </div>
-          <div id="otp-error" class="form-error" style="display:none;margin-bottom:12px;padding:8px 12px;background:var(--red-dim);border-radius:var(--radius-sm)"></div>
-          <button type="submit" class="btn btn-primary btn-full btn-xl" id="otp-verify-btn">Verify Code</button>
-          <div class="resend-row">
-            Didn't receive it? <button type="button" class="resend-btn" id="resend-btn">Resend OTP</button>
+          <div class="rp-stat">
+            <div class="rp-stat-icon">✅</div>
+            <div><span class="rp-stat-val">68</span><span class="rp-stat-delta">+8</span></div>
+            <div class="rp-stat-lbl">Problems</div>
           </div>
-        </form>
-      </div>
+          <div class="rp-stat">
+            <div class="rp-stat-icon">🐙</div>
+            <div><span class="rp-stat-val">32</span><span class="rp-stat-delta">+6</span></div>
+            <div class="rp-stat-lbl">GitHub</div>
+          </div>
+          <div class="rp-stat">
+            <div class="rp-stat-icon">🔥</div>
+            <div><span class="rp-stat-val">14</span></div>
+            <div class="rp-stat-lbl">Day Streak</div>
+          </div>
+        </div>
 
-      <div class="login-step" id="step-2">
-        <div style="font-size:1.35rem;font-weight:700;letter-spacing:-.02em;margin-bottom:6px">Set up your account</div>
-        <div style="font-size:.85rem;color:var(--text-muted);margin-bottom:24px">Create a username and password for future logins</div>
-        <form id="setup-form">
-          <div class="form-group">
-            <label class="form-label">Username</label>
-            <input type="text" id="setup-username" class="form-input" placeholder="Choose a username" autocomplete="username" required>
+        <div class="rp-bottom-row">
+          <div class="rp-mini-card">
+            <div class="rp-mini-title">📅 Upcoming</div>
+            <div class="rp-mini-body" style="font-weight:600;color:#09090b;margin-bottom:2px">DP on Trees</div>
+            <div class="rp-mini-body">Today, 7:00 PM</div>
+            <span class="rp-mini-tag">Join</span>
           </div>
-          <div class="form-group">
-            <label class="form-label">Password</label>
-            <input type="password" id="setup-password" class="form-input" placeholder="Min 8 characters" autocomplete="new-password" required minlength="8">
+          <div class="rp-mini-card">
+            <div class="rp-mini-title">🏆 Your Rank</div>
+            <div class="rp-rank-num">#23</div>
+            <div class="rp-rank-sub">Out of 256 students</div>
+            <button class="rp-rank-btn">View Leaderboard</button>
           </div>
-          <div class="form-group">
-            <label class="form-label">Confirm Password</label>
-            <input type="password" id="setup-confirm" class="form-input" placeholder="Repeat password" autocomplete="new-password" required>
-          </div>
-          <div id="setup-error" class="form-error" style="display:none;margin-bottom:12px;padding:8px 12px;background:var(--red-dim);border-radius:var(--radius-sm)"></div>
-          <button type="submit" class="btn btn-success btn-full btn-xl" id="setup-btn">Create Account & Sign in</button>
-        </form>
+        </div>
       </div>
     </div>
   </div>
+
 </div>
+
 <div id="toast-container"></div>
-<div class="login-powered">Powered by <a href="https://arivana.site" target="_blank">arivana.site</a></div>
+
+<button class="theme-toggle-float" id="theme-toggle-btn">
+  <span id="theme-icon">🌙</span>
+  <span id="theme-label-text">Dark</span>
+</button>
+
 <script type="module" src="/js/pages/login.js"></script>
+<script>
+  (function() {
+    const stored = localStorage.getItem('utpt_theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const isDark = stored ? stored === 'dark' : prefersDark;
+    if (isDark) document.documentElement.setAttribute('data-theme', 'dark');
+    const btn = document.getElementById('theme-toggle-btn');
+    const icon = document.getElementById('theme-icon');
+    const lbl = document.getElementById('theme-label-text');
+    function updateBtn() {
+      const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+      icon.textContent = dark ? '☀️' : '🌙';
+      lbl.textContent = dark ? 'Light' : 'Dark';
+    }
+    updateBtn();
+    btn.addEventListener('click', function() {
+      const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+      document.documentElement.setAttribute('data-theme', dark ? 'light' : 'dark');
+      localStorage.setItem('utpt_theme', dark ? 'light' : 'dark');
+      updateBtn();
+    });
+  })();
+</script>
 </body>
 </html>
