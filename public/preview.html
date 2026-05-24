@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Preview — UTPT</title>
+  <link rel="stylesheet" href="/css/main.css">
+  <style>
+    body { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: var(--login-bg); }
+    .preview-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 40px 44px;
+      max-width: 400px; width: 100%;
+      box-shadow: var(--shadow-xl);
+      position: relative; overflow: hidden;
+      text-align: center;
+    }
+    .preview-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, #6366f1, #7c3aed);
+    }
+    .preview-icon {
+      width: 56px; height: 56px;
+      background: linear-gradient(135deg, #6366f1, #7c3aed);
+      border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem; font-weight: 900; color: #fff;
+      margin: 0 auto 20px;
+      box-shadow: 0 6px 16px rgba(99,102,241,.4);
+    }
+    h1 { font-size: 1.2rem; font-weight: 700; letter-spacing: -.02em; margin-bottom: 6px; }
+    p  { font-size: .84rem; color: var(--text-muted); margin-bottom: 28px; line-height: 1.6; }
+    .page-links { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+    .page-btn {
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 16px;
+      background: var(--bg-2); border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: .84rem; font-weight: 500; color: var(--text);
+      cursor: pointer; transition: all .15s;
+      text-align: left;
+    }
+    .page-btn:hover { background: var(--bg-3); border-color: var(--card-hover-border); transform: translateX(2px); }
+    .page-btn .icon { font-size: 1.1rem; }
+    .note { font-size: .72rem; color: var(--text-dim); margin-top: 20px; }
+  </style>
+</head>
+<body>
+<div class="preview-card">
+  <div class="preview-icon">U</div>
+  <h1>Design Preview Mode</h1>
+  <p>Opens any page with a mock session so you can preview the full UI without a real account.</p>
+
+  <div class="page-links" id="page-links"></div>
+  <p class="note">Mock data is used — API calls will show empty states. No real account needed.</p>
+</div>
+
+<script>
+  const MOCK_USER = {
+    _id: 'preview_user',
+    name: 'Arjun Sharma',
+    role: 'student',
+    collegeId: '2200290100042',
+    batch: '2026',
+    specialization: 'CSE',
+    avatar_url: null
+  };
+  const MOCK_TOKEN = 'preview_mock_token_not_real';
+
+  function goTo(path) {
+    localStorage.setItem('utpt_user',  JSON.stringify(MOCK_USER));
+    localStorage.setItem('utpt_token', MOCK_TOKEN);
+    window.location.href = path;
+  }
+
+  const pages = [
+    { label: 'Dashboard',   icon: '⬛', path: '/dashboard.html' },
+    { label: 'Leaderboard', icon: '📊', path: '/leaderboard.html' },
+    { label: 'Questions',   icon: '❓', path: '/questions.html' },
+    { label: 'Resources',   icon: '📄', path: '/resources.html' },
+    { label: 'Profile',     icon: '👤', path: '/profile.html' },
+  ];
+
+  const container = document.getElementById('page-links');
+  pages.forEach(({ label, icon, path }) => {
+    const btn = document.createElement('button');
+    btn.className = 'page-btn';
+    btn.innerHTML = `<span class="icon">${icon}</span><span>${label}</span><span style="margin-left:auto;color:var(--text-dim);font-size:.78rem">→</span>`;
+    btn.onclick = () => goTo(path);
+    container.appendChild(btn);
+  });
+</script>
+</body>
+</html>
