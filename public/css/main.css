@@ -257,14 +257,17 @@ ul, ol       { list-style: none; }
 }
 
 .brand-logo {
-  width: 34px; height: 34px;
-  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
-  border-radius: 9px;
+  width: 38px; height: 38px;
+  border-radius: 8px;
   display: flex; align-items: center; justify-content: center;
-  font-weight: 900; font-size: 14px; color: #fff;
   flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(22,163,74,0.40);
-  letter-spacing: -0.02em;
+  overflow: hidden;
+  background: transparent;
+}
+.brand-logo img {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  display: block;
 }
 
 .brand-name {
