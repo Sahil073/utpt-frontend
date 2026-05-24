@@ -8,6 +8,22 @@
   <style>
     .platform-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
     .platform-icon { width: 32px; height: 32px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; background: var(--bg-2); border: 1px solid var(--border); }
+    .field-locked-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: .7rem; color: var(--text-muted); background: var(--bg-3);
+      border: 1px solid var(--border); border-radius: 4px;
+      padding: 2px 7px; margin-left: 8px; vertical-align: middle;
+    }
+    .field-locked-badge svg { opacity: .6; }
+    input[data-locked="true"] {
+      background: var(--bg-2) !important;
+      color: var(--text-muted) !important;
+      cursor: not-allowed !important;
+    }
+    .locked-hint {
+      font-size: .72rem; color: var(--text-dim);
+      margin-top: 4px;
+    }
   </style>
 </head>
 <body>
@@ -49,9 +65,39 @@
             <button class="btn btn-primary btn-sm" id="save-profile-btn">Save changes</button>
           </div>
           <form id="profile-form">
-            <div class="form-group"><label class="form-label">GitHub Username</label><input type="text" id="f-github" class="form-input" placeholder="your-github-username"></div>
-            <div class="form-group"><label class="form-label">LeetCode Username</label><input type="text" id="f-leetcode" class="form-input" placeholder="your-leetcode-username"></div>
-            <div class="form-group"><label class="form-label">Codeforces Handle</label><input type="text" id="f-codeforces" class="form-input" placeholder="your-cf-handle"></div>
+            <div class="form-group">
+              <label class="form-label">
+                GitHub Username
+                <span class="field-locked-badge" id="lock-github" style="display:none">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  Locked
+                </span>
+              </label>
+              <input type="text" id="f-github" class="form-input" placeholder="your-github-username">
+              <div class="locked-hint" id="locked-hint-github" style="display:none">🔒 Set once — contact admin to change</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">
+                LeetCode Username
+                <span class="field-locked-badge" id="lock-leetcode" style="display:none">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  Locked
+                </span>
+              </label>
+              <input type="text" id="f-leetcode" class="form-input" placeholder="your-leetcode-username">
+              <div class="locked-hint" id="locked-hint-leetcode" style="display:none">🔒 Set once — contact admin to change</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">
+                Codeforces Handle
+                <span class="field-locked-badge" id="lock-codeforces" style="display:none">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  Locked
+                </span>
+              </label>
+              <input type="text" id="f-codeforces" class="form-input" placeholder="your-cf-handle">
+              <div class="locked-hint" id="locked-hint-codeforces" style="display:none">🔒 Set once — contact admin to change</div>
+            </div>
             <div class="form-row">
               <div class="form-group"><label class="form-label">Batch</label><input type="text" id="f-batch" class="form-input" placeholder="e.g. 2024"></div>
               <div class="form-group"><label class="form-label">Specialization</label><input type="text" id="f-spec" class="form-input" placeholder="e.g. CSE"></div>
@@ -74,6 +120,29 @@
           <div class="card-header" style="margin-bottom:12px"><span class="card-title">Linked Platforms</span></div>
           <div id="platform-links"></div>
         </div>
+      </div>
+
+      <!-- Change Password Card -->
+      <div class="card" style="max-width:540px;margin-top:0">
+        <div class="card-header">
+          <span class="card-title">Change Password</span>
+        </div>
+        <form id="change-password-form">
+          <div class="form-group">
+            <label class="form-label">Current Password</label>
+            <input type="password" id="cp-current" class="form-input" placeholder="Enter current password" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">New Password</label>
+            <input type="password" id="cp-new" class="form-input" placeholder="Min 8 characters" required minlength="8">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirm New Password</label>
+            <input type="password" id="cp-confirm" class="form-input" placeholder="Repeat new password" required>
+          </div>
+          <div id="cp-error" style="display:none;margin-bottom:12px;padding:8px 12px;background:var(--red-dim);border-radius:var(--radius-sm);font-size:.82rem;color:var(--red)"></div>
+          <button type="submit" class="btn btn-primary btn-sm" id="cp-btn">Update Password</button>
+        </form>
       </div>
     </div>
   </div>

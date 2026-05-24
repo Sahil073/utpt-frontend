@@ -42,17 +42,22 @@ function loadPanel(id) {
   switch(id) {
     case 'dashboard':       loadDashboard();       break;
     case 'students':        loadStudents();        break;
+    case 'search':          initSearchPanel();     break;
     case 'poor-performers': loadPoorPerformers();  break;
     case 'top-performers':  loadTopPerformers();   break;
   }
+}
+
+function waitForRender(fn) {
+  requestAnimationFrame(()=>requestAnimationFrame(fn));
 }
 
 async function loadDashboard() {
   try {
     const [dash,activity,growth] = await Promise.allSettled([adminApi.dashboard(),adminApi.activityAnalytics(),adminApi.growthAnalytics()]);
     if (dash.status==='fulfilled') renderAdminStats(dash.value);
-    if (activity.status==='fulfilled') setTimeout(()=>renderBarChart(document.getElementById('activity-chart'),activity.value||[],'date','count'),100);
-    if (growth.status==='fulfilled')   setTimeout(()=>renderBarChart(document.getElementById('growth-chart'),growth.value||[],'week','solves','#34c759'),100);
+    if (activity.status==='fulfilled') waitForRender(()=>renderBarChart(document.getElementById('activity-chart'),activity.value||[],'date','count'));
+    if (growth.status==='fulfilled')   waitForRender(()=>renderBarChart(document.getElementById('growth-chart'),growth.value||[],'week','solves','#34c759'));
   } catch(ex) { toast('Dashboard load failed','error'); }
 }
 
@@ -65,6 +70,7 @@ function renderAdminStats(d) {
 }
 
 let stPage=1;
+let lastStudentRows=[];
 async function loadStudents(params={}) {
   const tbody=document.getElementById('st-tbody');
   tbody.innerHTML=`<tr><td colspan="7"><div class="page-loader"><div class="spinner"></div></div></td></tr>`;
@@ -73,6 +79,7 @@ async function loadStudents(params={}) {
     Object.keys(all).forEach(k=>!all[k]&&delete all[k]);
     const data=await adminApi.students(all);
     const rows=Array.isArray(data)?data:(data?.students||data?.items||[]);
+    lastStudentRows=rows;
     if (!rows.length) {
       tbody.innerHTML=`<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">👥</div><div class="empty-title">No students found</div></div></td></tr>`;
       document.getElementById('st-pagination').innerHTML=''; return;
@@ -105,6 +112,10 @@ function renderStPagination(hasMore) {
 function getStudentFilters(){loadStudents({name:document.getElementById('st-search')?.value.trim(),batch:document.getElementById('st-batch')?.value.trim(),specialization:document.getElementById('st-spec')?.value.trim()});}
 document.getElementById('st-filter-btn')?.addEventListener('click',()=>{stPage=1;getStudentFilters();});
 document.getElementById('st-search')?.addEventListener('input',debounce(()=>{stPage=1;getStudentFilters();},400));
+document.getElementById('st-pdf-btn')?.addEventListener('click',()=>{
+  if (!lastStudentRows.length) { toast('No students to export','error'); return; }
+  downloadStudentsPDF(lastStudentRows, 'Students List');
+});
 
 window.viewStudentDetail=async(id)=>{
   openModal('student-detail-modal');
@@ -175,6 +186,124 @@ async function loadTopPerformers() {
     </table></div></div>`;
     el.innerHTML=html;
   } catch(ex) { el.innerHTML=`<div class="empty-state"><div class="empty-desc">Failed to load</div></div>`; }
+}
+
+// ── Search Panel ──
+let lastSearchRows=[];
+function initSearchPanel() {
+  document.getElementById('search-btn')?.addEventListener('click', runSearch);
+  document.getElementById('search-pdf-btn')?.addEventListener('click',()=>{
+    if (!lastSearchRows.length) { toast('Run a search first','error'); return; }
+    downloadStudentsPDF(lastSearchRows, 'Student Search Results');
+  });
+  document.getElementById('search-email')?.addEventListener('keydown',e=>{ if(e.key==='Enter') runSearch(); });
+  document.getElementById('search-name')?.addEventListener('keydown',e=>{ if(e.key==='Enter') runSearch(); });
+  document.getElementById('search-college-id')?.addEventListener('keydown',e=>{ if(e.key==='Enter') runSearch(); });
+}
+
+async function runSearch() {
+  const email     = document.getElementById('search-email')?.value.trim();
+  const name      = document.getElementById('search-name')?.value.trim();
+  const collegeId = document.getElementById('search-college-id')?.value.trim();
+  if (!email && !name && !collegeId) { toast('Enter email, name or college ID to search','error'); return; }
+  const btn = document.getElementById('search-btn');
+  setLoading(btn, true);
+  try {
+    const params={};
+    if (email)     params.email=email;
+    if (name)      params.name=name;
+    if (collegeId) params.college_id=collegeId;
+    const rows = await adminApi.searchStudents(params);
+    lastSearchRows = Array.isArray(rows)?rows:(rows?.students||[]);
+    const countEl = document.getElementById('search-count');
+    if (countEl) countEl.textContent = `${lastSearchRows.length} result${lastSearchRows.length!==1?'s':''}`;
+    renderSearchResults(lastSearchRows);
+  } catch(ex) { toast(ex.message||'Search failed','error'); }
+  finally { setLoading(btn, false, 'Search'); }
+}
+
+function renderSearchResults(rows) {
+  const el = document.getElementById('search-results');
+  if (!rows.length) {
+    el.innerHTML=`<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-title">No results found</div></div>`;
+    return;
+  }
+  el.innerHTML=`<div class="card" style="padding:0;overflow:hidden">
+    <div class="table-wrap" style="border:none">
+      <table>
+        <thead><tr><th>Student</th><th>College ID</th><th>Email</th><th>Batch</th><th>Spec</th><th>Status</th></tr></thead>
+        <tbody>${rows.map(s=>`
+          <tr>
+            <td><div class="flex items-center gap-3">${avatarHTML(s,'sm')}<span style="font-weight:500">${s.name||'—'}</span></div></td>
+            <td class="t-mono t-sm t-muted">${s.college_id||'—'}</td>
+            <td class="t-muted t-sm">${s.email||'—'}</td>
+            <td><span class="badge badge-default">${s.batch||'—'}</span></td>
+            <td class="t-muted">${s.specialization||'—'}</td>
+            <td><span class="badge ${s.is_active?'badge-green':'badge-red'}">${s.is_active?'Active':'Inactive'}</span></td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+}
+
+// ── PDF Export ──
+function downloadStudentsPDF(rows, title='Students') {
+  const now = new Date().toLocaleString();
+  const html = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>${title} — UTPT</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; color: #1d1d1f; padding: 32px; font-size: 12px; }
+  h1 { font-size: 20px; font-weight: 800; margin: 0 0 4px; color: #0071e3; }
+  .meta { color: #6e6e73; font-size: 11px; margin-bottom: 24px; }
+  table { width: 100%; border-collapse: collapse; }
+  th { background: #f5f5f7; text-align: left; padding: 8px 10px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: #6e6e73; border-bottom: 2px solid #e5e5ea; }
+  td { padding: 8px 10px; border-bottom: 1px solid #f0f0f2; }
+  tr:last-child td { border-bottom: none; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 10px; font-weight: 600; }
+  .active { background: #e6f8ec; color: #1a7f37; }
+  .inactive { background: #fff1f0; color: #cf222e; }
+  @media print { body { padding: 16px; } }
+</style>
+</head>
+<body>
+<h1>UTPT — ${title}</h1>
+<div class="meta">Generated on ${now} · ${rows.length} students</div>
+<table>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Name</th>
+      <th>College ID</th>
+      <th>Email</th>
+      <th>Batch</th>
+      <th>Specialization</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    ${rows.map((s,i)=>`
+    <tr>
+      <td>${i+1}</td>
+      <td><strong>${s.name||'—'}</strong></td>
+      <td style="font-family:monospace">${s.college_id||'—'}</td>
+      <td>${s.email||'—'}</td>
+      <td>${s.batch||'—'}</td>
+      <td>${s.specialization||'—'}</td>
+      <td><span class="badge ${s.is_active?'active':'inactive'}">${s.is_active?'Active':'Inactive'}</span></td>
+    </tr>`).join('')}
+  </tbody>
+</table>
+<script>window.onload=()=>{ window.print(); }<\/script>
+</body>
+</html>`;
+  const w = window.open('','_blank','width=900,height=700');
+  if (!w) { toast('Allow popups to download PDF', 'error'); return; }
+  w.document.write(html);
+  w.document.close();
 }
 
 showPanel('dashboard');

@@ -154,6 +154,9 @@ export const students = {
   updateMe: (body) =>
     request('PUT', '/students/me', body),
 
+  changePassword: (body) =>
+    request('PUT', '/students/me/password', body),
+
   myStats: () =>
     request('GET', '/students/me/stats'),
 
@@ -223,6 +226,12 @@ export const admin = {
       `/admin/students/${id}/detail`
     ),
 
+  searchStudents: (p) =>
+    request(
+      'GET',
+      `/admin/students/search?${new URLSearchParams(p)}`
+    ),
+
   poorPerformers: () =>
     request('GET', '/admin/poor-performers'),
 
@@ -266,7 +275,14 @@ export const admin = {
     request(
       'GET',
       '/admin/analytics/growth'
-    )
+    ),
+
+  createTrainer: (body) =>
+    request(
+      'POST',
+      '/admin/create-trainer',
+      body
+    ),
 };
 
 export const resources = {

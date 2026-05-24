@@ -176,9 +176,18 @@
       margin-bottom: 14px; transition: color .15s; padding: 0;
       font-family: 'Inter', system-ui, sans-serif;
     }
-    .back-btn:hover { color: #09090b; }
 
-    /* OTP info */
+    .back-btn:hover { color: var(--text); }
+    .back-to-home {
+      position: absolute; top: 20px; left: 24px;
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: .78rem; font-weight: 500; color: var(--text-muted);
+      text-decoration: none; transition: color var(--transition);
+      padding: 6px 10px; border-radius: var(--radius-sm);
+      background: var(--bg-2); border: 1px solid var(--border);
+    }
+    .back-to-home:hover { color: var(--blue); border-color: var(--blue); background: var(--blue-dim); }
+
     .otp-sent-info {
       background: #f0fdf4; border: 1px solid rgba(26,77,46,.18);
       border-radius: 7px; padding: 9px 12px;
@@ -384,6 +393,7 @@
   </style>
 </head>
 <body>
+<<<<<<< HEAD
 
 <div class="split-root">
 
@@ -393,7 +403,7 @@
 
     <div class="lp-logo">
       <img src="/images/utpt-logo.png" alt="UTPT Logo">
-    </div>
+
 
     <div class="lp-heading">Welcome back</div>
     <div class="lp-sub">Sign in to your UTPT account</div>
