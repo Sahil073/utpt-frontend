@@ -24,32 +24,87 @@ function renderStats(stats) {
   const coding = stats?.coding || {};
   const github = stats?.github || {};
   const score  = stats?.score  || {};
+
+  const iconStar = `<svg viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
+  const iconCode = `<svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>`;
+  const iconChart= `<svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>`;
+  const iconGH   = `<svg viewBox="0 0 24 24" fill="none" stroke="#52525b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>`;
+
   document.getElementById('stats-grid').innerHTML = `
-    <div class="stat-card">
+    <div class="stat-card" style="--stat-icon-bg:#fffbeb">
+      <div class="stat-icon">${iconStar}</div>
       <div class="stat-label">Total Score</div>
       <div class="stat-value t-blue">${fmtScore(score.total_score)}</div>
       <div class="stat-change">Placement ranking score</div>
     </div>
-    <div class="stat-card green">
+    <div class="stat-card green" style="--stat-icon-bg:#dcfce7">
+      <div class="stat-icon">${iconCode}</div>
       <div class="stat-label">LeetCode Solved</div>
       <div class="stat-value">${fmtNum(coding.leetcode_solved) ?? '—'}</div>
       <div class="stat-change">Rating: ${coding.leetcode_rating || '—'}</div>
     </div>
-    <div class="stat-card orange">
+    <div class="stat-card orange" style="--stat-icon-bg:#eff6ff">
+      <div class="stat-icon">${iconChart}</div>
       <div class="stat-label">Codeforces Rating</div>
       <div class="stat-value">${fmtNum(coding.codeforces_rating) ?? '—'}</div>
       <div class="stat-change">Max: ${coding.codeforces_max_rating || '—'}</div>
     </div>
-    <div class="stat-card purple">
+    <div class="stat-card purple" style="--stat-icon-bg:#f4f4f5">
+      <div class="stat-icon">${iconGH}</div>
       <div class="stat-label">GitHub Commits</div>
       <div class="stat-value">${fmtNum(github.total_commits) ?? '—'}</div>
       <div class="stat-change">${github.public_repos||0} public repos</div>
     </div>`;
 }
 
+const PODIUM_SVG = `
+<svg viewBox="0 0 220 180" xmlns="http://www.w3.org/2000/svg" style="width:160px;height:130px;display:block;margin:0 auto 10px">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#4ade80" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#16a34a" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="p1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#22c55e"/>
+      <stop offset="100%" stop-color="#15803d"/>
+    </linearGradient>
+    <linearGradient id="p2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4ade80"/>
+      <stop offset="100%" stop-color="#16a34a"/>
+    </linearGradient>
+    <linearGradient id="p3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#86efac"/>
+      <stop offset="100%" stop-color="#22c55e"/>
+    </linearGradient>
+  </defs>
+  <!-- glow halo -->
+  <ellipse cx="110" cy="90" rx="72" ry="72" fill="url(#glow)"/>
+  <!-- podium step 2 (left) -->
+  <rect x="30" y="110" width="52" height="50" rx="5" fill="url(#p3)" opacity="0.85"/>
+  <text x="56" y="102" text-anchor="middle" font-size="13" font-weight="700" fill="#15803d">2</text>
+  <!-- podium step 3 (right) -->
+  <rect x="138" y="122" width="52" height="38" rx="5" fill="url(#p3)" opacity="0.7"/>
+  <text x="164" y="114" text-anchor="middle" font-size="13" font-weight="700" fill="#15803d">3</text>
+  <!-- podium step 1 (center) -->
+  <rect x="82" y="92" width="56" height="68" rx="5" fill="url(#p1)"/>
+  <text x="110" y="82" text-anchor="middle" font-size="13" font-weight="700" fill="#14532d">1</text>
+  <!-- star -->
+  <circle cx="110" cy="56" r="22" fill="#dcfce7" opacity="0.6"/>
+  <polygon points="110,36 113.8,48.5 127,48.5 116.4,56.3 120.2,68.8 110,61 99.8,68.8 103.6,56.3 93,48.5 106.2,48.5"
+    fill="#16a34a" stroke="#15803d" stroke-width="0.5"/>
+</svg>`;
+
 function renderRank(rankData) {
   const el = document.getElementById('rank-content');
-  if (!rankData) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">🏆</div><div class="empty-desc">Rank data unavailable</div></div>'; return; }
+  if (!rankData) {
+    el.innerHTML = `
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px 0 4px;text-align:center">
+        ${PODIUM_SVG}
+        <div style="font-size:.95rem;font-weight:700;color:var(--blue);margin-bottom:4px">Compete, Climb, Conquer.</div>
+        <div style="font-size:.78rem;color:var(--text-muted)">Solve more problems to unlock your rank.</div>
+      </div>`;
+    return;
+  }
   const { rank, score, neighbors = [] } = rankData;
   el.innerHTML = `
     <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px">
@@ -59,9 +114,9 @@ function renderRank(rankData) {
         <div class="t-muted t-sm">Global rank</div>
       </div>
     </div>
-    <div style="font-size:.75rem;color:var(--text-muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em">Nearby Rankings</div>
+    <div style="font-size:.65rem;font-weight:700;color:var(--text-dim);margin-bottom:8px;text-transform:uppercase;letter-spacing:.10em">Nearby Rankings</div>
     ${neighbors.map(n => `
-      <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--border-soft)">
+      <div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border-soft)">
         <span style="width:28px;font-size:.78rem;font-weight:700;color:${n.rank===rank?'var(--blue)':'var(--text-muted)'}">#${n.rank}</span>
         ${avatarHTML(n,'sm')}
         <span style="flex:1;font-size:.82rem;font-weight:${n.rank===rank?'700':'400'}">${n.name||'Unknown'}</span>
@@ -73,27 +128,28 @@ function renderPlatformStats(stats) {
   const el = document.getElementById('platform-stats');
   const c  = stats?.coding || {};
   el.innerHTML = `
-    <div style="display:flex;flex-direction:column;gap:14px">
-      <div>
-        <div style="display:flex;justify-content:space-between;margin-bottom:6px">
-          <span style="font-size:.82rem;font-weight:600">🟡 LeetCode</span>
-          <span class="t-sm t-muted">${c.leetcode_solved??0} solved</span>
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-sm)">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="width:9px;height:9px;border-radius:50%;background:#d97706;display:inline-block;flex-shrink:0"></span>
+          <span style="font-size:.84rem;font-weight:600">LeetCode</span>
         </div>
-        <div class="progress-bar"><div class="progress-fill green" style="width:${Math.min(100,((c.leetcode_solved||0)/1000)*100)}%"></div></div>
+        <span style="font-size:.82rem;color:var(--text-muted);font-weight:500">${c.leetcode_solved??0} solved</span>
       </div>
-      <div>
-        <div style="display:flex;justify-content:space-between;margin-bottom:6px">
-          <span style="font-size:.82rem;font-weight:600">🔵 Codeforces</span>
-          <span class="t-sm t-muted">Rating ${c.codeforces_rating??0}</span>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-sm)">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="width:9px;height:9px;border-radius:50%;background:#2563eb;display:inline-block;flex-shrink:0"></span>
+          <span style="font-size:.84rem;font-weight:600">Codeforces</span>
         </div>
-        <div class="progress-bar"><div class="progress-fill orange" style="width:${Math.min(100,((c.codeforces_rating||0)/3500)*100)}%"></div></div>
+        <span style="font-size:.82rem;color:var(--text-muted);font-weight:500">Rating ${c.codeforces_rating??0}</span>
       </div>
     </div>
+    ${(c.leetcode_username||c.codeforces_username) ? `
     <div class="divider" style="margin:14px 0"></div>
     <div class="flex gap-3 flex-wrap">
       ${c.leetcode_username  ? `<a href="https://leetcode.com/${c.leetcode_username}" target="_blank" class="platform-link">🟡 LeetCode</a>` : ''}
       ${c.codeforces_username? `<a href="https://codeforces.com/profile/${c.codeforces_username}" target="_blank" class="platform-link">🔵 Codeforces</a>` : ''}
-    </div>`;
+    </div>` : ''}`;
 }
 
 function renderGithubStats(stats) {
