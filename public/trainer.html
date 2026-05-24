@@ -8,7 +8,6 @@
   <style>
     .trainer-nav-item { color: var(--text-muted); }
     .trainer-nav-item.active { color: var(--blue); background: var(--blue-dim); }
-    .trainer-nav-item.active::before { background: var(--blue); }
   </style>
 </head>
 <body>
@@ -37,11 +36,6 @@
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
         <span>Top Performers</span>
       </a>
-      <div class="nav-section-label">Sync</div>
-      <a href="#" class="nav-item trainer-nav-item" data-panel="sync">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-        <span>Sync Center</span>
-      </a>
       <div class="nav-section-label">Content</div>
       <a href="/questions.html" class="nav-item trainer-nav-item">
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
@@ -69,89 +63,43 @@
   <div class="main-content">
     <div class="topbar">
       <div class="topbar-left">
-        <button class="btn btn-ghost btn-icon" id="sidebar-toggle">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-        </button>
+        <button class="btn btn-ghost btn-icon" id="sidebar-toggle"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
         <span style="font-weight:600;font-size:.9rem" id="panel-title">Dashboard</span>
       </div>
-      <div class="topbar-right" style="gap:8px">
-        <div class="topbar-sync" id="last-sync-indicator" style="display:none">
-          <span class="sync-dot ok"></span>
-          <span id="last-sync-time">Synced</span>
-        </div>
-        <button class="btn btn-primary btn-sm" id="sync-all-btn">
-          <span class="sync-icon-inner">↻</span> Sync All
-        </button>
-        <span class="badge badge-green">Trainer Panel</span>
-      </div>
+      <div class="topbar-right"><span class="badge badge-green">Trainer Panel</span></div>
     </div>
 
     <div id="panels">
-
       <!-- Dashboard Panel -->
-      <div id="panel-dashboard" class="panel-body">
-        <div style="margin-bottom:20px">
-          <div style="font-size:1.25rem;font-weight:700;letter-spacing:-.02em">Overview</div>
-          <div class="section-sub">Your cohort at a glance</div>
+      <div id="panel-dashboard" class="page-body" style="padding-top:24px">
+        <div class="stats-grid" id="admin-stats-grid">
+          <div class="stat-card skeleton" style="height:100px"></div>
+          <div class="stat-card skeleton" style="height:100px"></div>
+          <div class="stat-card skeleton" style="height:100px"></div>
+          <div class="stat-card skeleton" style="height:100px"></div>
         </div>
-        <div class="stats-grid stagger" id="admin-stats-grid">
-          <div class="stat-card skeleton" style="height:108px"></div>
-          <div class="stat-card skeleton" style="height:108px"></div>
-          <div class="stat-card skeleton" style="height:108px"></div>
-          <div class="stat-card skeleton" style="height:108px"></div>
-        </div>
-        <div class="grid-2" style="gap:20px">
-          <div class="card anim-up" style="animation-delay:200ms">
-            <div class="card-header">
-              <span class="card-title">Daily Active Users</span>
-              <span class="t-xs t-muted">Last 30 days</span>
-            </div>
-            <div id="activity-chart" style="min-height:140px"></div>
-          </div>
-          <div class="card anim-up" style="animation-delay:260ms">
-            <div class="card-header">
-              <span class="card-title">Weekly Solve Growth</span>
-              <span class="t-xs t-muted">Last 12 weeks</span>
-            </div>
-            <div id="growth-chart" style="min-height:140px"></div>
-          </div>
+        <div class="grid-2">
+          <div class="card"><div class="card-header"><span class="card-title">Daily Active Users (30 days)</span></div><div id="activity-chart"></div></div>
+          <div class="card"><div class="card-header"><span class="card-title">Weekly Solve Growth (12 weeks)</span></div><div id="growth-chart"></div></div>
         </div>
       </div>
 
       <!-- Students Panel -->
-      <div id="panel-students" class="panel-body" style="display:none">
-        <div style="margin-bottom:20px;display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:12px">
-          <div>
-            <div style="font-size:1.25rem;font-weight:700;letter-spacing:-.02em">All Students</div>
-            <div class="section-sub">Search, filter, and manage your cohort</div>
-          </div>
-        </div>
+      <div id="panel-students" class="page-body" style="padding-top:24px;display:none">
         <div class="flex gap-3 items-center" style="margin-bottom:16px;flex-wrap:wrap">
-          <div class="search-wrap" style="flex:1;min-width:200px;max-width:300px">
+          <div class="search-wrap" style="flex:1;min-width:200px;max-width:320px">
             <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input type="text" class="search-input" id="st-search" placeholder="Search by name…">
+            <input type="text" class="search-input" id="st-search" placeholder="Search students…">
           </div>
-          <input type="text" class="form-input" id="st-batch" placeholder="Batch" style="width:110px">
-          <input type="text" class="form-input" id="st-spec" placeholder="Specialization" style="width:160px">
+          <input type="text" class="form-input" id="st-batch" placeholder="Batch" style="width:120px">
+          <input type="text" class="form-input" id="st-spec" placeholder="Spec" style="width:120px">
           <button class="btn btn-outline btn-sm" id="st-filter-btn">Filter</button>
         </div>
         <div class="card" style="padding:0;overflow:hidden">
           <div class="table-wrap" style="border:none">
             <table>
-              <thead>
-                <tr>
-                  <th>Student</th>
-                  <th>Batch</th>
-                  <th>Spec</th>
-                  <th style="text-align:right">Score</th>
-                  <th>Status</th>
-                  <th>Sync</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="st-tbody" class="animated-tbody">
-                <tr><td colspan="7"><div class="page-loader"><div class="spinner"></div></div></td></tr>
-              </tbody>
+              <thead><tr><th>Student</th><th>College ID</th><th>Batch</th><th>Spec</th><th style="text-align:right">Score</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="st-tbody"><tr><td colspan="7"><div class="page-loader"><div class="spinner"></div></div></td></tr></tbody>
             </table>
           </div>
         </div>
@@ -159,59 +107,29 @@
       </div>
 
       <!-- Poor Performers Panel -->
-      <div id="panel-poor-performers" class="panel-body" style="display:none">
-        <div style="margin-bottom:20px">
-          <div style="font-size:1.25rem;font-weight:700;letter-spacing:-.02em">Poor Performers</div>
-          <div class="section-sub">Students with 0 solves in the last 7 days</div>
-        </div>
+      <div id="panel-poor-performers" class="page-body" style="padding-top:24px;display:none">
         <div class="flex items-center gap-3" style="margin-bottom:16px">
-          <span class="badge badge-red" style="padding:5px 12px">⚠ Needs Attention</span>
-          <span class="t-muted t-sm">These students may need your outreach</span>
+          <div class="badge badge-red" style="font-size:.8rem;padding:4px 10px">⚠ 0 solves in last 7 days</div>
+          <span class="t-muted t-sm">These students need attention</span>
         </div>
         <div class="card" style="padding:0;overflow:hidden">
           <div class="table-wrap" style="border:none">
             <table>
-              <thead>
-                <tr><th>Student</th><th>Batch</th><th>Spec</th><th>Last Active</th><th>Status</th></tr>
-              </thead>
-              <tbody id="pp-tbody" class="animated-tbody">
-                <tr><td colspan="5"><div class="page-loader"><div class="spinner"></div></div></td></tr>
-              </tbody>
+              <thead><tr><th>Student</th><th>Batch</th><th>Spec</th><th>Last Active</th><th>Status</th></tr></thead>
+              <tbody id="pp-tbody"><tr><td colspan="5"><div class="page-loader"><div class="spinner"></div></div></td></tr></tbody>
             </table>
           </div>
         </div>
       </div>
 
       <!-- Top Performers Panel -->
-      <div id="panel-top-performers" class="panel-body" style="display:none">
-        <div style="margin-bottom:20px">
-          <div style="font-size:1.25rem;font-weight:700;letter-spacing:-.02em">Top Performers</div>
-          <div class="section-sub">Your highest-scoring students</div>
-        </div>
+      <div id="panel-top-performers" class="page-body" style="padding-top:24px;display:none">
         <div id="top-perf-content"><div class="page-loader"><div class="spinner"></div></div></div>
       </div>
-
-      <!-- Sync Center Panel -->
-      <div id="panel-sync" class="panel-body" style="display:none">
-        <div style="margin-bottom:20px;display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:12px">
-          <div>
-            <div style="font-size:1.25rem;font-weight:700;letter-spacing:-.02em">Sync Center</div>
-            <div class="section-sub">Monitor and trigger platform data sync for all students</div>
-          </div>
-          <button class="btn btn-primary btn-sm" id="sync-all-btn-panel">
-            <span class="sync-icon-inner">↻</span> Sync All Students
-          </button>
-        </div>
-        <div id="sync-center-content">
-          <div class="page-loader"><div class="spinner"></div></div>
-        </div>
-      </div>
-
     </div>
   </div>
 </div>
 
-<!-- Student Detail Modal -->
 <div class="modal-overlay" id="student-detail-modal">
   <div class="modal" style="max-width:600px">
     <div class="modal-header">
