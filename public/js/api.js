@@ -257,16 +257,16 @@ export const admin = {
     ),
 
   activityAnalytics: () =>
-    request(
-      'GET',
-      '/admin/analytics/activity'
-    ),
+    request('GET', '/admin/analytics/activity'),
 
   growthAnalytics: () =>
-    request(
-      'GET',
-      '/admin/analytics/growth'
-    )
+    request('GET', '/admin/analytics/growth'),
+
+  syncStudent: (id) =>
+    request('POST', `/admin/students/${id}/sync`),
+
+  syncAll: () =>
+    request('POST', '/admin/students/sync-all')
 };
 
 export const resources = {

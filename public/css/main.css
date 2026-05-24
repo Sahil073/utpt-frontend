@@ -1176,3 +1176,161 @@ svg.bar-chart .bar:hover { opacity: 1; }
   .login-card   { padding: 36px 28px 32px; }
   .theme-label  { display: inline; }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   PREMIUM ANIMATION SYSTEM v2
+   Spring-based, staggered, production-grade motion.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── Keyframes ───────────────────────────────────────────────── */
+@keyframes panelIn     { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:none; } }
+@keyframes slideRight  { from { opacity:0; transform:translateX(-10px);} to { opacity:1; transform:none; } }
+@keyframes slideUp     { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:none; } }
+@keyframes scaleSpring { from { opacity:0; transform:scale(.93);       } to { opacity:1; transform:scale(1); } }
+@keyframes rowIn       { from { opacity:0; transform:translateX(-6px); } to { opacity:1; transform:none; } }
+@keyframes syncSpin    { to   { transform:rotate(360deg); } }
+@keyframes pulseRing   { to   { transform:scale(2.4); opacity:0; } }
+@keyframes progressGrow{ from { width:0; } }
+@keyframes shimmerMove { from { background-position:-400px 0; } to { background-position:400px 0; } }
+@keyframes countFade   { from { opacity:.4; } to { opacity:1; } }
+
+/* ─── Entry classes ───────────────────────────────────────────── */
+.anim-panel  { animation: panelIn     .26s cubic-bezier(.4,0,.2,1) both; }
+.anim-up     { animation: slideUp     .28s cubic-bezier(.4,0,.2,1) both; }
+.anim-right  { animation: slideRight  .24s cubic-bezier(.4,0,.2,1) both; }
+.anim-spring { animation: scaleSpring .24s cubic-bezier(.34,1.56,.64,1) both; }
+
+/* ─── Stagger delay helpers ───────────────────────────────────── */
+.stagger > .stat-card:nth-child(1) { animation-delay:  0ms; }
+.stagger > .stat-card:nth-child(2) { animation-delay: 55ms; }
+.stagger > .stat-card:nth-child(3) { animation-delay:110ms; }
+.stagger > .stat-card:nth-child(4) { animation-delay:165ms; }
+.stagger > .stat-card:nth-child(5) { animation-delay:220ms; }
+.stagger > .stat-card:nth-child(6) { animation-delay:275ms; }
+
+/* ─── Table row stagger ───────────────────────────────────────── */
+.animated-tbody tr { animation: rowIn .2s cubic-bezier(.4,0,.2,1) both; }
+.animated-tbody tr:nth-child(1)  { animation-delay:  0ms; }
+.animated-tbody tr:nth-child(2)  { animation-delay: 28ms; }
+.animated-tbody tr:nth-child(3)  { animation-delay: 56ms; }
+.animated-tbody tr:nth-child(4)  { animation-delay: 84ms; }
+.animated-tbody tr:nth-child(5)  { animation-delay:112ms; }
+.animated-tbody tr:nth-child(6)  { animation-delay:140ms; }
+.animated-tbody tr:nth-child(7)  { animation-delay:168ms; }
+.animated-tbody tr:nth-child(8)  { animation-delay:196ms; }
+.animated-tbody tr:nth-child(9)  { animation-delay:224ms; }
+.animated-tbody tr:nth-child(10) { animation-delay:252ms; }
+.animated-tbody tr:nth-child(11) { animation-delay:280ms; }
+.animated-tbody tr:nth-child(12) { animation-delay:308ms; }
+.animated-tbody tr:nth-child(n+13) { animation-delay:330ms; }
+
+/* ─── Sync dot component ──────────────────────────────────────── */
+.sync-dot {
+  display:inline-block; width:7px; height:7px;
+  border-radius:50%; flex-shrink:0; position:relative;
+}
+.sync-dot.ok      { background:var(--green); }
+.sync-dot.stale   { background:var(--orange); }
+.sync-dot.never   { background:var(--red); }
+.sync-dot.missing { background:var(--text-dim); }
+.sync-dot.ok::after {
+  content:''; position:absolute; inset:-3px; border-radius:50%;
+  border:1.5px solid var(--green); opacity:.55;
+  animation: pulseRing 1.9s ease-out infinite;
+}
+
+/* ─── Sync spinning ───────────────────────────────────────────── */
+.sync-spinning { animation: syncSpin .65s linear infinite; display:inline-block; }
+
+/* ─── Sync info banner ────────────────────────────────────────── */
+.sync-banner {
+  display:flex; align-items:flex-start; gap:12px;
+  padding:14px 16px;
+  background:var(--blue-dim); border:1px solid rgba(var(--blue-rgb),.2);
+  border-radius:var(--radius); margin-bottom:20px;
+  animation: slideUp .3s cubic-bezier(.4,0,.2,1) both;
+}
+.sync-banner-icon { font-size:1.05rem; flex-shrink:0; margin-top:1px; }
+.sync-banner-text { font-size:.79rem; line-height:1.55; color:var(--text-muted); }
+.sync-banner-text strong { color:var(--blue); font-weight:600; }
+
+/* ─── Sync row button ─────────────────────────────────────────── */
+.sync-row-btn {
+  display:inline-flex; align-items:center; gap:4px;
+  padding:3px 9px; border-radius:6px;
+  font-size:.69rem; font-weight:600;
+  border:1px solid var(--border); background:var(--bg-2);
+  color:var(--text-muted); cursor:pointer;
+  transition: background var(--transition), border-color var(--transition), color var(--transition), transform var(--transition);
+  font-family: inherit;
+}
+.sync-row-btn:hover:not(:disabled) {
+  background:var(--blue-dim); border-color:rgba(var(--blue-rgb),.3);
+  color:var(--blue); transform:scale(1.03);
+}
+.sync-row-btn:active:not(:disabled) { transform:scale(.97); }
+.sync-row-btn:disabled { opacity:.38; cursor:not-allowed; }
+
+/* ─── Platform handle chip ────────────────────────────────────── */
+.platform-chip {
+  display:inline-flex; align-items:center; gap:4px;
+  padding:2px 8px; border-radius:100px;
+  font-size:.66rem; font-weight:500;
+  background:var(--bg-2); border:1px solid var(--border);
+  color:var(--text-dim); font-family:monospace;
+  transition: all var(--transition);
+}
+.platform-chip.linked {
+  background:var(--green-dim); border-color:rgba(22,163,74,.25);
+  color:var(--green); font-weight:600;
+}
+
+/* ─── Stat mini icon (alias for .stat-icon) ───────────────────── */
+.stat-mini-icon {
+  position:absolute; top:16px; right:16px;
+  width:32px; height:32px; border-radius:8px;
+  display:flex; align-items:center; justify-content:center;
+}
+.stat-mini-icon svg { width:15px; height:15px; }
+
+/* ─── Section sub-heading ─────────────────────────────────────── */
+.section-sub { font-size:.78rem; color:var(--text-muted); margin-top:2px; font-weight:400; }
+
+/* ─── Topbar right sync info ──────────────────────────────────── */
+.topbar-sync {
+  display:flex; align-items:center; gap:6px;
+  font-size:.72rem; color:var(--text-muted);
+  padding:4px 10px; border-radius:7px;
+  background:var(--bg-2); border:1px solid var(--border);
+}
+
+/* ─── Analytics row ───────────────────────────────────────────── */
+.analytics-row {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:11px 0; border-bottom:1px solid var(--border-soft);
+}
+.analytics-row:last-child { border-bottom:none; }
+.analytics-row-label { font-size:.82rem; font-weight:500; display:flex; align-items:center; gap:9px; }
+.analytics-row-value { font-size:.9rem; font-weight:700; }
+
+/* ─── Progress bar animated fill ─────────────────────────────── */
+.progress-animated .progress-fill {
+  animation: progressGrow .9s cubic-bezier(.4,0,.2,1) both;
+}
+
+/* ─── Count-up flash ──────────────────────────────────────────── */
+.counting { animation: countFade .12s ease both; }
+
+/* ─── Warning inline banner ───────────────────────────────────── */
+.warn-banner {
+  padding:9px 14px;
+  background:var(--orange-dim); border:1px solid rgba(217,119,6,.22);
+  border-radius:var(--radius-sm); font-size:.78rem;
+  color:var(--orange); line-height:1.5;
+}
+
+/* ─── Panel content (used by panel anim) ─────────────────────── */
+.panel-body {
+  padding: 24px 32px 80px;
+}
+@media (max-width:768px) { .panel-body { padding:16px 16px 80px; } }
