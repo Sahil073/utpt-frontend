@@ -1,4 +1,4 @@
-const BASE = "/api/v1";
+const BASE = "https://utpt-backend.onrender.com/api/v1";
 
 
 let _accessToken = null;
