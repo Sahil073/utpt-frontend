@@ -82,7 +82,8 @@ window._viewStudent = async (id) => {
 window._toggleStudent = async (id, isActive) => {
   try {
     await adminApi.toggleActive(id);
-    toast(`Student ${isActive === "true" ? "disabled" : "enabled"}`, "success");
+    const wasActive = isActive === "true" || isActive === true;
+    toast(`Student ${wasActive ? "disabled" : "enabled"}`, "success");
     loadStudents();
   } catch (err) { toast(err.message, "error"); }
 };
@@ -230,6 +231,19 @@ $("#notifyForm")?.addEventListener("submit", async (e) => {
   } finally {
     setLoading(btn, false);
   }
+});
+
+// ── Pagination ─────────────────────────────────────────────
+document.getElementById('prevStudentPage')?.addEventListener('click', () => {
+  if (studentPage > 1) { studentPage--; loadStudents(); }
+});
+document.getElementById('nextStudentPage')?.addEventListener('click', () => {
+  studentPage++; loadStudents();
+});
+document.getElementById('studentFilterForm')?.addEventListener('reset', () => {
+  studentFilter = {};
+  studentPage = 1;
+  setTimeout(() => loadStudents(), 50);
 });
 
 // ── Tab navigation ─────────────────────────────────────────
