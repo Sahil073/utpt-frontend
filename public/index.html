@@ -170,7 +170,7 @@
 
 <!-- ── UTPT Portal Navigation Injection ─────────────────────────────── -->
 <style>
-  /* Fixed Sign In button — always accessible */
+  /* Fixed Sign In button — always visible, always works */
   #utpt-signin-btn {
     position: fixed;
     top: 14px;
@@ -191,22 +191,16 @@
     align-items: center;
     gap: 6px;
     box-shadow: 0 2px 12px rgba(140,255,46,0.30);
-    transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
-    opacity: 0;
-    animation: utptFadeIn 0.4s 1.2s ease forwards;
+    transition: transform 0.15s, box-shadow 0.15s;
   }
   #utpt-signin-btn:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 20px rgba(140,255,46,0.45);
   }
   #utpt-signin-btn svg { flex-shrink: 0; }
-  @keyframes utptFadeIn { to { opacity: 1; } }
-
-  /* When Contact button becomes Sign In — keep existing pill styles, just update text */
-  /* Hide the original Contact button once we've patched it */
-  .utpt-contact-hidden { display: none !important; }
 </style>
 
+<!-- This is the ONLY Sign In button — always visible, goes straight to login -->
 <a id="utpt-signin-btn" href="/login.html">
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
     <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
@@ -220,95 +214,88 @@
 (function () {
   'use strict';
 
-  var LOGIN_PATH = '/login.html';
+  var LOGIN = '/login.html';
 
-  /* ── 1. Capture-phase click interception ─────────────────────────────
-     Fires BEFORE any React/Framer event handlers.
-     Intercepts clicks on any element whose shallow text is
-     "Contact" or "Get Started" and redirects to the login page.        */
+  /* ── 1. HIDE the Framer "Contact" nav button entirely ───────────────
+     Framer's internal router intercepts its own link clicks before
+     any DOM event listener can, so renaming it doesn't help — we must
+     remove it from view and rely solely on our own #utpt-signin-btn.  */
+  function hideContactButton() {
+    document.querySelectorAll('p, span, div, a, button').forEach(function (el) {
+      if (el.childElementCount > 0) return;
+      var text = (el.textContent || '').trim();
+      if (text !== 'Contact') return;
+      /* Walk up max 5 levels to find the actual clickable container */
+      var target = el;
+      for (var i = 0; i < 5; i++) {
+        var p = target.parentElement;
+        if (!p || p === document.body) break;
+        target = p;
+        if (
+          target.tagName === 'A' ||
+          target.tagName === 'BUTTON' ||
+          target.getAttribute('role') === 'button' ||
+          target.getAttribute('data-framer-component-type')
+        ) break;
+      }
+      target.style.setProperty('display', 'none', 'important');
+    });
+  }
+
+  /* ── 2. Wire every "Get Started *" button to /login.html ────────────
+     The hero CTA text is "Get Started Free" — use includes() not ===.
+     We clone the <a> node to strip all Framer synthetic event handlers
+     before setting the new href.                                        */
+  function patchGetStartedLinks() {
+    document.querySelectorAll('a').forEach(function (a) {
+      var text = (a.textContent || '').trim();
+      if (!text.toLowerCase().includes('get started')) return;
+      /* Clone strips React/Framer event listeners */
+      var clone = a.cloneNode(true);
+      clone.href = LOGIN;
+      clone.removeAttribute('target');
+      clone.removeAttribute('rel');
+      if (a.parentNode) a.parentNode.replaceChild(clone, a);
+    });
+  }
+
+  /* ── 3. Belt-and-suspenders capture click interceptor ───────────────
+     Catches any residual Framer-managed CTA that wasn't patched above. */
   document.addEventListener('click', function (e) {
     var el = e.target;
-    for (var depth = 0; depth < 6 && el && el !== document; depth++) {
-      var text = (el.textContent || '').trim();
-      if (text === 'Contact' || text === 'Get Started') {
+    for (var d = 0; d < 8 && el && el !== document.body; d++) {
+      var text = (el.textContent || '').trim().toLowerCase();
+      if (text.includes('get started') || text === 'contact') {
         e.preventDefault();
         e.stopImmediatePropagation();
-        window.location.href = LOGIN_PATH;
+        window.location.href = LOGIN;
         return;
       }
       el = el.parentElement;
     }
-  }, true /* capture */);
+  }, true /* capture phase — fires before Framer's synthetic events */);
 
-  /* ── 2. DOM text patching: Contact → Sign In ────────────────────────
-     Renames the visible "Contact" label in the Framer nav to "Sign In".
-     Runs repeatedly to survive React re-hydration cycles.               */
-  function patchContactText() {
-    document.querySelectorAll('p, span, div, a, button').forEach(function (el) {
-      /* Only target leaf-ish nodes where the ONLY visible text is "Contact" */
-      if (el.childElementCount === 0 && (el.textContent || '').trim() === 'Contact') {
-        el.textContent = 'Sign In';
-      }
-    });
-  }
-
-  /* ── 3. Patch all "Get Started" anchor hrefs ─────────────────────────
-     Framer SSR renders <a> tags with Framer-internal hrefs.
-     Override them so they navigate to the login page.                   */
-  function patchGetStartedLinks() {
-    document.querySelectorAll('a').forEach(function (a) {
-      var text = (a.textContent || '').trim();
-      if (text === 'Get Started') {
-        a.href = LOGIN_PATH;
-        a.removeAttribute('target');
-      }
-    });
-  }
-
-  /* ── 4. Hide the fixed Sign In button once the nav one is visible ───
-     If the Framer nav Contact button is visible (and already renamed),
-     the fixed fallback pill can be hidden to avoid duplication.
-     We keep it visible on mobile where the nav may collapse.            */
-  function maybeHideFixedBtn() {
-    var fixed = document.getElementById('utpt-signin-btn');
-    if (!fixed) return;
-    /* If viewport is wide enough for the desktop nav, hide the fallback pill */
-    if (window.innerWidth >= 810) {
-      fixed.style.opacity = '0';
-      fixed.style.pointerEvents = 'none';
-    } else {
-      fixed.style.opacity = '1';
-      fixed.style.pointerEvents = 'auto';
-    }
-  }
-
-  /* ── Run all patches ─────────────────────────────────────────────── */
+  /* ── Run ────────────────────────────────────────────────────────── */
   function runAll() {
-    patchContactText();
+    hideContactButton();
     patchGetStartedLinks();
-    maybeHideFixedBtn();
   }
 
-  /* Run immediately for SSR output, then repeatedly for hydration      */
   runAll();
-  setTimeout(runAll, 200);
-  setTimeout(runAll, 600);
-  setTimeout(runAll, 1400);
+  setTimeout(runAll, 300);
+  setTimeout(runAll, 800);
+  setTimeout(runAll, 1800);
 
   window.addEventListener('load', function () {
     runAll();
-    setTimeout(runAll, 500);
+    setTimeout(runAll, 600);
   });
 
-  window.addEventListener('resize', maybeHideFixedBtn);
-
-  /* ── 5. MutationObserver: re-patch on any DOM mutation ─────────────
-     Framer may re-render parts of the tree during animations/routing.  */
+  /* MutationObserver keeps patches alive through Framer re-renders */
   if (window.MutationObserver) {
-    var observer = new MutationObserver(function () { runAll(); });
-    observer.observe(document.body, { childList: true, subtree: true, characterData: true });
-    /* Disconnect after 8 seconds — page is fully hydrated by then      */
-    setTimeout(function () { observer.disconnect(); }, 8000);
+    var obs = new MutationObserver(runAll);
+    obs.observe(document.body, { childList: true, subtree: true });
+    setTimeout(function () { obs.disconnect(); }, 10000);
   }
 })();
 </script>
