@@ -3,15 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>UTPT Portal – Login</title>
+  <title>UTPT Portal – Sign In</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/main.css">
 </head>
 <body>
+
+<!-- Page Loader -->
+<div id="page-loader">
+  <div class="loader-logo">
+    <div class="loader-icon">U</div>
+    <div>
+      <div class="loader-text"><span>U</span><span>T</span><span>P</span><span>T</span></div>
+      <div class="loader-sub">Placement Tracker</div>
+    </div>
+  </div>
+  <div class="loader-flower">
+    <div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div>
+    <div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div>
+  </div>
+</div>
+
 <div class="login-page">
+  <div class="login-bg-orb login-bg-orb-1"></div>
+  <div class="login-bg-orb login-bg-orb-2"></div>
+
   <div class="login-card">
     <div class="login-logo">
-      <h1>UTPT</h1>
-      <p>University Training & Placement Tracker</p>
+      <div class="login-logo-icon">U</div>
+      <h1>UTPT Portal</h1>
+      <p>University Training &amp; Placement Tracker</p>
     </div>
 
     <form id="loginForm" autocomplete="off">
@@ -25,12 +47,28 @@
           <input type="password" id="password" class="input" placeholder="Enter your password" required autocomplete="current-password">
           <button type="button" id="togglePassword" class="input-action">Show</button>
         </div>
-        <p style="margin-top:.375rem;font-size:.78rem;color:var(--muted);">First time? Use your father's mobile number as password.</p>
+        <p class="login-hint">First time? Use your father's mobile number as password.</p>
       </div>
-      <button type="submit" id="submitBtn" class="btn btn-primary btn-block" style="margin-top:.5rem;">Sign In</button>
+      <button type="submit" id="submitBtn" class="btn btn-primary btn-block btn-lg" style="margin-top:.75rem;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        Sign In
+      </button>
     </form>
+
+    <p style="text-align:center;margin-top:1.5rem;font-size:.78rem;color:rgba(255,255,255,.35);">
+      GLA University · Placement Readiness Platform
+    </p>
   </div>
 </div>
+
+<script>
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const l = document.getElementById('page-loader');
+    if (l) l.classList.add('hide');
+  }, 900);
+});
+</script>
 <script type="module" src="/js/pages/login.js"></script>
 </body>
 </html>

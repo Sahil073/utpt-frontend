@@ -5,6 +5,11 @@ import { $, toast, avatar, setLoading, formatDate } from "../utils.js";
 const user = await requireAuth(["student"]);
 if (!user) throw new Error("Not authenticated");
 
+// Update nav
+const navUserName = document.getElementById('navUserName');
+const sidebarAvatar = document.getElementById('sidebarAvatar');
+if (navUserName) navUserName.textContent = user.name;
+if (sidebarAvatar) sidebarAvatar.textContent = (user.name||'?')[0].toUpperCase();
 $(".nav-user-name") && ($(".nav-user-name").textContent = user.name);
 $("#logoutBtn")?.addEventListener("click", logout);
 
@@ -14,9 +19,28 @@ async function loadProfile() {
     const p = profileRes.data;
     const s = statsRes.data;
 
-    // Avatar
+    // Avatar — show premium styled avatar
     const avatarEl = $("#avatarDisplay");
-    if (avatarEl) avatarEl.innerHTML = avatar(p.avatar_url, p.name, 80);
+    if (avatarEl) {
+      if (p.avatar_url) {
+        avatarEl.innerHTML = `
+          <div style="position:relative;width:56px;height:56px;">
+            <img src="${p.avatar_url}" style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--primary-200);">
+            <div style="position:absolute;bottom:0;right:0;width:18px;height:18px;background:var(--primary);border-radius:50%;border:2px solid #fff;display:flex;align-items:center;justify-content:center;">
+              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            </div>
+          </div>`;
+      } else {
+        const initials = (p.name||'?').split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
+        avatarEl.innerHTML = `
+          <div style="position:relative;width:56px;height:56px;">
+            <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.25rem;">${initials}</div>
+            <div style="position:absolute;bottom:0;right:0;width:18px;height:18px;background:var(--primary);border-radius:50%;border:2px solid #fff;display:flex;align-items:center;justify-content:center;">
+              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            </div>
+          </div>`;
+      }
+    }
 
     // Basic info fields
     const fields = ["name","email","college_id","batch","specialization","roll_number","gender"];
@@ -114,7 +138,10 @@ $("#avatarInput")?.addEventListener("change", async (e) => {
     const res = await students.uploadAvatar(file);
     toast("Avatar updated!", "success");
     const avatarEl = $("#avatarDisplay");
-    if (avatarEl) avatarEl.innerHTML = `<img src="${res.data.avatar_url}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;">`;
+    if (avatarEl) avatarEl.innerHTML = `
+      <div style="position:relative;width:56px;height:56px;">
+        <img src="${res.data.avatar_url}" style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--primary-200);">
+      </div>`;
   } catch (err) {
     toast(err.message || "Upload failed", "error");
   }

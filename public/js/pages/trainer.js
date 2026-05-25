@@ -5,6 +5,11 @@ import { $, toast, avatar, buildTable } from "../utils.js";
 const user = await requireAuth(["trainer"]);
 if (!user) throw new Error("Not authenticated");
 
+// Update nav
+const navUserName = document.getElementById('navUserName');
+const sidebarAvatar = document.getElementById('sidebarAvatar');
+if (navUserName) navUserName.textContent = user.name;
+if (sidebarAvatar) sidebarAvatar.textContent = (user.name||'T')[0].toUpperCase();
 $(".nav-user-name") && ($(".nav-user-name").textContent = user.name);
 $("#logoutBtn")?.addEventListener("click", logout);
 
