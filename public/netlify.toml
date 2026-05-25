@@ -2,18 +2,124 @@
   publish = "."
 
 # Proxy all /api/* calls to your deployed backend.
-# Replace YOUR_BACKEND_URL with your actual backend URL (e.g. https://utpt-api.onrender.com)
 [[redirects]]
   from = "/api/*"
   to   = "https://utpt-backend.onrender.com/api/:splat"
   status  = 200
   force   = true
 
-# SPA-style fallback — serve index.html for any unmatched route
+# Explicit routes for admin pages (avoids catch-all ambiguity)
+[[redirects]]
+  from   = "/admin-dashboard"
+  to     = "/admin-dashboard.html"
+  status = 200
+
+[[redirects]]
+  from   = "/admin-questions"
+  to     = "/admin-questions.html"
+  status = 200
+
+[[redirects]]
+  from   = "/admin-resources"
+  to     = "/admin-resources.html"
+  status = 200
+
+[[redirects]]
+  from   = "/admin-leaderboard"
+  to     = "/admin-leaderboard.html"
+  status = 200
+
+[[redirects]]
+  from   = "/admin-profile"
+  to     = "/admin-profile.html"
+  status = 200
+
+[[redirects]]
+  from   = "/trainer-dashboard"
+  to     = "/trainer-dashboard.html"
+  status = 200
+
+[[redirects]]
+  from   = "/trainer-questions"
+  to     = "/trainer-questions.html"
+  status = 200
+
+[[redirects]]
+  from   = "/trainer-resources"
+  to     = "/trainer-resources.html"
+  status = 200
+
+[[redirects]]
+  from   = "/trainer-leaderboard"
+  to     = "/trainer-leaderboard.html"
+  status = 200
+
+[[redirects]]
+  from   = "/trainer-profile"
+  to     = "/trainer-profile.html"
+  status = 200
+
+[[redirects]]
+  from   = "/student-dashboard"
+  to     = "/student-dashboard.html"
+  status = 200
+
+[[redirects]]
+  from   = "/student-questions"
+  to     = "/student-questions.html"
+  status = 200
+
+[[redirects]]
+  from   = "/student-resources"
+  to     = "/student-resources.html"
+  status = 200
+
+[[redirects]]
+  from   = "/student-leaderboard"
+  to     = "/student-leaderboard.html"
+  status = 200
+
+[[redirects]]
+  from   = "/student-profile"
+  to     = "/student-profile.html"
+  status = 200
+
+[[redirects]]
+  from   = "/login"
+  to     = "/login.html"
+  status = 200
+
+# Smart role-based redirect helpers
+[[redirects]]
+  from   = "/dashboard"
+  to     = "/dashboard.html"
+  status = 200
+
+[[redirects]]
+  from   = "/leaderboard"
+  to     = "/leaderboard.html"
+  status = 200
+
+[[redirects]]
+  from   = "/profile"
+  to     = "/profile.html"
+  status = 200
+
+[[redirects]]
+  from   = "/questions"
+  to     = "/questions.html"
+  status = 200
+
+[[redirects]]
+  from   = "/resources"
+  to     = "/resources.html"
+  status = 200
+
+# Unknown paths → 404 page
 [[redirects]]
   from   = "/*"
-  to     = "/index.html"
-  status = 200
+  to     = "/404.html"
+  status = 404
 
 # Security & caching headers
 [[headers]]

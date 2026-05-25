@@ -112,6 +112,8 @@ async function loadLeaderboard() {
     document.getElementById('lbSkeleton').style.display = 'none';
     document.getElementById('lbCard').style.display = '';
     document.getElementById('pageInfo').textContent = `Page ${currentPage}`;
+    document.getElementById('nextPage').disabled = entries.length < 20;
+    document.getElementById('prevPage').disabled = currentPage <= 1;
 
     const metricLabel = { total:'Total', coding:'Coding', academic:'Academic', dev:'Dev' };
     const col = metricLabel[currentFilter.metric] || 'Total';

@@ -10,6 +10,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/css/main.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
   </head>
   <body>
     <div id="page-loader">
@@ -320,6 +321,62 @@
               </div>
             </div>
           </div>
+
+          <!-- ── Batch Analytics ───────────────────────────────── -->
+          <div class="card fade-up" style="animation-delay:.25s;margin-top:1.25rem;">
+            <div class="card-title"><span class="card-title-accent"></span>Batch Analytics</div>
+            <div style="display:flex;gap:.75rem;align-items:flex-end;flex-wrap:wrap;margin-bottom:1.25rem;">
+              <div style="flex:1;min-width:180px;">
+                <label style="font-size:.8125rem;font-weight:600;display:block;margin-bottom:.375rem;color:var(--text-2);">Select Batch</label>
+                <input type="text" id="batchInput" class="input" placeholder="e.g. 2022-26" />
+              </div>
+              <button class="btn btn-primary btn-sm" id="loadBatchBtn">📊 Load Analytics</button>
+            </div>
+            <div id="batchAnalyticsLoading" style="display:none;text-align:center;padding:2rem;color:var(--muted);">⏳ Loading analytics…</div>
+            <div id="batchAnalyticsEmpty" style="display:none;text-align:center;padding:2rem;color:var(--muted);">No students found in this batch.</div>
+            <div id="batchAnalyticsContent" style="display:none;">
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:.75rem;margin-bottom:1.25rem;">
+                <div style="background:var(--surface-2,#18181b);border-radius:.625rem;padding:.75rem;text-align:center;">
+                  <div style="font-size:1.4rem;font-weight:700;color:var(--accent)" id="baTotalStudents">—</div>
+                  <div style="font-size:.7rem;color:var(--muted);margin-top:.125rem;">Total Students</div>
+                </div>
+                <div style="background:var(--surface-2,#18181b);border-radius:.625rem;padding:.75rem;text-align:center;">
+                  <div style="font-size:1.4rem;font-weight:700;color:#22c55e" id="baPortal">—</div>
+                  <div style="font-size:.7rem;color:var(--muted);margin-top:.125rem;">Portal Users</div>
+                </div>
+                <div style="background:var(--surface-2,#18181b);border-radius:.625rem;padding:.75rem;text-align:center;">
+                  <div style="font-size:1.4rem;font-weight:700;color:#3b82f6" id="baActiveToday">—</div>
+                  <div style="font-size:.7rem;color:var(--muted);margin-top:.125rem;">Active Today</div>
+                </div>
+                <div style="background:var(--surface-2,#18181b);border-radius:.625rem;padding:.75rem;text-align:center;">
+                  <div style="font-size:1.4rem;font-weight:700;color:#f59e0b" id="baAvgScore">—</div>
+                  <div style="font-size:.7rem;color:var(--muted);margin-top:.125rem;">Avg Score</div>
+                </div>
+                <div style="background:var(--surface-2,#18181b);border-radius:.625rem;padding:.75rem;text-align:center;">
+                  <div style="font-size:1.4rem;font-weight:700;color:#a855f7" id="baAvgLc">—</div>
+                  <div style="font-size:.7rem;color:var(--muted);margin-top:.125rem;">Avg LC Solved</div>
+                </div>
+                <div style="background:var(--surface-2,#18181b);border-radius:.625rem;padding:.75rem;text-align:center;">
+                  <div style="font-size:1.4rem;font-weight:700;color:#ef4444" id="baAvgCf">—</div>
+                  <div style="font-size:.7rem;color:var(--muted);margin-top:.125rem;">Avg CF Rating</div>
+                </div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem;">
+                <div>
+                  <div style="font-size:.8125rem;font-weight:600;color:var(--text-2);margin-bottom:.625rem;">Score Distribution</div>
+                  <canvas id="scoreDistChart" style="max-height:200px;"></canvas>
+                </div>
+                <div>
+                  <div style="font-size:.8125rem;font-weight:600;color:var(--text-2);margin-bottom:.625rem;">Specialization Breakdown</div>
+                  <canvas id="specChart" style="max-height:200px;"></canvas>
+                </div>
+              </div>
+              <div>
+                <div style="font-size:.8125rem;font-weight:600;color:var(--text-2);margin-bottom:.625rem;">Top 5 Performers</div>
+                <div id="baTopTable"></div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Students Tab -->
@@ -529,7 +586,7 @@
                   padding: 0.125rem 0.375rem;
                   border-radius: 0.25rem;
                 "
-                >name, college_id, email, batch, top_label, father_number</code
+                >name, college_id, email, batch, top_label</code
               >
               <div
                 style="
@@ -548,7 +605,7 @@
                   border-radius: 0.25rem;
                   word-break: break-all;
                 "
-                >specialization, roll_number, gender, cpi, tenth_percentage,
+                >father_number, specialization, roll_number, gender, cpi, tenth_percentage,
                 twelfth_percentage, leetcode_username, github_username,
                 codeforces_username</code
               >
@@ -561,8 +618,7 @@
                 "
               >
                 <div>
-                  <span class="badge badge-purple">top_label=1</span> Portal
-                  account with father_number as initial password.
+                  <span class="badge badge-purple">top_label=1</span> Portal account created. Password priority: <strong>father_number</strong> → <strong>roll_number@name(4 chars)</strong> → <strong>college_id@utpt</strong>.
                 </div>
                 <div>
                   <span class="badge badge-muted">top_label=0</span> Analytics
@@ -844,6 +900,8 @@
       let studentPage = 1;
       let studentFilter = {};
       let isSearchMode = false;
+      let studentTotalPages = 1;
+      const STUDENT_LIMIT = 20;
 
       async function loadStudents() {
         const spinner = document.getElementById("studentsSpinner");
@@ -854,10 +912,16 @@
           const params = { page: studentPage, ...studentFilter };
           const res = await adminApi.students(params);
           spinner.style.display = "none";
+          const total = res.pagination?.total ?? 0;
+          studentTotalPages = Math.max(1, Math.ceil(total / STUDENT_LIMIT));
+          document.getElementById("studentPageInfo").textContent =
+            `Page ${studentPage} / ${studentTotalPages} (${total} total)`;
+          document.getElementById("prevStudentPage").disabled = studentPage <= 1;
+          document.getElementById("nextStudentPage").disabled = studentPage >= studentTotalPages;
           renderStudentsTable(res.data);
         } catch (err) {
           spinner.style.display = "none";
-          toast(err.message, "error");
+          toast(err.message || "Failed to load students", "error");
         }
       }
 
@@ -1027,7 +1091,7 @@
       document
         .getElementById("nextStudentPage")
         .addEventListener("click", () => {
-          if (!isSearchMode) {
+          if (!isSearchMode && studentPage < studentTotalPages) {
             studentPage++;
             loadStudents();
           }
@@ -1044,15 +1108,25 @@
             return;
           }
           const btn = document.getElementById("importFileBtn");
+          const resultEl = document.getElementById("importResult");
+          resultEl.style.display = "none";
           setLoading(btn, true);
           try {
             const res = await adminApi.importFile(file);
-            const resultEl = document.getElementById("importResult");
             resultEl.style.display = "";
-            resultEl.innerHTML = `✅ Import complete: <strong>${res.data.total}</strong> students processed, <strong>${res.data.portal_accounts}</strong> portal accounts created.`;
+            resultEl.style.background = "#d1fae5";
+            resultEl.style.border = "1px solid #a7f3d0";
+            resultEl.style.color = "#065f46";
+            resultEl.innerHTML = `✅ Import complete: <strong>${res.data.total}</strong> students processed, <strong>${res.data.portal_accounts}</strong> portal accounts created, <strong>${res.data.analytics_only ?? 0}</strong> analytics-only.`;
             toast(`${res.data.total} students imported`, "success");
             loadDashboard();
           } catch (err) {
+            resultEl.style.display = "";
+            resultEl.style.background = "#fee2e2";
+            resultEl.style.border = "1px solid #fca5a5";
+            resultEl.style.color = "#991b1b";
+            const detail = err.data?.errors ? `<ul style="margin:.5rem 0 0;padding-left:1.25rem;">${err.data.errors.slice(0,10).map(e=>`<li>${e}</li>`).join("")}${err.data.errors.length > 10 ? `<li>…and ${err.data.errors.length - 10} more</li>` : ''}</ul>` : '';
+            resultEl.innerHTML = `❌ ${err.message || "Import failed"}${detail}`;
             toast(err.message || "Import failed", "error");
           } finally {
             setLoading(btn, false);
@@ -1117,6 +1191,95 @@
             setLoading(btn, false);
           }
         });
+
+      // ── Batch Analytics ─────────────────────────────────────
+      let _scoreChart = null;
+      let _specChart  = null;
+
+      async function loadBatchAnalytics() {
+        const batch = document.getElementById("batchInput").value.trim();
+        if (!batch) { toast("Enter a batch (e.g. 2022-26)", "error"); return; }
+
+        const loading = document.getElementById("batchAnalyticsLoading");
+        const content = document.getElementById("batchAnalyticsContent");
+        const empty   = document.getElementById("batchAnalyticsEmpty");
+        loading.style.display = "";
+        content.style.display = "none";
+        empty.style.display   = "none";
+
+        try {
+          const res = await adminApi.batchAnalytics(batch);
+          const d = res.data;
+          loading.style.display = "none";
+
+          if (!d || d.total_students === 0) { empty.style.display = ""; return; }
+
+          document.getElementById("baTotalStudents").textContent = d.total_students;
+          document.getElementById("baPortal").textContent        = d.portal_students;
+          document.getElementById("baActiveToday").textContent   = d.active_today;
+          document.getElementById("baAvgScore").textContent      = d.avg_score;
+          document.getElementById("baAvgLc").textContent         = d.avg_lc_solved;
+          document.getElementById("baAvgCf").textContent         = d.avg_cf_rating;
+
+          // Score distribution bar chart
+          if (_scoreChart) _scoreChart.destroy();
+          const distLabels = Object.keys(d.score_distribution);
+          const distData   = Object.values(d.score_distribution);
+          _scoreChart = new Chart(document.getElementById("scoreDistChart"), {
+            type: "bar",
+            data: {
+              labels: distLabels,
+              datasets: [{ label: "Students", data: distData,
+                backgroundColor: ["#6366f1","#3b82f6","#22c55e","#f59e0b","#ef4444"],
+                borderRadius: 6, borderSkipped: false }],
+            },
+            options: { responsive: true, plugins: { legend: { display: false } },
+              scales: { x: { grid: { color: "rgba(255,255,255,.05)" }, ticks: { color: "#888" } },
+                        y: { grid: { color: "rgba(255,255,255,.05)" }, ticks: { color: "#888", stepSize: 1 } } } },
+          });
+
+          // Specialization doughnut chart
+          if (_specChart) _specChart.destroy();
+          const specs    = d.specialization_breakdown.map(s => s.spec);
+          const specVals = d.specialization_breakdown.map(s => s.count);
+          const palette  = ["#6366f1","#3b82f6","#22c55e","#f59e0b","#ef4444","#a855f7","#14b8a6","#f97316"];
+          _specChart = new Chart(document.getElementById("specChart"), {
+            type: "doughnut",
+            data: {
+              labels: specs,
+              datasets: [{ data: specVals,
+                backgroundColor: palette.slice(0, specs.length),
+                borderWidth: 2, borderColor: "transparent" }],
+            },
+            options: { responsive: true, cutout: "65%",
+              plugins: { legend: { position: "right", labels: { color: "#aaa", boxWidth: 12, font: { size: 11 } } } } },
+          });
+
+          // Top performers table
+          const rows = d.top_performers.map((p, i) => [
+            `<span style="font-weight:700;color:${["#fbbf24","#9ca3af","#cd7c33","#6366f1","#6366f1"][i]}">#${i+1}</span>`,
+            `<span style="font-weight:600;">${p.name}</span><br><span style="font-size:.75rem;color:var(--muted)">${p.college_id}</span>`,
+            p.specialization || "—",
+            `<span style="font-weight:700;color:var(--accent)">${p.total_score}</span>`,
+            p.coding_score,
+            p.academics_score,
+          ]);
+          document.getElementById("baTopTable").innerHTML = buildTable(
+            ["Rank","Student","Spec","Total","Coding","Acads"], rows,
+            "<div style='text-align:center;padding:1rem;color:var(--muted)'>No score data yet</div>"
+          );
+
+          content.style.display = "";
+        } catch (err) {
+          loading.style.display = "none";
+          toast(err.message || "Failed to load analytics", "error");
+        }
+      }
+
+      document.getElementById("loadBatchBtn").addEventListener("click", loadBatchAnalytics);
+      document.getElementById("batchInput").addEventListener("keydown", e => {
+        if (e.key === "Enter") loadBatchAnalytics();
+      });
 
       // Start
       activateTab("tabDashboard");

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UTPT – Page Not Found</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/main.css">
+  <style>
+    body { display:flex; align-items:center; justify-content:center; min-height:100vh; overflow:hidden; }
+
+    .error-wrap {
+      text-align: center;
+      padding: 2rem 1.5rem;
+      max-width: 480px;
+      width: 100%;
+      animation: fadeUp .55s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(24px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    .error-glow {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(140,255,46,.06) 0%, transparent 70%);
+    }
+
+    .error-code {
+      font-size: clamp(6rem, 20vw, 9rem);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      background: linear-gradient(135deg, #8cff2e 0%, #a8ff52 40%, rgba(140,255,46,.35) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: .5rem;
+      filter: drop-shadow(0 0 40px rgba(140,255,46,.25));
+    }
+
+    .error-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 64px;
+      height: 64px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #8cff2e, #a8ff52);
+      color: #050505;
+      font-weight: 900;
+      font-size: 1.75rem;
+      margin-bottom: 1.75rem;
+      box-shadow: 0 0 40px rgba(140,255,46,.35), 0 8px 24px rgba(0,0,0,.4);
+    }
+
+    .error-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: .625rem;
+    }
+
+    .error-desc {
+      font-size: .9375rem;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 2rem;
+    }
+
+    .error-actions {
+      display: flex;
+      gap: .75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .error-path {
+      display: inline-block;
+      margin-bottom: 1.75rem;
+      padding: .375rem .875rem;
+      background: var(--surface);
+      border: 1px solid var(--border-solid);
+      border-radius: 999px;
+      font-family: monospace;
+      font-size: .8125rem;
+      color: var(--danger);
+      letter-spacing: .01em;
+      max-width: 320px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .grid-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 0%, transparent 100%);
+    }
+  </style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+<div class="error-glow"></div>
+
+<div class="error-wrap">
+  <div class="error-icon">U</div>
+  <div class="error-code">404</div>
+  <div class="error-title">Page not found</div>
+  <div id="errorPath" class="error-path"></div>
+  <p class="error-desc">
+    The page you're looking for doesn't exist or has been moved.<br>
+    You may have followed a broken link or typed the address incorrectly.
+  </p>
+  <div class="error-actions">
+    <button class="btn btn-primary" onclick="goBack()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      Go Back
+    </button>
+    <a class="btn btn-ghost" href="/login.html">Go to Login</a>
+    <button class="btn btn-ghost" onclick="goDashboard()">My Dashboard</button>
+  </div>
+</div>
+
+<script>
+  document.getElementById('errorPath').textContent = location.pathname;
+
+  function goBack() {
+    if (document.referrer && document.referrer !== location.href) {
+      history.back();
+    } else {
+      goDashboard();
+    }
+  }
+
+  function goDashboard() {
+    try {
+      const user = JSON.parse(localStorage.getItem('utpt_user') || 'null');
+      const role = user && user.role;
+      if (role === 'admin')        location.href = '/admin-dashboard.html';
+      else if (role === 'trainer') location.href = '/trainer-dashboard.html';
+      else if (role === 'student') location.href = '/student-dashboard.html';
+      else                         location.href = '/login.html';
+    } catch(e) { location.href = '/login.html'; }
+  }
+</script>
+
+</body>
+</html>

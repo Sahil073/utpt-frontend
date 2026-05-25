@@ -27,6 +27,10 @@
   --shadow-lg:     0 12px 40px rgba(0,0,0,0.6), 0 4px 12px rgba(0,0,0,0.4);
   --shadow-glow:   0 0 0 3px rgba(140,255,46,0.25);
   --sidebar-w:     248px;
+  --accent:        #8cff2e;
+  --card:          #111111;
+  --surface-2:     #18181b;
+  --surface2:      #18181b;
 }
 
 *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
