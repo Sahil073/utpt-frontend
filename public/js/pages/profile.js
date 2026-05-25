@@ -1,193 +1,123 @@
-import { students as studentsApi } from '../api.js';
-import { requireAuth, logout, getUser } from '../auth.js';
-import { toast, avatarColor, getInitials, fmtDate, setLoading, initMobileSidebar, initTheme } from '../utils.js';
+import { students } from "../api.js";
+import { requireAuth, logout } from "../auth.js";
+import { $, toast, avatar, setLoading, formatDate } from "../utils.js";
 
-if (!requireAuth()) throw new Error('unauthenticated');
-const user = getUser();
-let profile = null;
+const user = await requireAuth(["student"]);
+if (!user) throw new Error("Not authenticated");
 
-function fillSidebar(p) {
-  const name = p?.name||user?.name||'User';
-  document.getElementById('sidebar-name').textContent = name;
-  document.getElementById('sidebar-role').textContent = p?.role||user?.role||'student';
-  const av = document.getElementById('sidebar-avatar');
-  if (p?.avatar_url) { av.innerHTML=`<img src="${p.avatar_url}" alt="${name}">`; }
-  else { av.textContent=getInitials(name); av.style.background=avatarColor(name); av.style.color='#fff'; }
-}
+$(".nav-user-name") && ($(".nav-user-name").textContent = user.name);
+$("#logoutBtn")?.addEventListener("click", logout);
 
-function renderProfileHero(p) {
-  const hero = document.getElementById('profile-hero');
-  const name = p?.name||'—';
-  const col  = avatarColor(name);
-  hero.innerHTML = `
-    <div>
-      <label for="avatar-input" style="cursor:pointer">
-        <div class="avatar avatar-xl" style="background:${col};color:#fff;position:relative;border:3px solid var(--border)">
-          ${p?.avatar_url?`<img src="${p.avatar_url}" alt="${name}">`:getInitials(name)}
-          <div style="position:absolute;inset:0;border-radius:50%;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;opacity:0;transition:.18s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">
-            <span style="font-size:.6rem;font-weight:700;color:#fff">CHANGE</span>
-          </div>
-        </div>
-      </label>
-    </div>
-    <div style="flex:1">
-      <div style="font-size:1.4rem;font-weight:800;letter-spacing:-.02em">${name}</div>
-      <div style="font-size:.85rem;color:var(--text-muted);margin-bottom:10px">${p?.college_id||''} · ${p?.batch||''} · ${p?.specialization||''}</div>
-      <div class="flex gap-2 flex-wrap">
-        ${p?.github_username   ? `<a href="https://github.com/${p.github_username}" target="_blank" class="platform-link">🐙 GitHub</a>` : ''}
-        ${p?.leetcode_username ? `<a href="https://leetcode.com/${p.leetcode_username}" target="_blank" class="platform-link">🟡 LeetCode</a>` : ''}
-        ${p?.codeforces_username? `<a href="https://codeforces.com/profile/${p.codeforces_username}" target="_blank" class="platform-link">🔵 Codeforces</a>` : ''}
-      </div>
-    </div>
-    <div style="text-align:right">
-      <div style="font-size:.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px">Member since</div>
-      <div style="font-size:.85rem;font-weight:600">${p?.created_at?fmtDate(p.created_at):'—'}</div>
-      <div class="badge badge-${p?.is_active?'green':'red'}" style="margin-top:8px">${p?.is_active?'Active':'Inactive'}</div>
-    </div>`;
-}
+async function loadProfile() {
+  try {
+    const [profileRes, statsRes] = await Promise.all([students.me(), students.stats()]);
+    const p = profileRes.data;
+    const s = statsRes.data;
 
-function applyLock(fieldId, value) {
-  const input = document.getElementById(fieldId);
-  const lock  = document.getElementById(`lock-${fieldId.replace('f-','')}`);
-  const hint  = document.getElementById(`locked-hint-${fieldId.replace('f-','')}`);
-  if (value) {
-    input.value = value;
-    input.readOnly = true;
-    input.dataset.locked = 'true';
-    if (lock) lock.style.display = '';
-    if (hint) hint.style.display = '';
-  } else {
-    input.readOnly = false;
-    input.removeAttribute('data-locked');
-    if (lock) lock.style.display = 'none';
-    if (hint) hint.style.display = 'none';
+    // Avatar
+    const avatarEl = $("#avatarDisplay");
+    if (avatarEl) avatarEl.innerHTML = avatar(p.avatar_url, p.name, 80);
+
+    // Basic info fields
+    const fields = ["name","email","college_id","batch","specialization","roll_number","gender"];
+    fields.forEach(f => {
+      const el = document.getElementById(`field_${f}`);
+      if (el) el.textContent = p[f] || "—";
+    });
+
+    // Academic info
+    if ($("#field_tenth"))   $("#field_tenth").textContent   = p.tenth_percentage   != null ? p.tenth_percentage + "%" : "—";
+    if ($("#field_twelfth")) $("#field_twelfth").textContent = p.twelfth_percentage != null ? p.twelfth_percentage + "%" : "—";
+    if ($("#field_cpi"))     $("#field_cpi").textContent     = p.cpi                != null ? p.cpi : "—";
+
+    // Platform usernames
+    if ($("#lcUser"))  $("#lcUser").textContent  = p.leetcode_username   || "Not set";
+    if ($("#cfUser"))  $("#cfUser").textContent  = p.codeforces_username || "Not set";
+    if ($("#ghUser"))  $("#ghUser").textContent  = p.github_username     || "Not set";
+
+    // Stats
+    if (s.coding) {
+      if ($("#lcSolved")) $("#lcSolved").textContent  = s.coding.leetcode_solved   || 0;
+      if ($("#cfRating")) $("#cfRating").textContent  = s.coding.codeforces_rating || 0;
+    }
+    if (s.github) {
+      if ($("#ghCommits")) $("#ghCommits").textContent = s.github.total_commits || 0;
+    }
+    if (s.score) {
+      if ($("#totalScore"))  $("#totalScore").textContent  = s.score.total_score     || 0;
+      if ($("#codingScore")) $("#codingScore").textContent = s.score.coding_score    || 0;
+      if ($("#devScore"))    $("#devScore").textContent    = s.score.dev_score       || 0;
+      if ($("#acadScore"))   $("#acadScore").textContent   = s.score.academics_score || 0;
+    }
+
+    // Pre-fill edit form
+    if ($("#editLc"))  $("#editLc").value  = p.leetcode_username   || "";
+    if ($("#editCf"))  $("#editCf").value  = p.codeforces_username || "";
+    if ($("#editGh"))  $("#editGh").value  = p.github_username     || "";
+  } catch (err) {
+    toast(err.message || "Failed to load profile", "error");
   }
 }
 
-function fillForm(p) {
-  applyLock('f-github',     p?.github_username);
-  applyLock('f-leetcode',   p?.leetcode_username);
-  applyLock('f-codeforces', p?.codeforces_username);
-  document.getElementById('f-batch').value = p?.batch         || '';
-  document.getElementById('f-spec').value  = p?.specialization|| '';
-}
-
-function renderPlatformLinks(p) {
-  const el = document.getElementById('platform-links');
-  const platforms = [
-    { key:'github_username',    label:'GitHub',     url:v=>`https://github.com/${v}`,               icon:'🐙' },
-    { key:'leetcode_username',  label:'LeetCode',   url:v=>`https://leetcode.com/${v}`,              icon:'🟡' },
-    { key:'codeforces_username',label:'Codeforces', url:v=>`https://codeforces.com/profile/${v}`,    icon:'🔵' },
-  ];
-  el.innerHTML = platforms.map(pl => {
-    const val = p?.[pl.key];
-    return `<div class="platform-row">
-      <div class="platform-icon">${pl.icon}</div>
-      <div style="flex:1"><div style="font-size:.82rem;font-weight:600">${pl.label}</div><div style="font-size:.75rem;color:var(--text-muted)">${val||'Not linked'}</div></div>
-      ${val?`<a href="${pl.url(val)}" target="_blank" class="btn btn-ghost btn-sm">View →</a>`:''}
-    </div>`;
-  }).join('');
-}
-
-document.getElementById('save-profile-btn').addEventListener('click', async () => {
-  const btn = document.getElementById('save-profile-btn');
-  setLoading(btn, true);
-  try {
-    const body = {};
-    const githubEl     = document.getElementById('f-github');
-    const leetcodeEl   = document.getElementById('f-leetcode');
-    const codeforceEl  = document.getElementById('f-codeforces');
-
-    if (!githubEl.dataset.locked    && githubEl.value.trim())    body.github_username     = githubEl.value.trim();
-    if (!leetcodeEl.dataset.locked  && leetcodeEl.value.trim())  body.leetcode_username   = leetcodeEl.value.trim();
-    if (!codeforceEl.dataset.locked && codeforceEl.value.trim()) body.codeforces_username = codeforceEl.value.trim();
-
-    const batch = document.getElementById('f-batch').value.trim();
-    const spec  = document.getElementById('f-spec').value.trim();
-    if (batch) body.batch = batch;
-    if (spec)  body.specialization = spec;
-
-    if (!Object.keys(body).length) { toast('Nothing to update', 'info'); return; }
-
-    const updated = await studentsApi.updateMe(body);
-    profile = { ...profile, ...updated };
-    renderProfileHero(profile); fillForm(profile); renderPlatformLinks(profile);
-    toast('Profile updated!', 'success');
-  } catch (ex) { toast(ex.message||'Failed to save','error'); }
-  finally { setLoading(btn, false, 'Save changes'); }
-});
-
-document.getElementById('sync-github-btn').addEventListener('click', async e => {
-  const btn = e.currentTarget; setLoading(btn, true);
-  try { await studentsApi.syncGithub(); toast('GitHub sync queued! (1h cooldown)','success'); }
-  catch (ex) { toast(ex.message||'Sync failed','error'); }
-  finally { setLoading(btn, false, 'Sync'); }
-});
-
-document.getElementById('sync-coding-btn').addEventListener('click', async e => {
-  const btn = e.currentTarget; setLoading(btn, true);
-  try { await studentsApi.syncCoding(); toast('Coding stats sync queued!','success'); }
-  catch (ex) { toast(ex.message||'Sync failed','error'); }
-  finally { setLoading(btn, false, 'Sync'); }
-});
-
-document.getElementById('avatar-input').addEventListener('change', async function() {
-  const file = this.files[0];
-  if (!file) return;
-  if (file.size > 5*1024*1024) { toast('Image too large (max 5MB)','error'); return; }
-  const form = new FormData();
-  form.append('avatar', file);
-  try {
-    toast('Uploading…','info',2000);
-    const data = await studentsApi.uploadAvatar(form);
-    profile = { ...profile, avatar_url: data?.avatar_url };
-    renderProfileHero(profile); fillSidebar(profile);
-    toast('Avatar updated!','success');
-  } catch (ex) { toast(ex.message||'Upload failed','error'); }
-});
-
-document.getElementById('change-password-form').addEventListener('submit', async e => {
+// Edit profile form
+$("#editProfileForm")?.addEventListener("submit", async (e) => {
   e.preventDefault();
-  const btn       = document.getElementById('cp-btn');
-  const errorEl   = document.getElementById('cp-error');
-  const current   = document.getElementById('cp-current').value;
-  const newPw     = document.getElementById('cp-new').value;
-  const confirm   = document.getElementById('cp-confirm').value;
-
-  errorEl.style.display = 'none';
-  if (newPw !== confirm) {
-    errorEl.textContent = 'New passwords do not match';
-    errorEl.style.display = '';
-    return;
-  }
-  if (newPw.length < 8) {
-    errorEl.textContent = 'New password must be at least 8 characters';
-    errorEl.style.display = '';
-    return;
-  }
-
+  const btn = $("#saveProfileBtn");
   setLoading(btn, true);
   try {
-    await studentsApi.changePassword({ currentPassword: current, newPassword: newPw });
-    toast('Password updated successfully!', 'success');
-    document.getElementById('change-password-form').reset();
-  } catch (ex) {
-    errorEl.textContent = ex.message || 'Failed to change password';
-    errorEl.style.display = '';
-    toast(ex.message||'Failed','error');
+    const updates = {};
+    const lc = $("#editLc")?.value?.trim();
+    const cf = $("#editCf")?.value?.trim();
+    const gh = $("#editGh")?.value?.trim();
+    if (lc) updates.leetcode_username   = lc;
+    if (cf) updates.codeforces_username = cf;
+    if (gh) updates.github_username     = gh;
+
+    await students.update(updates);
+    toast("Profile updated!", "success");
+    loadProfile();
+  } catch (err) {
+    toast(err.message || "Update failed", "error");
   } finally {
-    setLoading(btn, false, 'Update Password');
+    setLoading(btn, false);
   }
 });
 
-document.getElementById('logout-btn').addEventListener('click', () => logout());
-initTheme(); initMobileSidebar();
+// Change password form
+$("#changePwdForm")?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const cur  = $("#currentPwd")?.value;
+  const nw   = $("#newPwd")?.value;
+  const conf = $("#confirmPwd")?.value;
 
-async function init() {
-  fillSidebar(user);
+  if (nw !== conf) { toast("Passwords do not match", "warning"); return; }
+  if ((nw||"").length < 8) { toast("Password must be at least 8 characters", "warning"); return; }
+
+  const btn = $("#savePwdBtn");
+  setLoading(btn, true);
   try {
-    profile = await studentsApi.me();
-    renderProfileHero(profile); fillForm(profile); renderPlatformLinks(profile); fillSidebar(profile);
-  } catch (ex) { toast(ex.message||'Failed to load profile','error'); }
-}
-init();
+    await students.changePassword({ currentPassword: cur, newPassword: nw });
+    toast("Password changed successfully!", "success");
+    e.target.reset();
+  } catch (err) {
+    toast(err.message || "Failed to change password", "error");
+  } finally {
+    setLoading(btn, false);
+  }
+});
+
+// Avatar upload
+$("#avatarInput")?.addEventListener("change", async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  try {
+    const res = await students.uploadAvatar(file);
+    toast("Avatar updated!", "success");
+    const avatarEl = $("#avatarDisplay");
+    if (avatarEl) avatarEl.innerHTML = `<img src="${res.data.avatar_url}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;">`;
+  } catch (err) {
+    toast(err.message || "Upload failed", "error");
+  }
+});
+
+loadProfile();

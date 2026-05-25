@@ -3,179 +3,61 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Trainer — UTPT</title>
+  <title>UTPT – Trainer</title>
   <link rel="stylesheet" href="/css/main.css">
-  <style>
-    .trainer-nav-item { color: var(--text-muted); }
-    .trainer-nav-item.active { color: var(--blue); background: var(--blue-dim); }
-  </style>
 </head>
 <body>
 <div class="app-shell">
-  <nav class="sidebar" id="sidebar">
-    <div class="sidebar-brand">
-      <div class="brand-logo"><img src="/images/utpt-logo.png" alt="UTPT"></div>
-      <div><div class="brand-name">UTPT Trainer</div><div class="brand-sub">Trainer Panel</div></div>
-    </div>
+  <nav class="sidebar">
+    <div class="sidebar-logo">UTPT <span>Trainer</span></div>
     <div class="sidebar-nav">
-      <div class="nav-section-label">Overview</div>
-      <a href="#" class="nav-item active trainer-nav-item" data-panel="dashboard">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-        <span>Dashboard</span>
-      </a>
-      <div class="nav-section-label">Students</div>
-      <a href="#" class="nav-item trainer-nav-item" data-panel="students">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        <span>All Students</span>
-      </a>
-      <a href="#" class="nav-item trainer-nav-item" data-panel="search">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <span>Search Students</span>
-      </a>
-      <a href="#" class="nav-item trainer-nav-item" data-panel="poor-performers">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        <span>Poor Performers</span>
-      </a>
-      <a href="#" class="nav-item trainer-nav-item" data-panel="top-performers">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        <span>Top Performers</span>
-      </a>
-      <div class="nav-section-label">Content</div>
-      <a href="/questions.html" class="nav-item trainer-nav-item">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        <span>Questions</span>
-      </a>
-      <a href="/resources.html" class="nav-item trainer-nav-item">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-        <span>Resources</span>
-      </a>
-      <a href="/dashboard.html" class="nav-item trainer-nav-item" style="margin-top:8px">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-        <span>Student View</span>
-      </a>
+      <button class="nav-item active tab-btn" data-tab="tabDashboard"><span class="icon">📊</span> Dashboard</button>
+      <button class="nav-item tab-btn" data-tab="tabStudents"><span class="icon">👥</span> Students</button>
+      <button class="nav-item tab-btn" data-tab="tabPoor"><span class="icon">⚠️</span> Poor Performers</button>
+      <a href="/leaderboard.html" class="nav-item"><span class="icon">🏆</span> Leaderboard</a>
     </div>
     <div class="sidebar-footer">
-      <div class="user-card" id="sidebar-user">
-        <div class="user-avatar" id="sidebar-avatar">T</div>
-        <div class="user-info"><div class="user-name" id="sidebar-name">Trainer</div><div class="user-role" id="sidebar-role">trainer</div></div>
-      </div>
-      <button class="btn btn-ghost btn-sm" id="logout-btn" style="margin-top:6px;width:100%;justify-content:flex-start;padding-left:10px">Sign out</button>
-      <div class="sidebar-powered">Powered by <a href="https://arivana.site" target="_blank">arivana.site</a></div>
+      <span class="nav-user-name">Loading…</span>
+      <button id="logoutBtn" class="btn btn-outline btn-sm" style="margin-top:.5rem;width:100%;">Sign Out</button>
     </div>
   </nav>
 
-  <div class="main-content">
-    <div class="topbar">
-      <div class="topbar-left">
-        <button class="btn btn-ghost btn-icon" id="sidebar-toggle"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
-        <span style="font-weight:600;font-size:.9rem" id="panel-title">Dashboard</span>
+  <main class="main-content">
+
+    <!-- Dashboard -->
+    <div id="tabDashboard" class="tab-pane">
+      <div class="page-header"><h1>Trainer Dashboard</h1></div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-value" id="totalStudents">—</div><div class="stat-label">Total Students</div></div>
+        <div class="stat-card"><div class="stat-value" id="activeToday">—</div><div class="stat-label">Active Today</div></div>
+        <div class="stat-card"><div class="stat-value" id="avgScore">—</div><div class="stat-label">Avg Score</div></div>
       </div>
-      <div class="topbar-right"><span class="badge badge-green">Trainer Panel</span></div>
     </div>
 
-    <div id="panels">
-      <!-- Dashboard Panel -->
-      <div id="panel-dashboard" class="page-body" style="padding-top:24px">
-        <div class="stats-grid" id="admin-stats-grid">
-          <div class="stat-card skeleton" style="height:100px"></div>
-          <div class="stat-card skeleton" style="height:100px"></div>
-          <div class="stat-card skeleton" style="height:100px"></div>
-          <div class="stat-card skeleton" style="height:100px"></div>
-        </div>
-        <div class="grid-2">
-          <div class="card"><div class="card-header"><span class="card-title">Daily Active Users (30 days)</span></div><div id="activity-chart" style="min-height:160px"></div></div>
-          <div class="card"><div class="card-header"><span class="card-title">Weekly Solve Growth (12 weeks)</span></div><div id="growth-chart" style="min-height:160px"></div></div>
-        </div>
+    <!-- Students -->
+    <div id="tabStudents" class="tab-pane" style="display:none;">
+      <div class="page-header"><h1>Students</h1></div>
+      <div class="card" style="margin-bottom:1rem;">
+        <form id="searchForm" style="display:flex;gap:.75rem;">
+          <input type="text" id="searchQuery" class="input" placeholder="Search name, college ID…" style="flex:1;">
+          <button type="submit" class="btn btn-primary">Search</button>
+        </form>
       </div>
-
-      <!-- Students Panel -->
-      <div id="panel-students" class="page-body" style="padding-top:24px;display:none">
-        <div class="flex gap-3 items-center" style="margin-bottom:16px;flex-wrap:wrap">
-          <div class="search-wrap" style="flex:1;min-width:200px;max-width:320px">
-            <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input type="text" class="search-input" id="st-search" placeholder="Search by name…">
-          </div>
-          <input type="text" class="form-input" id="st-batch" placeholder="Batch" style="width:120px">
-          <input type="text" class="form-input" id="st-spec" placeholder="Spec" style="width:120px">
-          <button class="btn btn-outline btn-sm" id="st-filter-btn">Filter</button>
-          <button class="btn btn-outline btn-sm" id="st-pdf-btn" title="Export as PDF">⬇ PDF</button>
-        </div>
-        <div class="card" style="padding:0;overflow:hidden">
-          <div class="table-wrap" style="border:none">
-            <table>
-              <thead><tr><th>Student</th><th>College ID</th><th>Batch</th><th>Spec</th><th style="text-align:right">Score</th><th>Status</th><th>Actions</th></tr></thead>
-              <tbody id="st-tbody"><tr><td colspan="7"><div class="page-loader"><div class="spinner"></div></div></td></tr></tbody>
-            </table>
-          </div>
-        </div>
-        <div id="st-pagination"></div>
-      </div>
-
-      <!-- Search Students Panel -->
-      <div id="panel-search" class="page-body" style="padding-top:24px;display:none">
-        <div style="max-width:700px;margin-bottom:24px">
-          <div class="card">
-            <div class="card-header"><span class="card-title">Search Students</span></div>
-            <div class="flex gap-3" style="flex-wrap:wrap;margin-bottom:12px">
-              <div class="form-group" style="flex:1;min-width:170px;margin-bottom:0">
-                <label class="form-label">Email</label>
-                <input type="text" id="search-email" class="form-input" placeholder="e.g. student@gla.ac.in">
-              </div>
-              <div class="form-group" style="flex:1;min-width:170px;margin-bottom:0">
-                <label class="form-label">Name</label>
-                <input type="text" id="search-name" class="form-input" placeholder="e.g. Rahul">
-              </div>
-              <div class="form-group" style="flex:1;min-width:170px;margin-bottom:0">
-                <label class="form-label">College ID</label>
-                <input type="text" id="search-college-id" class="form-input" placeholder="e.g. 2200290100042">
-              </div>
-            </div>
-            <div class="flex gap-2 items-center" style="margin-top:12px">
-              <button class="btn btn-primary btn-sm" id="search-btn">Search</button>
-              <button class="btn btn-outline btn-sm" id="search-pdf-btn">⬇ Export PDF</button>
-              <span class="t-muted t-sm" id="search-count"></span>
-            </div>
-          </div>
-        </div>
-        <div id="search-results"></div>
-      </div>
-
-      <!-- Poor Performers Panel -->
-      <div id="panel-poor-performers" class="page-body" style="padding-top:24px;display:none">
-        <div class="flex items-center gap-3" style="margin-bottom:16px">
-          <div class="badge badge-red" style="font-size:.8rem;padding:4px 10px">⚠ 0 solves in last 7 days</div>
-          <span class="t-muted t-sm">These students need attention</span>
-        </div>
-        <div class="card" style="padding:0;overflow:hidden">
-          <div class="table-wrap" style="border:none">
-            <table>
-              <thead><tr><th>Student</th><th>Batch</th><th>Spec</th><th>Last Active</th><th>Status</th></tr></thead>
-              <tbody id="pp-tbody"><tr><td colspan="5"><div class="page-loader"><div class="spinner"></div></div></td></tr></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- Top Performers Panel -->
-      <div id="panel-top-performers" class="page-body" style="padding-top:24px;display:none">
-        <div id="top-perf-content"><div class="page-loader"><div class="spinner"></div></div></div>
+      <div class="card">
+        <div class="table-container"><div id="studentsTable"><div class="loading-row"><div class="spinner"></div> Loading…</div></div></div>
       </div>
     </div>
-  </div>
+
+    <!-- Poor Performers -->
+    <div id="tabPoor" class="tab-pane" style="display:none;">
+      <div class="page-header"><h1>Poor Performers</h1><p style="color:var(--muted);font-size:.85rem;">Students with no activity in last 7 days</p></div>
+      <div class="card">
+        <div class="table-container"><div id="poorPerfTable"><div class="loading-row"><div class="spinner"></div> Loading…</div></div></div>
+      </div>
+    </div>
+
+  </main>
 </div>
-
-<div class="modal-overlay" id="student-detail-modal">
-  <div class="modal" style="max-width:600px">
-    <div class="modal-header">
-      <div class="modal-title">Student Detail</div>
-      <button class="modal-close" data-modal-close>✕</button>
-    </div>
-    <div id="student-detail-content"><div class="page-loader"><div class="spinner"></div></div></div>
-  </div>
-</div>
-
-<div id="toast-container"></div>
-<div class="powered-footer">Powered by <a href="https://arivana.site" target="_blank">arivana.site</a></div>
 <script type="module" src="/js/pages/trainer.js"></script>
 </body>
 </html>

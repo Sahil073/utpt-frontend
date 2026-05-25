@@ -1,47 +1,71 @@
-import { auth as authApi, setToken, clearToken } from './api.js';
+import { setAccessToken, getAccessToken, auth as authApi } from "./api.js";
 
-const KEY_USER  = 'utpt_user';
-const KEY_TOKEN = 'utpt_token';
+const TOKEN_KEY = "accessToken";
+const USER_KEY  = "utpt_user";
 
-export function getUser()   { try { return JSON.parse(localStorage.getItem(KEY_USER) || 'null'); } catch { return null; } }
-export function isLoggedIn(){ return !!getUser() && !!localStorage.getItem(KEY_TOKEN); }
-export function getRole()   { return getUser()?.role || null; }
+export function saveSession(accessToken, user) {
+  setAccessToken(accessToken);
+  sessionStorage.setItem(TOKEN_KEY, accessToken);
+  localStorage.setItem(USER_KEY, JSON.stringify(user));
+}
 
-export function saveSession(user, token) {
-  localStorage.setItem(KEY_USER,  JSON.stringify(user));
-  localStorage.setItem(KEY_TOKEN, token);
-  setToken(token);
+export function loadSession() {
+  const t = sessionStorage.getItem(TOKEN_KEY);
+  if (t) setAccessToken(t);
+  return t;
+}
+
+export function getUser() {
+  try { return JSON.parse(localStorage.getItem(USER_KEY) || "null"); }
+  catch { return null; }
+}
+
+export function clearSession() {
+  setAccessToken(null);
+  sessionStorage.removeItem(TOKEN_KEY);
+  localStorage.removeItem(USER_KEY);
+}
+
+export async function requireAuth(allowedRoles = null) {
+  let token = loadSession();
+
+  if (!token) {
+    const refreshed = await authApi.refresh();
+    if (!refreshed) {
+      window.location.href = "/login.html";
+      return null;
+    }
+    token = getAccessToken();
+    if (token) sessionStorage.setItem(TOKEN_KEY, token);
+  }
+
+  const user = getUser();
+
+  if (!user) {
+    window.location.href = "/login.html";
+    return null;
+  }
+
+  // Role guard: redirect to correct dashboard
+  if (allowedRoles && !allowedRoles.includes(user.role)) {
+    redirectByRole(user.role);
+    return null;
+  }
+
+  return user;
+}
+
+export function redirectByRole(role) {
+  const map = {
+    admin:   "/admin.html",
+    trainer: "/trainer.html",
+    student: "/dashboard.html",
+  };
+  window.location.href = map[role] || "/login.html";
 }
 
 export async function logout() {
   try { await authApi.logout(); } catch {}
-  localStorage.removeItem(KEY_USER);
-  localStorage.removeItem(KEY_TOKEN);
-  clearToken();
-  window.location.href = '/login.html';
-}
-
-export function requireAuth(allowedRoles) {
-  const user  = getUser();
-  const token = localStorage.getItem(KEY_TOKEN);
-  if (!user || !token) { window.location.href = '/login.html'; return false; }
-  setToken(token);
-  if (allowedRoles && !allowedRoles.includes(user.role)) { window.location.href = '/dashboard.html'; return false; }
-  return true;
-}
-
-export function redirectIfLoggedIn() {
-  if (isLoggedIn()) {
-    setToken(localStorage.getItem(KEY_TOKEN));
-    const user = getUser();
-    if (user?.role === 'admin') {
-      window.location.href = '/admin.html';
-    } else if (user?.role === 'trainer') {
-      window.location.href = '/trainer.html';
-    } else {
-      window.location.href = '/dashboard.html';
-    }
-    return true;
-  }
-  return false;
+  clearSession();
+  window.location.href = "/login.html";
 }

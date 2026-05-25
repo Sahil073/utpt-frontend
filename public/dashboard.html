@@ -3,137 +3,93 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard — UTPT</title>
+  <title>UTPT – Dashboard</title>
   <link rel="stylesheet" href="/css/main.css">
 </head>
 <body>
 <div class="app-shell">
-  <nav class="sidebar" id="sidebar">
-    <div class="sidebar-brand">
-      <div class="brand-logo"><img src="/images/utpt-logo.png" alt="UTPT"></div>
-      <div><div class="brand-name">UTPT</div><div class="brand-sub">Placement Tracker</div></div>
-    </div>
+  <nav class="sidebar">
+    <div class="sidebar-logo">UTPT <span>Portal</span></div>
     <div class="sidebar-nav">
-      <a href="/dashboard.html" class="nav-item active">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-        <span>Dashboard</span>
-      </a>
-      <a href="/leaderboard.html" class="nav-item">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        <span>Leaderboard</span>
-      </a>
-      <a href="/questions.html" class="nav-item">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        <span>Questions</span>
-      </a>
-      <a href="/resources.html" class="nav-item">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-        <span>Resources</span>
-      </a>
-      <a href="/profile.html" class="nav-item">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        <span>Profile</span>
-      </a>
+      <a href="/dashboard.html" class="nav-item active"><span class="icon">🏠</span> Dashboard</a>
+      <a href="/leaderboard.html" class="nav-item"><span class="icon">🏆</span> Leaderboard</a>
+      <a href="/profile.html" class="nav-item"><span class="icon">👤</span> My Profile</a>
+      <a href="/questions.html" class="nav-item"><span class="icon">❓</span> Questions</a>
+      <a href="/resources.html" class="nav-item"><span class="icon">📚</span> Resources</a>
     </div>
     <div class="sidebar-footer">
-      <a href="/profile.html" class="user-card" id="sidebar-user">
-        <div class="user-avatar" id="sidebar-avatar">?</div>
-        <div class="user-info">
-          <div class="user-name" id="sidebar-name">Loading…</div>
-          <div class="user-role" id="sidebar-role">student</div>
-        </div>
-      </a>
-      <div class="sidebar-powered">Powered by <a href="https://arivana.site" target="_blank">arivana.site</a></div>
+      <span class="nav-user-name">Loading…</span>
+      <button id="logoutBtn" class="btn btn-outline btn-sm" style="margin-top:.5rem;width:100%;">Sign Out</button>
     </div>
   </nav>
 
-  <div class="main-content">
-    <div class="topbar">
-      <div class="topbar-left">
-        <button class="btn btn-ghost btn-icon" id="sidebar-toggle">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-        </button>
-        <span style="font-weight:600;font-size:.9rem">Dashboard</span>
-      </div>
-      <div class="topbar-right">
-        <button class="btn btn-ghost btn-icon notif-dot" id="notif-btn" title="Notifications">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-        </button>
-        <button class="btn btn-outline btn-sm" id="sync-btn">↻ Sync Stats</button>
-        <button class="btn btn-ghost btn-sm" id="logout-btn">Sign out</button>
-      </div>
-    </div>
-
+  <main class="main-content">
     <div class="page-header">
-      <div class="t-h1" id="greeting">Good morning 👋</div>
-      <div class="page-subtitle" id="greeting-sub">Here's your coding progress at a glance</div>
+      <h1>Dashboard</h1>
+      <div style="display:flex;gap:.5rem;">
+        <button id="syncCodingBtn" class="btn btn-outline btn-sm">Sync Coding</button>
+        <button id="syncGitHubBtn" class="btn btn-outline btn-sm">Sync GitHub</button>
+        <button id="changePwdBtn" class="btn btn-sm" style="background:var(--bg);border:1px solid var(--border);">Change Password</button>
+      </div>
     </div>
 
-    <div class="page-body">
-      <div class="stats-grid" id="stats-grid">
-        <div class="stat-card skeleton" style="height:100px"></div>
-        <div class="stat-card skeleton" style="height:100px"></div>
-        <div class="stat-card skeleton" style="height:100px"></div>
-        <div class="stat-card skeleton" style="height:100px"></div>
+    <!-- Stats grid -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value" id="totalScore">—</div>
+        <div class="stat-label">Total UTPT Score</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="myRank">—</div>
+        <div class="stat-label">Your Rank</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="lcSolved">—</div>
+        <div class="stat-label">LeetCode Solved</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="cfRating">—</div>
+        <div class="stat-label">Codeforces Rating</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="ghCommits">—</div>
+        <div class="stat-label">GitHub Commits</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="myRankScore">—</div>
+        <div class="stat-label">Rank Score</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <!-- Profile card -->
+      <div class="card">
+        <div class="card-title">Your Profile</div>
+        <div id="profileCard"><div class="loading-row"><div class="spinner"></div> Loading…</div></div>
       </div>
 
-      <div class="grid-2" style="margin-bottom:24px">
-        <div class="card">
-          <div class="card-header">
-            <span class="card-title">Your Rank</span>
-            <a href="/leaderboard.html" class="btn btn-ghost btn-sm">View board →</a>
+      <!-- Score breakdown -->
+      <div class="card">
+        <div class="card-title">Score Breakdown</div>
+        <div style="margin-bottom:1rem;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;">
+            <span style="font-size:.85rem;color:var(--muted);">Academics (30%)</span>
+            <span id="acadScore" style="font-weight:700;">—</span>
           </div>
-          <div id="rank-content"><div class="page-loader"><div class="spinner"></div></div></div>
-        </div>
-        <div class="card">
-          <div class="card-header"><span class="card-title">Solve Activity (30 days)</span></div>
-          <div class="heatmap" id="heatmap" style="gap:4px;flex-wrap:wrap"></div>
-          <div class="flex gap-2 items-center mt-4" style="font-size:.72rem;color:var(--text-muted)">
-            <span>Less</span>
-            <div style="width:11px;height:11px;border-radius:2px;background:var(--bg-3);border:1px solid var(--border)"></div>
-            <div style="width:11px;height:11px;border-radius:2px;background:#c6f0d0"></div>
-            <div style="width:11px;height:11px;border-radius:2px;background:#6ed68f"></div>
-            <div style="width:11px;height:11px;border-radius:2px;background:#34c759"></div>
-            <span>More</span>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;">
+            <span style="font-size:.85rem;color:var(--muted);">Coding (50%)</span>
+            <span id="codingScore" style="font-weight:700;">—</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:.85rem;color:var(--muted);">Development (20%)</span>
+            <span id="devScore" style="font-weight:700;">—</span>
           </div>
         </div>
-      </div>
-
-      <div class="grid-2" style="margin-bottom:24px">
-        <div class="card">
-          <div class="card-header"><span class="card-title">Daily Solves</span></div>
-          <div id="daily-chart"></div>
-        </div>
-        <div class="card">
-          <div class="card-header"><span class="card-title">Platform Stats</span></div>
-          <div id="platform-stats"><div class="page-loader"><div class="spinner"></div></div></div>
-        </div>
-      </div>
-
-      <div class="card" style="margin-bottom:24px">
-        <div class="card-header">
-          <span class="card-title">GitHub Activity</span>
-          <button class="btn btn-ghost btn-sm" id="sync-github-btn">↻ Sync GitHub</button>
-        </div>
-        <div id="github-stats"><div class="page-loader"><div class="spinner"></div></div></div>
+        <div id="scoreBreakdown"></div>
       </div>
     </div>
-  </div>
+  </main>
 </div>
-
-<div class="notif-panel" id="notif-panel">
-  <div class="notif-panel-header">
-    <span style="font-weight:600">Notifications</span>
-    <div class="flex gap-2">
-      <button class="btn btn-ghost btn-sm" id="mark-all-read">Mark all read</button>
-      <button class="btn btn-ghost btn-icon" id="notif-close">✕</button>
-    </div>
-  </div>
-  <div class="notif-panel-body" id="notif-list"><div class="page-loader"><div class="spinner"></div></div></div>
-</div>
-
-<div id="toast-container"></div>
-<div class="powered-footer">Powered by <a href="https://arivana.site" target="_blank">arivana.site</a></div>
 <script type="module" src="/js/pages/dashboard.js"></script>
 </body>
 </html>

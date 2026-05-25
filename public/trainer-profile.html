@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UTPT – Trainer Profile</title>
+  <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+<div class="app-shell">
+  <nav class="sidebar">
+    <div class="sidebar-logo">UTPT <span>Trainer</span></div>
+    <div class="sidebar-nav">
+      <a href="/trainer.html" class="nav-item"><span class="icon">📊</span> Dashboard</a>
+      <a href="/trainer-profile.html" class="nav-item active"><span class="icon">👤</span> My Profile</a>
+      <a href="/leaderboard.html" class="nav-item"><span class="icon">🏆</span> Leaderboard</a>
+    </div>
+    <div class="sidebar-footer">
+      <span class="nav-user-name">Loading…</span>
+      <button id="logoutBtn" class="btn btn-outline btn-sm" style="margin-top:.5rem;width:100%;">Sign Out</button>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <div class="page-header"><h1>Trainer Profile</h1></div>
+    <div class="card" style="max-width:480px;">
+      <div id="profileInfo" style="margin-bottom:1.5rem;">
+        <div class="loading-row"><div class="spinner"></div> Loading…</div>
+      </div>
+      <hr style="margin-bottom:1.5rem;">
+      <h3 style="margin-bottom:1rem;">Change Password</h3>
+      <form id="changePwdForm">
+        <div class="form-group">
+          <label>Current Password</label>
+          <input type="password" id="currentPwd" class="input" required>
+        </div>
+        <div class="form-group">
+          <label>New Password</label>
+          <input type="password" id="newPwd" class="input" placeholder="Min 8 characters" required>
+        </div>
+        <div class="form-group">
+          <label>Confirm New Password</label>
+          <input type="password" id="confirmPwd" class="input" required>
+        </div>
+        <button type="submit" id="savePwdBtn" class="btn btn-primary">Update Password</button>
+      </form>
+    </div>
+  </main>
+</div>
+<script type="module">
+  import { requireAuth, logout } from "/js/auth.js";
+  import { students } from "/js/api.js";
+  import { toast, setLoading } from "/js/utils.js";
+
+  const user = await requireAuth(["trainer"]);
+  if (!user) throw new Error("Not authenticated");
+
+  document.querySelector(".nav-user-name").textContent = user.name;
+  document.getElementById("logoutBtn").addEventListener("click", logout);
+
+  try {
+    const res = await students.me();
+    const p = res.data;
+    document.getElementById("profileInfo").innerHTML = `
+      <p style="font-size:.95rem;"><b>Name:</b> ${p.name}</p>
+      <p style="font-size:.95rem;"><b>College ID:</b> ${p.college_id}</p>
+      <p style="font-size:.95rem;"><b>Email:</b> ${p.email}</p>
+      <p style="font-size:.95rem;"><b>Role:</b> <span style="color:var(--secondary);font-weight:700;">${p.role}</span></p>`;
+  } catch (err) { document.getElementById("profileInfo").textContent = "Failed to load profile"; }
+
+  document.getElementById("changePwdForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const cur  = document.getElementById("currentPwd").value;
+    const nw   = document.getElementById("newPwd").value;
+    const conf = document.getElementById("confirmPwd").value;
+    if (nw !== conf) { toast("Passwords do not match", "warning"); return; }
+    if (nw.length < 8) { toast("Min 8 characters", "warning"); return; }
+    const btn = document.getElementById("savePwdBtn");
+    setLoading(btn, true);
+    try {
+      await students.changePassword({ currentPassword: cur, newPassword: nw });
+      toast("Password changed!", "success");
+      e.target.reset();
+    } catch (err) {
+      toast(err.message || "Failed", "error");
+    } finally { setLoading(btn, false); }
+  });
+</script>
+</body>
+</html>

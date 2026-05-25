@@ -1,193 +1,79 @@
-let _toastContainer;
-function getToastContainer() {
-  if (!_toastContainer) {
-    _toastContainer = document.getElementById('toast-container');
-    if (!_toastContainer) {
-      _toastContainer = document.createElement('div');
-      _toastContainer.id = 'toast-container';
-      document.body.appendChild(_toastContainer);
-    }
+export function $(sel, ctx = document) { return ctx.querySelector(sel); }
+export function $$(sel, ctx = document) { return [...ctx.querySelectorAll(sel)]; }
+
+export function show(el)  { if (el) el.style.display = ""; }
+export function hide(el)  { if (el) el.style.display = "none"; }
+
+export function toast(msg, type = "info", duration = 3500) {
+  const id = "utpt-toast-container";
+  let container = document.getElementById(id);
+  if (!container) {
+    container = document.createElement("div");
+    container.id = id;
+    container.style.cssText = "position:fixed;top:1.2rem;right:1.2rem;z-index:9999;display:flex;flex-direction:column;gap:.5rem;";
+    document.body.appendChild(container);
   }
-  return _toastContainer;
+
+  const colors = { success:"#22c55e", error:"#ef4444", warning:"#f59e0b", info:"#3b82f6" };
+  const t = document.createElement("div");
+  t.textContent = msg;
+  t.style.cssText = `background:${colors[type]||colors.info};color:#fff;padding:.75rem 1.25rem;border-radius:.5rem;font-size:.9rem;
+    box-shadow:0 4px 14px rgba(0,0,0,.25);max-width:320px;word-break:break-word;animation:slideIn .25s ease;`;
+  container.appendChild(t);
+  setTimeout(() => { t.style.animation="slideOut .25s ease forwards"; setTimeout(()=>t.remove(), 250); }, duration);
 }
 
-const ICONS = { success: '✓', error: '✕', info: 'ℹ', warning: '⚠' };
-export function toast(msg, type = 'info', duration = 4000) {
-  const c  = getToastContainer();
-  const el = document.createElement('div');
-  el.className = `toast ${type}`;
-  el.innerHTML = `<span class="toast-icon">${ICONS[type] || 'ℹ'}</span><span>${msg}</span>`;
-  c.appendChild(el);
-  setTimeout(() => { el.classList.add('leaving'); el.addEventListener('animationend', () => el.remove()); }, duration);
+// Inject keyframes once
+if (!document.getElementById("utpt-toast-anim")) {
+  const s = document.createElement("style");
+  s.id = "utpt-toast-anim";
+  s.textContent = `@keyframes slideIn{from{opacity:0;transform:translateX(100%)}to{opacity:1;transform:none}}
+    @keyframes slideOut{to{opacity:0;transform:translateX(100%)}}`;
+  document.head.appendChild(s);
 }
 
-export function openModal(id)  { const el = document.getElementById(id); if (el) { el.classList.add('open'); document.body.style.overflow = 'hidden'; } }
-export function closeModal(id) { const el = document.getElementById(id); if (el) { el.classList.remove('open'); document.body.style.overflow = ''; } }
-export function initModals() {
-  document.querySelectorAll('[data-modal-close]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const ov = btn.closest('.modal-overlay');
-      if (ov) { ov.classList.remove('open'); document.body.style.overflow = ''; }
-    });
-  });
-  document.querySelectorAll('.modal-overlay').forEach(ov => {
-    ov.addEventListener('click', e => { if (e.target === ov) { ov.classList.remove('open'); document.body.style.overflow = ''; } });
-  });
-}
-
-export function fmtDate(d) { return new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }); }
-export function fmtRelative(d) {
-  const diff = Date.now() - new Date(d);
-  const min  = Math.floor(diff / 60000);
-  if (min < 1)    return 'just now';
-  if (min < 60)   return `${min}m ago`;
-  if (min < 1440) return `${Math.floor(min/60)}h ago`;
-  return `${Math.floor(min/1440)}d ago`;
-}
-
-export function fmtNum(n)   { if (n == null) return '—'; if (n >= 1000) return (n/1000).toFixed(1)+'k'; return String(n); }
-export function fmtScore(n) { if (n == null) return '0.00'; return Number(n).toFixed(2); }
-
-export function getInitials(name) { if (!name) return '?'; return name.trim().split(/\s+/).map(w => w[0]).slice(0,2).join('').toUpperCase(); }
-export function avatarColor(name) {
-  const colors = ['#0071e3','#34c759','#ff9500','#ff3b30','#af52de','#5ac8fa'];
-  let h = 0;
-  for (const c of (name||'')) h = (h*31+c.charCodeAt(0)) % colors.length;
-  return colors[h];
-}
-export function avatarHTML(user, size = 'md') {
-  const name = user?.name || user?.username || '?';
-  const col  = avatarColor(name);
-  if (user?.avatar_url) return `<div class="avatar avatar-${size}" style="background:${col}"><img src="${user.avatar_url}" alt="${name}" loading="lazy"></div>`;
-  return `<div class="avatar avatar-${size}" style="background:${col};color:#fff">${getInitials(name)}</div>`;
-}
-
-export function rankDisplay(r) {
-  if (r === 1) return `<span class="rank-1">🥇 1</span>`;
-  if (r === 2) return `<span class="rank-2">🥈 2</span>`;
-  if (r === 3) return `<span class="rank-3">🥉 3</span>`;
-  return `#${r}`;
-}
-
-export function diffBadge(d) {
-  const map = { easy:'green', medium:'orange', hard:'red' };
-  return `<span class="badge badge-${map[d]||'default'}">${d||'—'}</span>`;
-}
-
-export function debounce(fn, ms = 300) { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; }
-
-export function setLoading(btn, loading, label = btn?.dataset?.label) {
+export function setLoading(btn, loading = true) {
   if (!btn) return;
-  if (loading) { btn.dataset.label = btn.textContent; btn.innerHTML = `<span class="spinner sm"></span> Loading…`; btn.disabled = true; }
-  else { btn.textContent = label || 'Submit'; btn.disabled = false; }
-}
-
-export function initMobileSidebar() {
-  const toggle  = document.getElementById('sidebar-toggle');
-  const sidebar = document.querySelector('.sidebar');
-  if (!toggle || !sidebar) return;
-  toggle.addEventListener('click', () => sidebar.classList.toggle('mobile-open'));
-  document.addEventListener('click', e => {
-    if (!sidebar.contains(e.target) && !toggle.contains(e.target)) sidebar.classList.remove('mobile-open');
-  });
-}
-
-/* ── Theme toggle ────────────────────────────────────────────── */
-const THEME_KEY = 'utpt-theme';
-
-function _applyTheme(theme) {
-  document.documentElement.setAttribute('data-theme', theme);
-}
-
-function _themeIcon(theme) {
-  return theme === 'dark'
-    ? '<span class="theme-icon">☀</span><span class="theme-label">Light mode</span>'
-    : '<span class="theme-icon">🌙</span><span class="theme-label">Dark mode</span>';
-}
-
-function _buildToggleBtn(theme, cls, onClick) {
-  const btn = document.createElement('button');
-  btn.className = cls;
-  btn.setAttribute('aria-label', 'Toggle color theme');
-  btn.innerHTML = _themeIcon(theme);
-  btn.addEventListener('click', () => {
-    const current = document.documentElement.getAttribute('data-theme') || 'light';
-    const next = current === 'dark' ? 'light' : 'dark';
-    _applyTheme(next);
-    localStorage.setItem(THEME_KEY, next);
-    btn.innerHTML = _themeIcon(next);
-    onClick && onClick(next);
-  });
-  return btn;
-}
-
-export function initTheme() {
-  const stored = localStorage.getItem(THEME_KEY) || 'light';
-  _applyTheme(stored);
-
-  const footer = document.querySelector('.sidebar-footer');
-  if (footer) {
-    if (!footer.querySelector('.theme-toggle-btn')) {
-      const btn = _buildToggleBtn(stored, 'theme-toggle-btn');
-      footer.insertBefore(btn, footer.firstChild);
-    }
+  if (loading) {
+    btn.dataset.origText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = "Loading…";
   } else {
-    if (!document.querySelector('.theme-toggle-float')) {
-      const btn = _buildToggleBtn(stored, 'theme-toggle-float', (next) => {
-        btn.innerHTML = _themeIcon(next);
-      });
-      document.body.appendChild(btn);
-    }
+    btn.disabled = false;
+    btn.textContent = btn.dataset.origText || btn.textContent;
   }
 }
 
-export function renderBarChart(container, data, labelKey = 'date', valueKey = 'count', color = '#0071e3') {
-  if (!container || !data?.length) return;
-  const W = container.clientWidth || 400, H = 120;
-  const max = Math.max(...data.map(d => d[valueKey]), 1);
-  const barW = Math.max(4, Math.floor((W-40)/data.length)-2);
-  const last  = Math.min(data.length, Math.floor((W-40)/(barW+2)));
-  const slice = data.slice(-last);
-  const xStep = (W-40)/last;
-  const bars  = slice.map((d,i) => {
-    const h = Math.max(3, Math.round((d[valueKey]/max)*(H-30)));
-    const x = 20 + i*xStep + (xStep-barW)/2;
-    const y = H-20-h;
-    return `<rect class="bar" x="${x.toFixed(1)}" y="${y}" width="${barW}" height="${h}" rx="3" title="${d[labelKey]}: ${d[valueKey]}"/>`;
-  }).join('');
-  container.innerHTML = `<svg class="bar-chart" viewBox="0 0 ${W} ${H}" style="width:100%;height:${H}px">${bars}<line x1="20" y1="${H-20}" x2="${W-20}" y2="${H-20}" stroke="var(--border)" stroke-width="1"/></svg>`;
+export function formatDate(d) {
+  if (!d) return "—";
+  return new Date(d).toLocaleDateString("en-IN", { day:"2-digit", month:"short", year:"numeric" });
 }
 
-export function renderHeatmap(container, logs) {
-  if (!container) return;
-  const map = {};
-  (logs||[]).forEach(l => { map[l.date] = l.count; });
-  const today = new Date();
-  const cells = [];
-  for (let i = 29; i >= 0; i--) {
-    const d = new Date(today); d.setDate(d.getDate()-i);
-    const key = d.toISOString().slice(0,10);
-    const v   = map[key] || 0;
-    const lvl = v === 0 ? '' : v<=1 ? 'l1' : v<=3 ? 'l2' : v<=6 ? 'l3' : 'l4';
-    const delay = ((29 - i) * 18) + 'ms';
-    cells.push(`<div class="heatmap-cell ${lvl}" title="${key}: ${v} solve${v!==1?'s':''}" style="animation-delay:${delay}"></div>`);
-  }
-  container.innerHTML = cells.join('');
+export function avatar(url, name = "?", size = 40) {
+  if (url) return `<img src="${url}" alt="${name}" style="width:${size}px;height:${size}px;border-radius:50%;object-fit:cover;">`;
+  const initials = (name||"?").split(" ").map(w=>w[0]).slice(0,2).join("").toUpperCase();
+  return `<div style="width:${size}px;height:${size}px;border-radius:50%;background:var(--primary);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:${size*0.38}px;">${initials}</div>`;
 }
 
-export function countUp(el, end, duration = 900, decimals = 0) {
-  if (!el || end == null || isNaN(Number(end))) return;
-  const endNum = Number(end);
-  const start  = 0;
-  const startTime = performance.now();
-  const easeOut = t => 1 - Math.pow(1 - t, 3);
-  function tick(now) {
-    const elapsed = now - startTime;
-    const progress = Math.min(elapsed / duration, 1);
-    const value = start + (endNum - start) * easeOut(progress);
-    el.textContent = decimals > 0 ? value.toFixed(decimals) : Math.round(value).toLocaleString();
-    if (progress < 1) requestAnimationFrame(tick);
-    else el.textContent = decimals > 0 ? endNum.toFixed(decimals) : endNum.toLocaleString();
-  }
-  requestAnimationFrame(tick);
+export function scoreBar(score, max = 1000) {
+  const pct = Math.min(100, Math.round((score / max) * 100));
+  return `<div style="background:#e2e8f0;border-radius:4px;height:8px;width:100%;overflow:hidden;">
+    <div style="background:var(--primary);height:100%;width:${pct}%;transition:width .4s;"></div></div>`;
+}
+
+export function buildTable(headers, rows, emptyMsg = "No data") {
+  if (!rows.length) return `<p style="color:var(--muted);text-align:center;padding:2rem;">${emptyMsg}</p>`;
+  const ths = headers.map(h=>`<th>${h}</th>`).join("");
+  const trs = rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join("")}</tr>`).join("");
+  return `<table class="data-table"><thead><tr>${ths}</tr></thead><tbody>${trs}</tbody></table>`;
+}
+
+export function debounce(fn, ms=300) {
+  let t; return (...a) => { clearTimeout(t); t = setTimeout(()=>fn(...a), ms); };
+}
+
+export function getRoleBadge(role) {
+  const colors = { admin:"#7c3aed", trainer:"#0284c7", student:"#059669" };
+  return `<span style="background:${colors[role]||"#6b7280"};color:#fff;padding:2px 8px;border-radius:9999px;font-size:.75rem;font-weight:600;">${role}</span>`;
 }
