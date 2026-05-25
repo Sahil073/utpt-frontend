@@ -159,14 +159,25 @@ menuBtn?.addEventListener('click',toggleSidebar);overlay?.addEventListener('clic
       document.getElementById('questionsSkeletonCard').style.display = 'none';
       document.getElementById('questionsRealCard').style.display = '';
       if (sp) sp.style.display = "none";
-      const items = res.data || [];
-      const rows = items.map(q => [
-        `<span style="font-weight:600;color:var(--text);">${q.title || "—"}</span>`,
-        q.difficulty ? `<span style="background:${diffBg[q.difficulty]||"#f1f5f9"};color:${diffColors[q.difficulty]||"#475569"};padding:.2rem .625rem;border-radius:9999px;font-size:.75rem;font-weight:700;">${q.difficulty}</span>` : "—",
-        (q.tags||[]).map(t=>`<span class="badge badge-purple">${t}</span>`).join(" ") || "—",
-        q.platform ? `<span class="badge badge-muted">${q.platform}</span>` : "—",
-        q.link ? `<a href="${q.link}" target="_blank" class="btn btn-sm btn-outline">Solve →</a>` : "—",
-      ]);
+      const items = (res.data && res.data.questions) ? res.data.questions : (Array.isArray(res.data) ? res.data : []);
+      const rows = items.map(q => {
+        const platformLink = q.platform_link || q.link || "";
+        let platformName = "—";
+        if (platformLink) {
+          if (platformLink.includes("leetcode")) platformName = "LeetCode";
+          else if (platformLink.includes("codeforces")) platformName = "Codeforces";
+          else if (platformLink.includes("hackerrank")) platformName = "HackerRank";
+          else if (platformLink.includes("geeksforgeeks") || platformLink.includes("gfg")) platformName = "GFG";
+          else platformName = "External";
+        }
+        return [
+          `<span style="font-weight:600;color:var(--text);">${q.title || "—"}</span>`,
+          q.difficulty ? `<span style="background:${diffBg[q.difficulty]||"#f1f5f9"};color:${diffColors[q.difficulty]||"#475569"};padding:.2rem .625rem;border-radius:9999px;font-size:.75rem;font-weight:700;">${q.difficulty}</span>` : "—",
+          (q.tags||[]).map(t=>`<span class="badge badge-purple">${t}</span>`).join(" ") || "—",
+          platformLink ? `<span class="badge badge-muted">${platformName}</span>` : "—",
+          platformLink ? `<a href="${platformLink}" target="_blank" class="btn btn-sm btn-outline">Solve →</a>` : "—",
+        ];
+      });
       $("#questionsTable").innerHTML = buildTable(["Title","Difficulty","Tags","Platform","Link"], rows, "No questions found");
     } catch (err) {
       document.getElementById('questionsSkeletonCard').style.display = 'none';
@@ -182,7 +193,7 @@ menuBtn?.addEventListener('click',toggleSidebar);overlay?.addEventListener('clic
     const diff = $("#diffFilter")?.value;
     const topic = $("#topicFilter")?.value?.trim();
     if (diff) filter.difficulty = diff;
-    if (topic) filter.topic = topic;
+    if (topic) filter.tag = topic;
     load(filter);
   });
 

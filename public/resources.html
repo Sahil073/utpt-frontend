@@ -154,9 +154,9 @@ menuBtn?.addEventListener('click',toggleSidebar);overlay?.addEventListener('clic
   if (sidebarAvatar) sidebarAvatar.textContent = (user.name||'?')[0].toUpperCase();
   document.getElementById("logoutBtn").addEventListener("click", logout);
 
-  const typeIcons = { video:"🎥", article:"📄", book:"📖", course:"🎓" };
-  const typeBg = { video:"#fef2f2", article:"#eff6ff", book:"#f5f3ff", course:"#ecfdf5" };
-  const typeBadge = { video:"badge-danger", article:"badge-info", book:"badge-purple", course:"badge-success" };
+  const fileTypeIcons = { pdf:"📄", video:"🎥", doc:"📝", zip:"📦" };
+  const fileTypeBg    = { pdf:"#eff6ff", video:"#fef2f2", doc:"#f5f3ff", zip:"#f0fdf4" };
+  const fileTypeBadge = { pdf:"badge-info", video:"badge-danger", doc:"badge-purple", zip:"badge-success" };
 
   async function load(filter = {}) {
     const grid = document.getElementById("resourcesGrid");
@@ -165,24 +165,29 @@ menuBtn?.addEventListener('click',toggleSidebar);overlay?.addEventListener('clic
     grid.style.display = 'none';
     try {
       const res = await resourcesApi.list(filter);
-      const items = res.data || [];
+      const items = (res.data && res.data.resources) ? res.data.resources : (Array.isArray(res.data) ? res.data : []);
       skeleton.style.display = 'none';
       grid.style.display = 'grid';
       if (!items.length) {
         grid.innerHTML = `<div class="card" style="grid-column:1/-1;"><div class="empty-state"><div class="empty-icon">📭</div><p>No resources found. Try adjusting your filters.</p></div></div>`;
         return;
       }
-      grid.innerHTML = items.map((r, i) => `
+      grid.innerHTML = items.map((r, i) => {
+        const ftype = (r.file_type || r.type || "pdf").toLowerCase();
+        const uploadedBy = r.users ? (r.users.name || r.users.username || "") : "";
+        return `
         <div class="card fade-up" style="animation-delay:${i*0.05}s;display:flex;flex-direction:column;gap:.625rem;">
           <div style="display:flex;align-items:flex-start;justify-content:space-between;">
-            <div style="width:44px;height:44px;border-radius:.75rem;background:${typeBg[r.type]||"#f5f3ff"};display:flex;align-items:center;justify-content:center;font-size:1.25rem;">${typeIcons[r.type]||"📌"}</div>
-            <span class="badge ${typeBadge[r.type]||"badge-muted"}">${r.type||"—"}</span>
+            <div style="width:44px;height:44px;border-radius:.75rem;background:${fileTypeBg[ftype]||"#f5f3ff"};display:flex;align-items:center;justify-content:center;font-size:1.25rem;">${fileTypeIcons[ftype]||"📌"}</div>
+            <span class="badge ${fileTypeBadge[ftype]||"badge-muted"}">${ftype.toUpperCase()}</span>
           </div>
           <h3 style="font-size:.9375rem;font-weight:700;color:var(--text);line-height:1.35;">${r.title||"Untitled"}</h3>
           ${r.description ? `<p style="font-size:.8rem;color:var(--muted);line-height:1.6;flex:1;">${r.description}</p>` : ""}
-          ${r.tags?.length ? `<div style="display:flex;flex-wrap:wrap;gap:.25rem;">${r.tags.map(t=>`<span class="badge badge-purple">${t}</span>`).join("")}</div>` : ""}
-          ${r.url ? `<a href="${r.url}" target="_blank" class="btn btn-primary btn-sm" style="align-self:flex-start;margin-top:.25rem;">Open Resource →</a>` : ""}
-        </div>`).join("");
+          ${r.subject ? `<div style="display:flex;flex-wrap:wrap;gap:.25rem;"><span class="badge badge-purple">${r.subject}</span>${r.batch ? `<span class="badge badge-muted">${r.batch}</span>` : ""}</div>` : (r.batch ? `<div><span class="badge badge-muted">${r.batch}</span></div>` : "")}
+          ${uploadedBy ? `<p style="font-size:.75rem;color:var(--muted);margin:0;">By ${uploadedBy}</p>` : ""}
+          ${(r.file_url || r.url) ? `<a href="${r.file_url || r.url}" target="_blank" class="btn btn-primary btn-sm" style="align-self:flex-start;margin-top:.25rem;">Open Resource →</a>` : ""}
+        </div>`;
+      }).join("");
     } catch (err) {
       skeleton.style.display = 'none';
       grid.style.display = 'grid';
@@ -195,8 +200,8 @@ menuBtn?.addEventListener('click',toggleSidebar);overlay?.addEventListener('clic
     const filter = {};
     const cat = document.getElementById("catFilter")?.value?.trim();
     const type = document.getElementById("typeFilter")?.value;
-    if (cat) filter.category = cat;
-    if (type) filter.type = type;
+    if (cat) filter.subject = cat;
+    if (type) filter.file_type = type;
     load(filter);
   });
 
