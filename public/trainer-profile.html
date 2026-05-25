@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>UTPT – Trainer Profile</title>
+  <title>UTPT Trainer – My Profile</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/main.css">
@@ -11,17 +11,8 @@
 <body>
 
 <div id="page-loader">
-  <div class="loader-logo">
-    <div class="loader-icon">U</div>
-    <div>
-      <div class="loader-text"><span>U</span><span>T</span><span>P</span><span>T</span></div>
-      <div class="loader-sub">Trainer Panel</div>
-    </div>
-  </div>
-  <div class="loader-flower">
-    <div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div>
-    <div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div>
-  </div>
+  <div class="loader-logo"><div class="loader-icon">U</div><div><div class="loader-text"><span>U</span><span>T</span><span>P</span><span>T</span></div><div class="loader-sub">Trainer Panel</div></div></div>
+  <div class="loader-flower"><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div></div>
 </div>
 
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
@@ -29,77 +20,49 @@
 
 <div class="app-shell">
   <nav class="sidebar" id="sidebar">
-    <a class="sidebar-logo" href="/trainer.html">
-      <div class="sidebar-logo-icon">U</div>
-      <div class="sidebar-logo-text">
-        <div class="sidebar-logo-name">UTPT</div>
-        <div class="sidebar-logo-sub">Trainer</div>
-      </div>
-    </a>
+    <a class="sidebar-logo" href="/trainer-dashboard.html"><div class="sidebar-logo-icon">U</div><div class="sidebar-logo-text"><div class="sidebar-logo-name">UTPT</div><div class="sidebar-logo-sub">Trainer</div></div></a>
     <div class="sidebar-nav">
-      <a href="/trainer.html" class="nav-item">
-        <span class="icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg></span>
-        Dashboard
-      </a>
-      <a href="/trainer-profile.html" class="nav-item active">
-        <span class="icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></span>
-        My Profile
-      </a>
-      <a href="/leaderboard.html" class="nav-item">
-        <span class="icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6l4-4 4 4"/><path d="M12 2v10.3"/><path d="M4 13.5A7 7 0 0 0 12 20a7 7 0 0 0 8-6.5"/><path d="M5 17l-1 4h16l-1-4"/></svg></span>
-        Leaderboard
-      </a>
+      <div class="nav-section-label">Main</div>
+      <a href="/trainer-dashboard.html" class="nav-item"><span class="icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg></span>Dashboard</a>
+      <div class="nav-section-label">Content</div>
+      <a href="/trainer-resources.html" class="nav-item"><span class="icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>Resources</a>
+      <a href="/trainer-questions.html" class="nav-item"><span class="icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>Questions</a>
+      <a href="/trainer-leaderboard.html" class="nav-item"><span class="icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6l4-4 4 4"/><path d="M12 2v10.3"/><path d="M4 13.5A7 7 0 0 0 12 20a7 7 0 0 0 8-6.5"/><path d="M5 17l-1 4h16l-1-4"/></svg></span>Leaderboard</a>
+      <a href="/trainer-profile.html" class="nav-item active"><span class="icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></span>My Profile</a>
     </div>
     <div class="sidebar-footer">
-      <div class="sidebar-user">
-        <div class="sidebar-user-avatar" id="sidebarAvatar">T</div>
-        <div class="sidebar-user-info">
-          <span class="nav-user-name" id="navUserName">Loading…</span>
-          <span class="nav-user-role">Trainer</span>
-        </div>
-      </div>
-      <button id="logoutBtn" class="btn btn-ghost btn-sm w-full">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-        Sign Out
-      </button>
+      <div class="sidebar-user"><div class="sidebar-user-avatar" id="sidebarAvatar">T</div><div class="sidebar-user-info"><span class="nav-user-name" id="navUserName">Loading…</span><span class="nav-user-role">Trainer</span></div></div>
+      <button id="logoutBtn" class="btn btn-ghost btn-sm w-full"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign Out</button>
     </div>
   </nav>
 
   <main class="main-content">
-    <div class="page-header fade-up">
-      <div>
-        <h1>Trainer Profile</h1>
-        <p class="page-header-sub">Manage your account details</p>
-      </div>
-    </div>
-
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;max-width:820px;align-items:start;">
-      <!-- Profile Info -->
-      <div class="card fade-up" style="animation-delay:.05s">
-        <div class="card-title"><span class="card-title-accent"></span>Account Details</div>
-        <div id="profileInfo">
-          <div class="loading-row" style="padding:2rem;"><div class="spinner"></div> Loading…</div>
+    <div class="page-header fade-up"><div><h1>My Profile</h1><p class="page-header-sub">Trainer account information</p></div></div>
+    <div style="max-width:520px;display:flex;flex-direction:column;gap:1.25rem;">
+      <div class="card fade-up">
+        <div class="card-title"><span class="card-title-accent"></span>Account Info</div>
+        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;">
+          <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#0284c7,#38bdf8);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.5rem;" id="avatarInitials">T</div>
+          <div>
+            <div style="font-weight:800;font-size:1.05rem;color:var(--text);" id="profileName">Loading…</div>
+            <div><span class="badge" style="background:linear-gradient(135deg,#0284c7,#38bdf8);color:#fff;padding:2px 10px;border-radius:9999px;font-size:.72rem;font-weight:700;margin-top:.25rem;display:inline-block;">Trainer</span></div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:.5rem;font-size:.8375rem;">
+          <div style="display:flex;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid var(--border-solid);"><span style="color:var(--muted);">College ID</span><span style="font-weight:600;" id="profileCollegeId">—</span></div>
+          <div style="display:flex;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid var(--border-solid);"><span style="color:var(--muted);">Email</span><span style="font-weight:600;" id="profileEmail">—</span></div>
+          <div style="display:flex;justify-content:space-between;padding:.5rem 0;"><span style="color:var(--muted);">Role</span><span style="font-weight:600;">Trainer</span></div>
         </div>
       </div>
 
-      <!-- Change Password -->
-      <div class="card fade-up" style="animation-delay:.1s">
+      <div class="card fade-up" style="animation-delay:.05s">
         <div class="card-title"><span class="card-title-accent"></span>Change Password</div>
         <form id="changePwdForm">
-          <div class="form-group">
-            <label>Current Password</label>
-            <input type="password" id="currentPwd" class="input" required>
-          </div>
-          <div class="form-group">
-            <label>New Password</label>
-            <input type="password" id="newPwd" class="input" placeholder="Min 8 characters" required>
-          </div>
-          <div class="form-group">
-            <label>Confirm New Password</label>
-            <input type="password" id="confirmPwd" class="input" required>
-          </div>
+          <div class="form-group"><label>Current Password</label><input type="password" id="currentPwd" class="input"></div>
+          <div class="form-group"><label>New Password</label><input type="password" id="newPwd" class="input" placeholder="Minimum 8 characters"></div>
+          <div class="form-group"><label>Confirm New Password</label><input type="password" id="confirmPwd" class="input"></div>
           <button type="submit" id="savePwdBtn" class="btn btn-primary">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
             Update Password
           </button>
         </form>
@@ -115,51 +78,39 @@ function toggleSidebar(){sidebar.classList.toggle('open');overlay.classList.togg
 menuBtn?.addEventListener('click',toggleSidebar);overlay?.addEventListener('click',toggleSidebar);
 </script>
 <script type="module">
-  import { requireAuth, logout } from "/js/auth.js";
-  import { students } from "/js/api.js";
-  import { toast, setLoading } from "/js/utils.js";
+import { students } from "/js/api.js";
+import { requireAuth, logout } from "/js/auth.js";
+import { toast, setLoading } from "/js/utils.js";
 
-  const user = await requireAuth(["trainer"]);
-  if (!user) throw new Error("Not authenticated");
+const user = await requireAuth(["trainer"]);
+if (!user) throw new Error("Not authenticated");
 
-  const navUserName = document.getElementById('navUserName');
-  const sidebarAvatar = document.getElementById('sidebarAvatar');
-  if (navUserName) navUserName.textContent = user.name;
-  if (sidebarAvatar) sidebarAvatar.textContent = (user.name||'T')[0].toUpperCase();
-  document.getElementById("logoutBtn").addEventListener("click", logout);
+document.getElementById('navUserName').textContent = user.name;
+document.getElementById('sidebarAvatar').textContent = (user.name||'T')[0].toUpperCase();
+document.getElementById('logoutBtn').addEventListener('click', logout);
 
+document.getElementById('profileName').textContent = user.name || '—';
+document.getElementById('profileCollegeId').textContent = user.college_id || user.collegeId || '—';
+document.getElementById('profileEmail').textContent = user.email || '—';
+document.getElementById('avatarInitials').textContent = (user.name||'T')[0].toUpperCase();
+
+document.getElementById('changePwdForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const cur = document.getElementById('currentPwd').value;
+  const nw = document.getElementById('newPwd').value;
+  const conf = document.getElementById('confirmPwd').value;
+  if (nw !== conf) { toast('Passwords do not match', 'warning'); return; }
+  if ((nw||'').length < 8) { toast('Password must be at least 8 characters', 'warning'); return; }
+  const btn = document.getElementById('savePwdBtn');
+  setLoading(btn, true);
   try {
-    const res = await students.me();
-    const p = res.data;
-    document.getElementById("profileInfo").innerHTML = `
-      <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;">
-        <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.375rem;">${(p.name||'T')[0].toUpperCase()}</div>
-        <div>
-          <div style="font-weight:800;font-size:1.05rem;">${p.name}</div>
-          <span class="badge badge-info">${p.role}</span>
-        </div>
-      </div>
-      <div class="info-row"><span class="label">College ID</span><span class="value">${p.college_id}</span></div>
-      <div class="info-row"><span class="label">Email</span><span class="value" style="font-size:.8125rem;">${p.email}</span></div>
-      <div class="info-row"><span class="label">Role</span><span class="value" style="color:var(--primary);">${p.role}</span></div>`;
-  } catch (err) { document.getElementById("profileInfo").innerHTML = `<p style="color:var(--danger);font-size:.875rem;">Failed to load profile</p>`; }
-
-  document.getElementById("changePwdForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const cur = document.getElementById("currentPwd").value;
-    const nw = document.getElementById("newPwd").value;
-    const conf = document.getElementById("confirmPwd").value;
-    if (nw !== conf) { toast("Passwords do not match", "warning"); return; }
-    if (nw.length < 8) { toast("Min 8 characters", "warning"); return; }
-    const btn = document.getElementById("savePwdBtn");
-    setLoading(btn, true);
-    try {
-      await students.changePassword({ currentPassword: cur, newPassword: nw });
-      toast("Password changed!", "success");
-      e.target.reset();
-    } catch (err) { toast(err.message || "Failed", "error"); }
-    finally { setLoading(btn, false); }
-  });
+    await students.changePassword({ currentPassword: cur, newPassword: nw });
+    toast('Password changed successfully!', 'success');
+    e.target.reset();
+  } catch (err) {
+    toast(err.message || 'Failed to change password', 'error');
+  } finally { setLoading(btn, false); }
+});
 </script>
 </body>
 </html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UTPT – My Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+
+<div id="page-loader">
+  <div class="loader-logo">
+    <div class="loader-icon">U</div>
+    <div>
+      <div class="loader-text"><span>U</span><span>T</span><span>P</span><span>T</span></div>
+      <div class="loader-sub">Student Portal</div>
+    </div>
+  </div>
+  <div class="loader-flower">
+    <div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div>
+    <div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div>
+  </div>
+</div>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<button class="mobile-menu-btn" id="menuBtn" aria-label="Menu"><span></span><span></span><span></span></button>
+
+<div class="app-shell">
+  <nav class="sidebar" id="sidebar">
+    <a class="sidebar-logo" href="/student-dashboard.html">
+      <div class="sidebar-logo-icon">U</div>
+      <div class="sidebar-logo-text">
+        <div class="sidebar-logo-name">UTPT</div>
+        <div class="sidebar-logo-sub">Student</div>
+      </div>
+    </a>
+    <div class="sidebar-nav">
+      <a href="/student-dashboard.html" class="nav-item active">
+        <span class="icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg></span>
+        Dashboard
+      </a>
+      <a href="/student-leaderboard.html" class="nav-item">
+        <span class="icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6l4-4 4 4"/><path d="M12 2v10.3"/><path d="M4 13.5A7 7 0 0 0 12 20a7 7 0 0 0 8-6.5"/><path d="M5 17l-1 4h16l-1-4"/></svg></span>
+        Leaderboard
+      </a>
+      <a href="/student-profile.html" class="nav-item">
+        <span class="icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></span>
+        My Profile
+      </a>
+      <a href="/student-questions.html" class="nav-item">
+        <span class="icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+        Questions
+      </a>
+      <a href="/student-resources.html" class="nav-item">
+        <span class="icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
+        Resources
+      </a>
+    </div>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-user-avatar" id="sidebarAvatar">?</div>
+        <div class="sidebar-user-info">
+          <span class="nav-user-name" id="navUserName">Loading…</span>
+          <span class="nav-user-role">Student</span>
+        </div>
+      </div>
+      <button id="logoutBtn" class="btn btn-ghost btn-sm w-full">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Sign Out
+      </button>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <div class="page-header fade-up">
+      <div>
+        <h1>Dashboard</h1>
+        <p class="page-header-sub">Your placement readiness overview</p>
+      </div>
+      <div style="display:flex;gap:.625rem;flex-wrap:wrap;">
+        <button id="syncCodingBtn" class="btn btn-outline btn-sm">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3"/></svg>
+          Sync Coding
+        </button>
+        <button id="syncGitHubBtn" class="btn btn-outline btn-sm">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          Sync GitHub
+        </button>
+        <button id="changePwdBtn" class="btn btn-ghost btn-sm">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Change Password
+        </button>
+      </div>
+    </div>
+
+    <!-- Skeleton stats -->
+    <div class="stats-grid stagger" id="statsGridSkeleton">
+      <div class="skeleton-stat-card"><div class="skeleton" style="width:2rem;height:2rem;border-radius:.5rem;margin-bottom:.875rem;"></div><div class="skeleton" style="width:4rem;height:1.875rem;margin-bottom:.375rem;"></div><div class="skeleton skeleton-sm" style="width:5rem;"></div></div>
+      <div class="skeleton-stat-card"><div class="skeleton" style="width:2rem;height:2rem;border-radius:.5rem;margin-bottom:.875rem;"></div><div class="skeleton" style="width:3rem;height:1.875rem;margin-bottom:.375rem;"></div><div class="skeleton skeleton-sm" style="width:4rem;"></div></div>
+      <div class="skeleton-stat-card"><div class="skeleton" style="width:2rem;height:2rem;border-radius:.5rem;margin-bottom:.875rem;"></div><div class="skeleton" style="width:3.5rem;height:1.875rem;margin-bottom:.375rem;"></div><div class="skeleton skeleton-sm" style="width:5.5rem;"></div></div>
+      <div class="skeleton-stat-card"><div class="skeleton" style="width:2rem;height:2rem;border-radius:.5rem;margin-bottom:.875rem;"></div><div class="skeleton" style="width:4.5rem;height:1.875rem;margin-bottom:.375rem;"></div><div class="skeleton skeleton-sm" style="width:6rem;"></div></div>
+      <div class="skeleton-stat-card"><div class="skeleton" style="width:2rem;height:2rem;border-radius:.5rem;margin-bottom:.875rem;"></div><div class="skeleton" style="width:3.5rem;height:1.875rem;margin-bottom:.375rem;"></div><div class="skeleton skeleton-sm" style="width:5rem;"></div></div>
+      <div class="skeleton-stat-card"><div class="skeleton" style="width:2rem;height:2rem;border-radius:.5rem;margin-bottom:.875rem;"></div><div class="skeleton" style="width:3rem;height:1.875rem;margin-bottom:.375rem;"></div><div class="skeleton skeleton-sm" style="width:4.5rem;"></div></div>
+    </div>
+
+    <!-- Real stats -->
+    <div class="stats-grid stagger" id="statsGrid" style="display:none;">
+      <div class="stat-card"><div class="stat-card-icon">🎯</div><div class="stat-value" id="totalScore">—</div><div class="stat-label">Total UTPT Score</div></div>
+      <div class="stat-card"><div class="stat-card-icon">🏆</div><div class="stat-value" id="myRank">—</div><div class="stat-label">Your Rank</div></div>
+      <div class="stat-card"><div class="stat-card-icon">💻</div><div class="stat-value" id="lcSolved">—</div><div class="stat-label">LeetCode Solved</div></div>
+      <div class="stat-card"><div class="stat-card-icon">⚡</div><div class="stat-value" id="cfRating">—</div><div class="stat-label">Codeforces Rating</div></div>
+      <div class="stat-card"><div class="stat-card-icon">🐙</div><div class="stat-value" id="ghCommits">—</div><div class="stat-label">GitHub Commits</div></div>
+      <div class="stat-card"><div class="stat-card-icon">📈</div><div class="stat-value" id="rankScore">—</div><div class="stat-label">Rank Score</div></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.25rem;margin-top:1.25rem;">
+      <div class="skeleton-card" id="profileCardSkeleton">
+        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;"><div class="skeleton" style="width:52px;height:52px;border-radius:50%;flex-shrink:0;"></div><div style="flex:1;"><div class="skeleton skeleton-title" style="margin-bottom:.5rem;"></div><div class="skeleton skeleton-sm" style="width:70%;"></div></div></div>
+        <div class="skeleton skeleton-text" style="margin-bottom:.5rem;"></div><div class="skeleton skeleton-text" style="width:80%;margin-bottom:.5rem;"></div><div class="skeleton skeleton-text" style="width:65%;"></div>
+      </div>
+      <div class="card" id="profileCard" style="display:none;">
+        <div class="card-title"><span class="card-title-accent"></span>Your Profile</div>
+        <div id="profileCardContent"></div>
+      </div>
+
+      <div class="skeleton-card" id="scoreCardSkeleton">
+        <div class="skeleton skeleton-title" style="margin-bottom:1.25rem;"></div>
+        <div class="skeleton skeleton-text" style="margin-bottom:.75rem;"></div><div class="skeleton" style="height:7px;border-radius:9999px;margin-bottom:1rem;"></div>
+        <div class="skeleton skeleton-text" style="margin-bottom:.75rem;"></div><div class="skeleton" style="height:7px;border-radius:9999px;margin-bottom:1rem;"></div>
+        <div class="skeleton skeleton-text" style="margin-bottom:.75rem;"></div><div class="skeleton" style="height:7px;border-radius:9999px;"></div>
+      </div>
+      <div class="card" id="scoreCard" style="display:none;">
+        <div class="card-title"><span class="card-title-accent"></span>Score Breakdown</div>
+        <div style="margin-bottom:1.25rem;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:.375rem;"><span style="font-size:.8375rem;color:var(--muted);font-weight:500;">Academics (30%)</span><span id="acadScore" style="font-weight:700;color:var(--text);">—</span></div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:.375rem;"><span style="font-size:.8375rem;color:var(--muted);font-weight:500;">Coding (50%)</span><span id="codingScore" style="font-weight:700;color:var(--text);">—</span></div>
+          <div style="display:flex;justify-content:space-between;"><span style="font-size:.8375rem;color:var(--muted);font-weight:500;">Development (20%)</span><span id="devScore" style="font-weight:700;color:var(--text);">—</span></div>
+        </div>
+        <div id="scoreBreakdown"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+window.addEventListener('load', () => { setTimeout(() => { const l=document.getElementById('page-loader'); if(l) l.classList.add('hide'); }, 700); });
+const menuBtn=document.getElementById('menuBtn'),sidebar=document.getElementById('sidebar'),overlay=document.getElementById('sidebarOverlay');
+function toggleSidebar(){sidebar.classList.toggle('open');overlay.classList.toggle('show');}
+menuBtn?.addEventListener('click',toggleSidebar);overlay?.addEventListener('click',toggleSidebar);
+</script>
+<script type="module">
+import { students, leaderboard } from "/js/api.js";
+import { requireAuth, logout } from "/js/auth.js";
+import { $, toast, avatar } from "/js/utils.js";
+
+const user = await requireAuth(["student"]);
+if (!user) throw new Error("Not authenticated");
+
+document.getElementById('navUserName').textContent = user.name;
+document.getElementById('sidebarAvatar').textContent = (user.name||'?')[0].toUpperCase();
+document.getElementById('logoutBtn').addEventListener('click', logout);
+
+if (sessionStorage.getItem('force_pwd_change') === '1') showChangePwdModal();
+
+async function loadDashboard() {
+  try {
+    const [profileRes, statsRes, rankRes] = await Promise.all([
+      students.me(), students.stats(), leaderboard.myRank()
+    ]);
+    const p = profileRes.data, s = statsRes.data, r = rankRes.data;
+
+    // Stats
+    document.getElementById('totalScore').textContent  = s.score?.total_score ?? 0;
+    document.getElementById('myRank').textContent      = r.rank ? `#${r.rank}` : 'Unranked';
+    document.getElementById('lcSolved').textContent    = s.coding?.leetcode_solved ?? 0;
+    document.getElementById('cfRating').textContent    = s.coding?.codeforces_rating ?? 0;
+    document.getElementById('ghCommits').textContent   = s.github?.total_commits ?? 0;
+    document.getElementById('rankScore').textContent   = r.score ?? 0;
+    document.getElementById('acadScore').textContent   = s.score?.academics_score ?? 0;
+    document.getElementById('codingScore').textContent = s.score?.coding_score ?? 0;
+    document.getElementById('devScore').textContent    = s.score?.dev_score ?? 0;
+
+    // Score bars
+    document.getElementById('scoreBreakdown').innerHTML = `
+      <div class="score-bar-wrap"><div class="score-bar-label"><span>Academics</span><span>${s.score?.academics_score||0}</span></div><div class="score-bar-bg"><div class="score-bar-fill" style="width:${Math.min(100,(s.score?.academics_score||0)/3)}%"></div></div></div>
+      <div class="score-bar-wrap"><div class="score-bar-label"><span>Coding</span><span>${s.score?.coding_score||0}</span></div><div class="score-bar-bg"><div class="score-bar-fill" style="width:${Math.min(100,(s.score?.coding_score||0)/5)}%"></div></div></div>
+      <div class="score-bar-wrap"><div class="score-bar-label"><span>Development</span><span>${s.score?.dev_score||0}</span></div><div class="score-bar-bg"><div class="score-bar-fill" style="width:${Math.min(100,(s.score?.dev_score||0)/2)}%"></div></div></div>`;
+
+    // Profile card
+    document.getElementById('profileCardContent').innerHTML = `
+      <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.125rem;">
+        ${avatar(p.avatar_url, p.name, 56)}
+        <div>
+          <h2 style="margin:0;font-size:1.1rem;font-weight:800;color:var(--text);">${p.name}</h2>
+          <p style="margin:.125rem 0 0;color:var(--muted);font-size:.8125rem;">${p.college_id} · <span style="color:var(--primary);font-weight:600;">Student</span></p>
+          <p style="margin:.125rem 0 0;color:var(--muted);font-size:.8rem;">${p.batch||''} ${p.specialization ? '· ' + p.specialization : ''}</p>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:.25rem;font-size:.8375rem;">
+        <div style="display:flex;justify-content:space-between;padding:.375rem 0;border-bottom:1px solid var(--border-solid);"><span style="color:var(--muted);">LeetCode</span><span style="font-weight:600;">${p.leetcode_username||'<em style="font-weight:400;color:var(--muted);">Not set</em>'}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:.375rem 0;border-bottom:1px solid var(--border-solid);"><span style="color:var(--muted);">Codeforces</span><span style="font-weight:600;">${p.codeforces_username||'<em style="font-weight:400;color:var(--muted);">Not set</em>'}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:.375rem 0;border-bottom:1px solid var(--border-solid);"><span style="color:var(--muted);">GitHub</span><span style="font-weight:600;">${p.github_username||'<em style="font-weight:400;color:var(--muted);">Not set</em>'}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:.375rem 0;"><span style="color:var(--muted);">Email</span><span style="font-weight:600;font-size:.8rem;">${p.email}</span></div>
+      </div>`;
+
+    // Swap skeletons
+    document.getElementById('statsGridSkeleton').style.display = 'none';
+    document.getElementById('statsGrid').style.display = '';
+    document.getElementById('profileCardSkeleton').style.display = 'none';
+    document.getElementById('profileCard').style.display = '';
+    document.getElementById('scoreCardSkeleton').style.display = 'none';
+    document.getElementById('scoreCard').style.display = '';
+  } catch (err) {
+    document.getElementById('statsGridSkeleton').style.display = 'none';
+    document.getElementById('statsGrid').style.display = '';
+    document.getElementById('profileCardSkeleton').style.display = 'none';
+    document.getElementById('profileCard').style.display = '';
+    document.getElementById('scoreCardSkeleton').style.display = 'none';
+    document.getElementById('scoreCard').style.display = '';
+    toast(err.message || 'Failed to load dashboard', 'error');
+  }
+}
+
+document.getElementById('syncCodingBtn').addEventListener('click', async () => {
+  try { await students.syncCoding(); toast('Coding sync started. Check back in a moment.', 'info'); }
+  catch (err) { toast(err.message, 'error'); }
+});
+document.getElementById('syncGitHubBtn').addEventListener('click', async () => {
+  try { await students.syncGitHub(); toast('GitHub sync started. Check back in a moment.', 'info'); }
+  catch (err) { toast(err.message, 'error'); }
+});
+document.getElementById('changePwdBtn').addEventListener('click', showChangePwdModal);
+
+function showChangePwdModal() {
+  let modal = document.getElementById('changePwdModal');
+  if (modal) { modal.style.display = 'flex'; return; }
+  modal = document.createElement('div');
+  modal.id = 'changePwdModal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(15,7,32,.7);backdrop-filter:blur(4px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem;';
+  modal.innerHTML = `
+    <div style="background:#fff;border-radius:1.25rem;padding:2rem;width:100%;max-width:420px;box-shadow:0 32px 80px rgba(0,0,0,.3);">
+      <h3 style="margin:0 0 .375rem;font-size:1.125rem;font-weight:800;">Change Password</h3>
+      <p style="color:var(--muted);font-size:.8125rem;margin:0 0 1.5rem;line-height:1.6;">Enter your current password and choose a new one.</p>
+      <div class="form-group"><label>Current Password</label><input type="password" id="cpCurrent" class="input"></div>
+      <div class="form-group"><label>New Password</label><input type="password" id="cpNew" class="input" placeholder="Minimum 8 characters"></div>
+      <div class="form-group"><label>Confirm New Password</label><input type="password" id="cpConfirm" class="input"></div>
+      <div style="display:flex;gap:.75rem;margin-top:.5rem;">
+        <button id="cpSave" class="btn btn-primary btn-lg" style="flex:1;">Save Password</button>
+        <button id="cpCancel" class="btn btn-ghost btn-lg">Cancel</button>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+  modal.addEventListener('click', e => { if (e.target === modal) modal.style.display = 'none'; });
+  document.getElementById('cpCancel').addEventListener('click', () => { modal.style.display = 'none'; });
+  document.getElementById('cpSave').addEventListener('click', async () => {
+    const cur = document.getElementById('cpCurrent').value;
+    const nw = document.getElementById('cpNew').value;
+    const conf = document.getElementById('cpConfirm').value;
+    if (!cur || !nw || !conf) { toast('All fields required', 'warning'); return; }
+    if (nw.length < 8) { toast('Password must be at least 8 characters', 'warning'); return; }
+    if (nw !== conf) { toast('Passwords do not match', 'warning'); return; }
+    const btn = document.getElementById('cpSave');
+    btn.disabled = true; btn.textContent = 'Saving…';
+    try {
+      await students.changePassword({ currentPassword: cur, newPassword: nw });
+      toast('Password changed successfully!', 'success');
+      sessionStorage.removeItem('force_pwd_change');
+      modal.remove();
+    } catch (err) {
+      toast(err.message || 'Failed to change password', 'error');
+      btn.disabled = false; btn.textContent = 'Save Password';
+    }
+  });
+}
+
+loadDashboard();
+</script>
+</body>
+</html>

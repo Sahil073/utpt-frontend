@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UTPT Trainer – Resources</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+
+<div id="page-loader">
+  <div class="loader-logo"><div class="loader-icon">U</div><div><div class="loader-text"><span>U</span><span>T</span><span>P</span><span>T</span></div><div class="loader-sub">Trainer Panel</div></div></div>
+  <div class="loader-flower"><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div></div>
+</div>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<button class="mobile-menu-btn" id="menuBtn" aria-label="Menu"><span></span><span></span><span></span></button>
+
+<div class="app-shell">
+  <nav class="sidebar" id="sidebar">
+    <a class="sidebar-logo" href="/trainer-dashboard.html"><div class="sidebar-logo-icon">U</div><div class="sidebar-logo-text"><div class="sidebar-logo-name">UTPT</div><div class="sidebar-logo-sub">Trainer</div></div></a>
+    <div class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <a href="/trainer-dashboard.html" class="nav-item"><span class="icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg></span>Dashboard</a>
+      <div class="nav-section-label">Content</div>
+      <a href="/trainer-resources.html" class="nav-item active"><span class="icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>Resources</a>
+      <a href="/trainer-questions.html" class="nav-item"><span class="icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>Questions</a>
+      <a href="/trainer-leaderboard.html" class="nav-item"><span class="icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6l4-4 4 4"/><path d="M12 2v10.3"/><path d="M4 13.5A7 7 0 0 0 12 20a7 7 0 0 0 8-6.5"/><path d="M5 17l-1 4h16l-1-4"/></svg></span>Leaderboard</a>
+      <a href="/trainer-profile.html" class="nav-item"><span class="icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></span>My Profile</a>
+    </div>
+    <div class="sidebar-footer">
+      <div class="sidebar-user"><div class="sidebar-user-avatar" id="sidebarAvatar">T</div><div class="sidebar-user-info"><span class="nav-user-name" id="navUserName">Loading…</span><span class="nav-user-role">Trainer</span></div></div>
+      <button id="logoutBtn" class="btn btn-ghost btn-sm w-full"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign Out</button>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <div class="page-header fade-up">
+      <div><h1>Resources</h1><p class="page-header-sub">Upload and manage learning materials</p></div>
+      <button id="addResourceBtn" class="btn btn-primary"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Resource</button>
+    </div>
+
+    <div class="card mb-2 fade-up" style="animation-delay:.05s">
+      <form id="filterForm" style="display:flex;flex-wrap:wrap;gap:.75rem;align-items:flex-end;">
+        <div style="flex:2;min-width:160px;"><label style="font-size:.8125rem;font-weight:600;display:block;margin-bottom:.375rem;color:var(--text-2);">Subject</label><input type="text" id="subjectFilter" class="input" placeholder="e.g. DSA"></div>
+        <div style="flex:1;min-width:120px;"><label style="font-size:.8125rem;font-weight:600;display:block;margin-bottom:.375rem;color:var(--text-2);">Batch</label><input type="text" id="batchFilter" class="input" placeholder="e.g. 2021-25"></div>
+        <div style="display:flex;gap:.5rem;padding-bottom:.0625rem;">
+          <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+          <button type="reset" class="btn btn-ghost btn-sm">Reset</button>
+        </div>
+      </form>
+    </div>
+
+    <div id="resourcesSkeleton" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;">
+      <div class="glass-skeleton"><div class="skeleton" style="width:3rem;height:3rem;border-radius:.625rem;margin-bottom:1rem;"></div><div class="skeleton skeleton-title" style="margin-bottom:.625rem;"></div><div class="skeleton skeleton-text" style="margin-bottom:.375rem;"></div><div class="skeleton skeleton-text" style="width:70%;margin-bottom:1rem;"></div><div class="skeleton" style="width:8rem;height:2rem;border-radius:.5rem;"></div></div>
+      <div class="glass-skeleton" style="opacity:.75;"><div class="skeleton" style="width:3rem;height:3rem;border-radius:.625rem;margin-bottom:1rem;"></div><div class="skeleton skeleton-title" style="margin-bottom:.625rem;width:55%;"></div><div class="skeleton skeleton-text" style="margin-bottom:.375rem;"></div><div class="skeleton skeleton-text" style="width:80%;margin-bottom:1rem;"></div><div class="skeleton" style="width:7rem;height:2rem;border-radius:.5rem;"></div></div>
+    </div>
+    <div id="resourcesGrid" style="display:none;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;"></div>
+  </main>
+</div>
+
+<script>
+window.addEventListener('load', () => { setTimeout(() => { const l=document.getElementById('page-loader'); if(l) l.classList.add('hide'); }, 700); });
+const menuBtn=document.getElementById('menuBtn'),sidebar=document.getElementById('sidebar'),overlay=document.getElementById('sidebarOverlay');
+function toggleSidebar(){sidebar.classList.toggle('open');overlay.classList.toggle('show');}
+menuBtn?.addEventListener('click',toggleSidebar);overlay?.addEventListener('click',toggleSidebar);
+</script>
+<script type="module">
+import { resources as resourcesApi } from "/js/api.js";
+import { requireAuth, logout } from "/js/auth.js";
+import { toast, setLoading } from "/js/utils.js";
+
+const user = await requireAuth(["trainer"]);
+if (!user) throw new Error("Not authenticated");
+
+document.getElementById('navUserName').textContent = user.name;
+document.getElementById('sidebarAvatar').textContent = (user.name||'T')[0].toUpperCase();
+document.getElementById('logoutBtn').addEventListener('click', logout);
+
+const fileTypeIcons = { pdf:"📄", video:"🎥", doc:"📝", zip:"📦" };
+const fileTypeBg    = { pdf:"#eff6ff", video:"#fef2f2", doc:"#f5f3ff", zip:"#f0fdf4" };
+const fileTypeBadge = { pdf:"badge-info", video:"badge-danger", doc:"badge-purple", zip:"badge-success" };
+let currentFilter = {};
+
+async function load(filter = {}) {
+  currentFilter = filter;
+  const grid = document.getElementById('resourcesGrid');
+  const skeleton = document.getElementById('resourcesSkeleton');
+  skeleton.style.display = 'grid'; grid.style.display = 'none';
+  try {
+    const res = await resourcesApi.list(filter);
+    const items = res.data?.resources ?? (Array.isArray(res.data) ? res.data : []);
+    skeleton.style.display = 'none'; grid.style.display = 'grid';
+    if (!items.length) {
+      grid.innerHTML = `<div class="card" style="grid-column:1/-1;text-align:center;padding:2.5rem;"><div style="font-size:2rem;margin-bottom:.75rem;">📭</div><p style="color:var(--muted);">No resources found.</p></div>`;
+      return;
+    }
+    grid.innerHTML = items.map((r, i) => {
+      const ftype = (r.file_type || r.type || 'pdf').toLowerCase();
+      return `<div class="card fade-up" style="animation-delay:${i*0.04}s;display:flex;flex-direction:column;gap:.625rem;">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;">
+          <div style="width:44px;height:44px;border-radius:.75rem;background:${fileTypeBg[ftype]||'#f5f3ff'};display:flex;align-items:center;justify-content:center;font-size:1.25rem;">${fileTypeIcons[ftype]||'📌'}</div>
+          <span class="badge ${fileTypeBadge[ftype]||'badge-muted'}">${ftype.toUpperCase()}</span>
+        </div>
+        <h3 style="font-size:.9375rem;font-weight:700;color:var(--text);line-height:1.35;">${r.title||'Untitled'}</h3>
+        ${r.description ? `<p style="font-size:.8rem;color:var(--muted);line-height:1.6;flex:1;">${r.description}</p>` : ''}
+        ${r.subject ? `<div><span class="badge badge-purple">${r.subject}</span>${r.batch ? ` <span class="badge badge-muted">${r.batch}</span>` : ''}</div>` : (r.batch ? `<div><span class="badge badge-muted">${r.batch}</span></div>` : '')}
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.25rem;">
+          ${(r.file_url || r.url) ? `<a href="${r.file_url||r.url}" target="_blank" class="btn btn-sm btn-outline">Open →</a>` : ''}
+          <button class="btn btn-sm btn-danger" onclick="window._deleteResource('${r.id}','${(r.title||'').replace(/'/g,"\\'")}')">Delete</button>
+        </div>
+      </div>`;
+    }).join('');
+  } catch (err) {
+    skeleton.style.display = 'none'; grid.style.display = 'grid';
+    grid.innerHTML = `<div class="card" style="grid-column:1/-1;text-align:center;padding:2.5rem;"><p style="color:var(--danger);">${err.message}</p></div>`;
+  }
+}
+
+window._deleteResource = async (id, title) => {
+  if (!confirm(`Delete "${title}"?`)) return;
+  try {
+    await resourcesApi.remove(id);
+    toast('Resource deleted', 'success');
+    load(currentFilter);
+  } catch (err) { toast(err.message, 'error'); }
+};
+
+document.getElementById('filterForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const filter = {};
+  const sub = document.getElementById('subjectFilter').value.trim();
+  const batch = document.getElementById('batchFilter').value.trim();
+  if (sub) filter.subject = sub;
+  if (batch) filter.batch = batch;
+  load(filter);
+});
+document.getElementById('filterForm').addEventListener('reset', () => setTimeout(() => load(), 50));
+
+document.getElementById('addResourceBtn').addEventListener('click', () => {
+  let modal = document.getElementById('addResourceModal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'addResourceModal';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(15,7,32,.7);backdrop-filter:blur(4px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem;overflow-y:auto;';
+    document.body.appendChild(modal);
+    modal.addEventListener('click', e => { if (e.target === modal) modal.style.display = 'none'; });
+  }
+  modal.innerHTML = `
+    <div style="background:#fff;border-radius:1.25rem;padding:2rem;width:100%;max-width:500px;box-shadow:0 32px 80px rgba(0,0,0,.3);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
+        <h3 style="margin:0;font-weight:800;">Add Resource</h3>
+        <button onclick="document.getElementById('addResourceModal').style.display='none'" class="btn btn-ghost btn-sm">✕</button>
+      </div>
+      <form id="addResourceForm">
+        <div class="form-group"><label>Title *</label><input type="text" id="resTitle" class="input" required></div>
+        <div class="form-group"><label>Description</label><textarea id="resDesc" class="input" rows="3" style="resize:vertical;"></textarea></div>
+        <div class="form-group"><label>File URL *</label><input type="url" id="resUrl" class="input" required placeholder="https://…"></div>
+        <div class="form-group"><label>File Type</label>
+          <select id="resFileType" class="input"><option value="pdf">PDF</option><option value="video">Video</option><option value="doc">Document</option><option value="zip">ZIP</option></select>
+        </div>
+        <div class="form-group"><label>Subject</label><input type="text" id="resSubject" class="input" placeholder="e.g. DSA"></div>
+        <div class="form-group"><label>Batch <span style="font-weight:400;font-size:.75rem;color:var(--muted);">(optional)</span></label><input type="text" id="resBatch" class="input" placeholder="e.g. 2021-25"></div>
+        <div style="display:flex;gap:.75rem;margin-top:.5rem;">
+          <button type="submit" id="saveResourceBtn" class="btn btn-primary" style="flex:1;">Upload Resource</button>
+          <button type="button" class="btn btn-ghost" onclick="document.getElementById('addResourceModal').style.display='none'">Cancel</button>
+        </div>
+      </form>
+    </div>`;
+  modal.style.display = 'flex';
+
+  document.getElementById('addResourceForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const body = {
+      title:       document.getElementById('resTitle').value.trim(),
+      description: document.getElementById('resDesc').value.trim(),
+      file_url:    document.getElementById('resUrl').value.trim(),
+      file_type:   document.getElementById('resFileType').value,
+      subject:     document.getElementById('resSubject').value.trim(),
+      batch:       document.getElementById('resBatch').value.trim() || undefined,
+    };
+    const btn = document.getElementById('saveResourceBtn');
+    setLoading(btn, true);
+    try {
+      await resourcesApi.create(body);
+      toast('Resource added!', 'success');
+      modal.style.display = 'none';
+      load(currentFilter);
+    } catch (err) {
+      toast(err.message || 'Failed to add resource', 'error');
+    } finally { setLoading(btn, false); }
+  });
+});
+
+load();
+</script>
+</body>
+</html>

@@ -46,7 +46,6 @@ export async function requireAuth(allowedRoles = null) {
     return null;
   }
 
-  // Role guard: redirect to correct dashboard
   if (allowedRoles && !allowedRoles.includes(user.role)) {
     redirectByRole(user.role);
     return null;
@@ -57,9 +56,9 @@ export async function requireAuth(allowedRoles = null) {
 
 export function redirectByRole(role) {
   const map = {
-    admin:   "/admin.html",
-    trainer: "/trainer.html",
-    student: "/dashboard.html",
+    admin:   "/admin-dashboard.html",
+    trainer: "/trainer-dashboard.html",
+    student: "/student-dashboard.html",
   };
   window.location.href = map[role] || "/login.html";
 }

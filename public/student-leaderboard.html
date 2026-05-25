@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UTPT – Leaderboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/main.css">
+  <style>
+    .rank-badge{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;font-weight:800;font-size:.8rem;}
+    .rank-1{background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#fff;box-shadow:0 2px 8px rgba(245,158,11,.4);}
+    .rank-2{background:linear-gradient(135deg,#94a3b8,#cbd5e1);color:#fff;}
+    .rank-3{background:linear-gradient(135deg,#b45309,#d97706);color:#fff;}
+    .rank-other{background:var(--primary-50);color:var(--primary);border:1px solid var(--primary-200);}
+  </style>
+</head>
+<body>
+
+<div id="page-loader">
+  <div class="loader-logo"><div class="loader-icon">U</div><div><div class="loader-text"><span>U</span><span>T</span><span>P</span><span>T</span></div><div class="loader-sub">Student Portal</div></div></div>
+  <div class="loader-flower"><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div></div>
+</div>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<button class="mobile-menu-btn" id="menuBtn" aria-label="Menu"><span></span><span></span><span></span></button>
+
+<div class="app-shell">
+  <nav class="sidebar" id="sidebar">
+    <a class="sidebar-logo" href="/student-dashboard.html"><div class="sidebar-logo-icon">U</div><div class="sidebar-logo-text"><div class="sidebar-logo-name">UTPT</div><div class="sidebar-logo-sub">Student</div></div></a>
+    <div class="sidebar-nav">
+      <a href="/student-dashboard.html" class="nav-item"><span class="icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg></span>Dashboard</a>
+      <a href="/student-leaderboard.html" class="nav-item active"><span class="icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6l4-4 4 4"/><path d="M12 2v10.3"/><path d="M4 13.5A7 7 0 0 0 12 20a7 7 0 0 0 8-6.5"/><path d="M5 17l-1 4h16l-1-4"/></svg></span>Leaderboard</a>
+      <a href="/student-profile.html" class="nav-item"><span class="icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></span>My Profile</a>
+      <a href="/student-questions.html" class="nav-item"><span class="icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>Questions</a>
+      <a href="/student-resources.html" class="nav-item"><span class="icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>Resources</a>
+    </div>
+    <div class="sidebar-footer">
+      <div class="sidebar-user"><div class="sidebar-user-avatar" id="sidebarAvatar">?</div><div class="sidebar-user-info"><span class="nav-user-name" id="navUserName">Loading…</span><span class="nav-user-role">Student</span></div></div>
+      <button id="logoutBtn" class="btn btn-ghost btn-sm w-full"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign Out</button>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <div class="page-header fade-up">
+      <div><h1>Leaderboard</h1><p class="page-header-sub">See how you rank among all students</p></div>
+    </div>
+
+    <!-- My rank banner -->
+    <div class="card fade-up" style="animation-delay:.05s;background:linear-gradient(135deg,var(--primary-50),#fff);border-color:var(--primary-200);margin-bottom:1.25rem;">
+      <div style="display:flex;align-items:center;gap:.75rem;">
+        <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--primary-light));display:flex;align-items:center;justify-content:center;font-size:1.1rem;">🏆</div>
+        <div id="myRankDisplay" style="font-size:.9375rem;font-weight:600;color:var(--text);">Loading your rank…</div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="card fade-up" style="animation-delay:.08s;margin-bottom:1.25rem;">
+      <form id="filterForm" style="display:flex;flex-wrap:wrap;gap:.75rem;align-items:flex-end;">
+        <div style="flex:1;min-width:130px;">
+          <label style="font-size:.8125rem;font-weight:600;display:block;margin-bottom:.375rem;color:var(--text-2);">Metric</label>
+          <select id="metricSelect" class="input">
+            <option value="total">Total Score</option>
+            <option value="coding">Coding</option>
+            <option value="academic">Academic</option>
+            <option value="dev">Development</option>
+          </select>
+        </div>
+        <div style="flex:1;min-width:130px;">
+          <label style="font-size:.8125rem;font-weight:600;display:block;margin-bottom:.375rem;color:var(--text-2);">Batch</label>
+          <input type="text" id="batchFilter" class="input" placeholder="e.g. 2021-25">
+        </div>
+        <div style="flex:1;min-width:130px;">
+          <label style="font-size:.8125rem;font-weight:600;display:block;margin-bottom:.375rem;color:var(--text-2);">Specialization</label>
+          <input type="text" id="specFilter" class="input" placeholder="e.g. CSE">
+        </div>
+        <div style="display:flex;gap:.5rem;padding-bottom:.0625rem;">
+          <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+          <button type="reset" class="btn btn-ghost btn-sm" id="resetBtn">Reset</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="skeleton-card fade-up" id="lbSkeletonCard" style="animation-delay:.1s;">
+      <div style="display:flex;flex-direction:column;gap:.625rem;">
+        <div class="skeleton" style="height:2.5rem;border-radius:.5rem;"></div>
+        <div class="skeleton" style="height:2.5rem;border-radius:.5rem;opacity:.85;"></div>
+        <div class="skeleton" style="height:2.5rem;border-radius:.5rem;opacity:.7;"></div>
+        <div class="skeleton" style="height:2.5rem;border-radius:.5rem;opacity:.55;"></div>
+        <div class="skeleton" style="height:2.5rem;border-radius:.5rem;opacity:.4;"></div>
+      </div>
+    </div>
+
+    <div class="card fade-up" id="lbCard" style="display:none;animation-delay:.1s;">
+      <div id="leaderboardTable"></div>
+      <div style="display:flex;justify-content:center;gap:.75rem;margin-top:1.25rem;">
+        <button id="prevPage" class="btn btn-ghost btn-sm">← Prev</button>
+        <span id="pageInfo" style="display:flex;align-items:center;font-size:.875rem;color:var(--muted);font-weight:600;">Page 1</span>
+        <button id="nextPage" class="btn btn-ghost btn-sm">Next →</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+window.addEventListener('load', () => { setTimeout(() => { const l=document.getElementById('page-loader'); if(l) l.classList.add('hide'); }, 700); });
+const menuBtn=document.getElementById('menuBtn'),sidebar=document.getElementById('sidebar'),overlay=document.getElementById('sidebarOverlay');
+function toggleSidebar(){sidebar.classList.toggle('open');overlay.classList.toggle('show');}
+menuBtn?.addEventListener('click',toggleSidebar);overlay?.addEventListener('click',toggleSidebar);
+</script>
+<script type="module">
+import { leaderboard as lbApi } from "/js/api.js";
+import { requireAuth, logout } from "/js/auth.js";
+import { $, toast, avatar, buildTable } from "/js/utils.js";
+
+const user = await requireAuth(["student"]);
+if (!user) throw new Error("Not authenticated");
+
+document.getElementById('navUserName').textContent = user.name;
+document.getElementById('sidebarAvatar').textContent = (user.name||'?')[0].toUpperCase();
+document.getElementById('logoutBtn').addEventListener('click', logout);
+
+let currentPage = 1;
+let currentFilter = { metric: 'total', batch: '', specialization: '' };
+
+async function loadLeaderboard() {
+  document.getElementById('lbSkeletonCard').style.display = '';
+  document.getElementById('lbCard').style.display = 'none';
+  try {
+    const params = { metric: currentFilter.metric, page: currentPage };
+    if (currentFilter.batch) params.batch = currentFilter.batch;
+    if (currentFilter.specialization) params.specialization = currentFilter.specialization;
+    const res = await lbApi.filter(params);
+    const entries = res.data;
+    document.getElementById('lbSkeletonCard').style.display = 'none';
+    document.getElementById('lbCard').style.display = '';
+    document.getElementById('pageInfo').textContent = `Page ${currentPage}`;
+
+    const metricLabel = { total:'Total', coding:'Coding', academic:'Academic', dev:'Dev' };
+    const col = metricLabel[currentFilter.metric] || 'Total';
+
+    const rows = entries.map((e, i) => {
+      const rankNum = e.rank || (currentPage - 1) * 20 + i + 1;
+      let rankCell;
+      if (i === 0 && currentPage === 1) rankCell = `<span class="rank-badge rank-1">1</span>`;
+      else if (i === 1 && currentPage === 1) rankCell = `<span class="rank-badge rank-2">2</span>`;
+      else if (i === 2 && currentPage === 1) rankCell = `<span class="rank-badge rank-3">3</span>`;
+      else rankCell = `<span class="rank-badge rank-other">${rankNum}</span>`;
+      return [
+        rankCell,
+        `<div style="display:flex;align-items:center;gap:.625rem;">${avatar(e.avatar_url, e.name, 30)}<span style="font-weight:600;">${e.name}</span></div>`,
+        `<span style="font-size:.8rem;color:var(--muted);">${e.college_id||'—'}</span>`,
+        e.batch ? `<span class="badge badge-muted">${e.batch}</span>` : '—',
+        e.specialization ? `<span class="badge badge-purple">${e.specialization}</span>` : '—',
+        `<span style="font-weight:800;color:var(--primary);font-size:1rem;">${e.metric_score ?? e.total_score ?? 0}</span>`,
+        e.leetcode_solved ?? '—',
+        e.codeforces_rating ?? '—',
+        e.total_commits ?? '—',
+      ];
+    });
+    document.getElementById('leaderboardTable').innerHTML = buildTable(
+      ['#', 'Student', 'College ID', 'Batch', 'Spec', `${col} Score`, 'LC', 'CF', 'Commits'],
+      rows, 'No students found'
+    );
+
+    // My rank
+    try {
+      const rankRes = await lbApi.myRank();
+      const r = rankRes.data;
+      document.getElementById('myRankDisplay').textContent = r.rank
+        ? `You are ranked #${r.rank} with ${r.score} pts`
+        : 'You are not ranked yet. Complete your profile to appear on the leaderboard.';
+    } catch {}
+  } catch (err) {
+    document.getElementById('lbSkeletonCard').style.display = 'none';
+    document.getElementById('lbCard').style.display = '';
+    toast(err.message || 'Failed to load leaderboard', 'error');
+  }
+}
+
+document.getElementById('filterForm').addEventListener('submit', e => {
+  e.preventDefault();
+  currentFilter = {
+    metric:         document.getElementById('metricSelect').value || 'total',
+    batch:          document.getElementById('batchFilter').value.trim() || '',
+    specialization: document.getElementById('specFilter').value.trim() || '',
+  };
+  currentPage = 1;
+  loadLeaderboard();
+});
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  currentFilter = { metric: 'total', batch: '', specialization: '' };
+  currentPage = 1;
+  loadLeaderboard();
+});
+
+document.getElementById('prevPage').addEventListener('click', () => { if (currentPage > 1) { currentPage--; loadLeaderboard(); } });
+document.getElementById('nextPage').addEventListener('click', () => { currentPage++; loadLeaderboard(); });
+
+loadLeaderboard();
+</script>
+</body>
+</html>
